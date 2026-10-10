@@ -1,32 +1,72 @@
-# Node modules & build artifacts
+# ========================
+# Dependencies
+# ========================
 node_modules/
-dist/
-build/
-.cache/
+.pnp
+.pnp.js
 
-# Environment files with secrets
+# ========================
+# Build Outputs
+# ========================
+dist/
+dist-ssr/
+build/
+*.local
+
+# ========================
+# Environment Variables
+# ========================
 .env
 .env.local
-.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# AI agent memory & tracking
-.agent/
-.agents/
-.gemini/
-.gsd/
-
-# Graphify artifacts
-graphify-out/
-.graphify/
-.graphify_analysis.json
-.graphify_labels.json
-
-# Logs & temp files
+# ========================
+# Logs
+# ========================
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# OS specific
+# ========================
+# AI Agent & IDE Memory
+# (Do NOT commit these — agent-specific, not for collaborators)
+# ========================
+.gemini/
+.agent/
+.agents/
+
+# ========================
+# Graphify Knowledge Graph
+# (Auto-generated, regenerate with: graphify .)
+# ========================
+graphify-out/
+
+# ========================
+# OS Files
+# ========================
 .DS_Store
 Thumbs.db
+Desktop.ini
+
+# ========================
+# Editor Directories
+# ========================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ========================
+# Testing
+# ========================
+coverage/
