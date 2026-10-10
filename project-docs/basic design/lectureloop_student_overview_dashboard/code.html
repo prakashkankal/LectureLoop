@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"secondary-fixed":"#acedff","surface-container-low":"#f2f3ff","on-error":"#ffffff","surface-dim":"#d2d9f4","on-tertiary-fixed":"#002109","surface-bright":"#faf8ff","on-error-container":"#93000a","on-primary-container":"#dad7ff","on-surface-variant":"#464555","on-tertiary":"#ffffff","surface-container-high":"#e2e7ff","surface-container-highest":"#dae2fd","secondary":"#00687a","on-secondary-container":"#006172","on-primary":"#ffffff","background":"#faf8ff","tertiary":"#005522","on-secondary-fixed-variant":"#004e5c","on-secondary-fixed":"#001f26","on-primary-fixed":"#0f0069","on-surface":"#131b2e","inverse-on-surface":"#eef0ff","inverse-primary":"#c3c0ff","tertiary-container":"#00702f","on-tertiary-fixed-variant":"#005320","primary-fixed-dim":"#c3c0ff","on-secondary":"#ffffff","secondary-container":"#57dffe","outline":"#777587","on-primary-fixed-variant":"#3323cc","tertiary-fixed":"#7ffc97","surface-tint":"#4d44e3","surface-container":"#eaedff","primary":"#3525cd","tertiary-fixed-dim":"#62df7d","primary-container":"#4f46e5","primary-fixed":"#e2dfff","secondary-fixed-dim":"#4cd7f6","inverse-surface":"#283044","error":"#ba1a1a","surface-container-lowest":"#ffffff","on-background":"#131b2e","error-container":"#ffdad6","surface-variant":"#dae2fd","surface":"#faf8ff","outline-variant":"#c7c4d8","on-tertiary-container":"#78f591"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-lg":"1.25rem","margin-mobile":"1rem","space-md":"0.75rem","space-xl":"2rem","space-xs":"0.25rem","gutter-mobile":"1rem","margin":"2rem","gutter":"1.5rem","space-sm":"0.5rem"},fontFamily:{"headline-lg-mobile":["Inter"],"label-sm":["Inter"],"headline-md":["Inter"],"display":["Inter"],"headline-lg":["Inter"],"title-md":["Inter"],"body-lg":["Inter"],"headline-sm":["Inter"],"label-md":["Inter"],"body-md":["Inter"],"code-sm":["JetBrains Mono"],"body-sm":["Inter"]},fontSize:{"headline-lg-mobile":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.02em","fontWeight":"600"}],"label-sm":["0.75rem",{"lineHeight":"1rem","letterSpacing":"0.025em","fontWeight":"600"}],"headline-md":["1.5rem",{"lineHeight":"2rem","letterSpacing":"-0.02em","fontWeight":"600"}],"display":["3.5rem",{"lineHeight":"4rem","letterSpacing":"-0.03em","fontWeight":"700"}],"headline-lg":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.025em","fontWeight":"600"}],"title-md":["1.125rem",{"lineHeight":"1.5rem","letterSpacing":"-0.01em","fontWeight":"500"}],"body-lg":["1.0625rem",{"lineHeight":"1.75rem","letterSpacing":"-0.005em","fontWeight":"400"}],"headline-sm":["1.25rem",{"lineHeight":"1.75rem","letterSpacing":"-0.015em","fontWeight":"600"}],"label-md":["0.875rem",{"lineHeight":"1.25rem","letterSpacing":"0.01em","fontWeight":"500"}],"body-md":["0.9375rem",{"lineHeight":"1.5rem","letterSpacing":"0em","fontWeight":"400"}],"code-sm":["0.8125rem",{"lineHeight":"1.25rem","letterSpacing":"0em","fontWeight":"400"}],"body-sm":["0.8125rem",{"lineHeight":"1.25rem","letterSpacing":"0.005em","fontWeight":"400"}]}}}}</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-screen w-[250px] bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between"><div class="flex flex-col flex-1 min-h-0"><div class="h-16 flex items-center px-space-lg gap-space-sm"><div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-[20px]">all_inclusive</span></div><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface">Lecture</span><span class="font-headline-sm text-headline-sm tracking-tight text-primary-container">Loop</span></div></div><div class="px-space-md py-space-xs"><div class="text-label-sm font-label-sm uppercase tracking-wider text-outline px-space-sm mb-space-xs">Study Workspace</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-primary-container font-medium rounded-lg"><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm transition-colors bg-surface-container-high text-primary-container font-medium rounded-lg" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-label-md text-label-md">Overview</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="my-lectures" href="#"><span class="material-symbols-outlined text-[20px]">video_library</span><span class="font-label-md text-label-md">My Lectures</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="subjects" href="#"><span class="material-symbols-outlined text-[20px]">folder_open</span><span class="font-label-md text-label-md">Subjects</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="notes" href="#"><span class="material-symbols-outlined text-[20px]">description</span><span class="font-label-md text-label-md">Notes</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="revision" href="#"><span class="material-symbols-outlined text-[20px]">cached</span><span class="font-label-md text-label-md">Revision</span></a></nav></div><div class="my-space-sm mx-space-md h-[1px] bg-surface-container-high"></div><div class="px-space-md py-space-xs"><div class="text-label-sm font-label-sm uppercase tracking-wider text-outline px-space-sm mb-space-xs">Preferences</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-primary-container font-medium rounded-lg"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span class="font-label-md text-label-md">Settings</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="help-support" href="#"><span class="material-symbols-outlined text-[20px]">help</span><span class="font-label-md text-label-md">Help & Support</span></a></nav></div></div><div class="p-space-md bg-surface-container-lowest"><div class="flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer"><div class="flex items-center gap-space-sm min-w-0"><div class="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="min-w-0 flex flex-col"><span class="font-label-md text-label-md text-on-surface truncate font-medium">Prakash Sharma</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">CS Undergraduate</span></div></div><span class="material-symbols-outlined text-outline text-[18px]">unfold_more</span></div></div></aside><div class="pl-[250px]"><header class="fixed top-0 left-[250px] right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-gutter"><div class="flex items-center gap-space-sm"><span class="font-label-md text-label-md text-on-surface-variant">Workspace</span><span class="material-symbols-outlined text-outline text-[16px]">chevron_right</span><span class="font-label-md text-label-md text-on-surface font-semibold">Computer Science</span></div><div class="flex items-center gap-gutter"><div class="relative flex items-center"><div class="flex items-center bg-surface-container-lowest px-space-md py-space-xs rounded-lg shadow-sm gap-space-sm w-72"><span class="material-symbols-outlined text-outline text-[18px]">search</span><input class="w-full bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none" placeholder="Search lectures, notes, terms..." readonly="" type="text"/><kbd class="font-code-sm text-code-sm bg-surface-container px-space-xs py-0.5 rounded text-outline text-[11px]">⌘K</kbd></div></div><div class="flex items-center gap-space-sm"><button aria-label="Notifications" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 w-full min-h-screen bg-background"><div class="flex flex-col w-full">
+<div class="px-gutter py-space-xl flex flex-col gap-space-xl max-w-7xl mx-auto w-full">
+<!-- Top Greeting & Key Call-to-Actions -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-space-lg">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-primary-fixed text-primary font-medium">Semester 5 Workspace</span>
+<span class="text-outline text-label-sm font-label-sm">• Fall 2024</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Good morning, Prakash</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">Keep your classroom lectures organized and your learning on track.</p>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="h-10 px-space-lg rounded-xl bg-surface-container-lowest text-on-surface hover:bg-surface-container-low transition-all font-label-md text-label-md shadow-sm flex items-center gap-space-xs" id="open-browse-subjects-btn">
+<span class="material-symbols-outlined text-[18px] text-outline">folder_open</span>
+<span>Browse Subjects</span>
+</button>
+<button class="h-10 px-space-lg rounded-xl bg-primary-container text-on-primary hover:bg-primary transition-all font-label-md text-label-md shadow-sm flex items-center gap-space-xs" id="open-add-lecture-btn">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>Add Lecture</span>
+</button>
+</div>
+</div>
+<!-- Overview Statistics (4 Metric Cards) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Stat 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">Total Lectures</span>
+<div class="w-10 h-10 rounded-xl bg-primary-fixed text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="font-headline-lg text-headline-lg text-on-surface tracking-tight">12</div>
+<div class="flex items-center gap-space-xs mt-space-xs text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span>+2 added this week</span>
+</div>
+</div>
+</div>
+<!-- Stat 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">Subjects</span>
+<div class="w-10 h-10 rounded-xl bg-secondary-fixed text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">layers</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="font-headline-lg text-headline-lg text-on-surface tracking-tight">4</div>
+<div class="flex items-center gap-space-xs mt-space-xs text-label-sm font-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] text-outline">history_edu</span>
+<span>Across 2 semesters</span>
+</div>
+</div>
+</div>
+<!-- Stat 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">Notes Saved</span>
+<div class="w-10 h-10 rounded-xl bg-surface-container-low text-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">description</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="font-headline-lg text-headline-lg text-on-surface tracking-tight">8</div>
+<div class="flex items-center gap-space-xs mt-space-xs text-label-sm font-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] text-outline">auto_awesome</span>
+<span>Structured summaries</span>
+</div>
+</div>
+</div>
+<!-- Stat 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">Pending Revision</span>
+<div class="w-10 h-10 rounded-xl bg-surface-variant text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">update</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="font-headline-lg text-headline-lg text-on-surface tracking-tight">3</div>
+<div class="flex items-center gap-space-xs mt-space-xs text-label-sm font-label-sm text-error">
+<span class="material-symbols-outlined text-[14px]">alarm</span>
+<span>Scheduled for review</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main 2-Column Content Split -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl">
+<!-- PRIMARY COLUMN (w-2/3) -->
+<div class="lg:col-span-8 flex flex-col gap-space-xl">
+<!-- Recent Lectures Section -->
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Recent Lectures</h2>
+<span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">3 total</span>
+</div>
+<a class="text-primary-container font-label-md text-label-md hover:underline flex items-center gap-space-xs group" href="#">
+<span>View All</span>
+<span class="material-symbols-outlined text-[16px] transition-transform group-hover:translate-x-0.5">arrow_forward</span>
+</a>
+</div>
+<!-- Lecture Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-space-lg items-start sm:items-center justify-between relative group">
+<div class="flex items-start sm:items-center gap-space-md min-w-0">
+<!-- Visual Placeholder Thumbnail with Waveform -->
+<div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-surface-container-high flex flex-col items-center justify-center shrink-0 relative overflow-hidden group-hover:bg-surface-container-highest transition-colors">
+<div class="absolute inset-0 opacity-20 flex items-center justify-center gap-0.5 px-2">
+<div class="w-1 bg-primary h-6 rounded-full animate-pulse"></div>
+<div class="w-1 bg-primary h-10 rounded-full animate-pulse delay-75"></div>
+<div class="w-1 bg-primary h-4 rounded-full animate-pulse delay-100"></div>
+<div class="w-1 bg-primary h-8 rounded-full animate-pulse delay-150"></div>
+<div class="w-1 bg-primary h-5 rounded-full animate-pulse"></div>
+</div>
+<span class="material-symbols-outlined text-primary text-[26px] z-10">smart_display</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant z-10 mt-0.5">48m</span>
+</div>
+<!-- Metadata & Title -->
+<div class="flex flex-col min-w-0 gap-1">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="px-space-xs py-0.5 rounded text-label-sm font-label-sm bg-primary-fixed text-primary font-medium">DBMS</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Oct 24, 2024</span>
+<span class="text-outline text-label-sm font-label-sm">•</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">48 min</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold truncate hover:text-primary-container transition-colors cursor-pointer">
+                  Database Management Systems — Normalization
+                </h3>
+<div class="flex items-center gap-space-sm mt-0.5">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container-low text-tertiary-container font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                    Ready for Revision
+                  </span>
+<span class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">auto_stories</span>
+                    Summary Synced
+                  </span>
+</div>
+</div>
+</div>
+<!-- Actions Menu Dropdown -->
+<div class="relative shrink-0 self-end sm:self-center">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-low transition-colors" data-menu-trigger="menu-1">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+<div class="hidden absolute right-0 top-10 w-44 bg-surface-container-lowest rounded-xl shadow-xl py-space-xs z-30" id="menu-1">
+<a class="flex items-center gap-space-sm px-space-md py-space-xs text-body-sm font-body-sm text-on-surface hover:bg-surface-container-low" href="#">
+<span class="material-symbols-outlined text-[18px] text-outline">description</span>
+<span>View Notes</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-space-xs text-body-sm font-body-sm text-on-surface hover:bg-surface-container-low" href="#">
+<span class="material-symbols-outlined text-[18px] text-outline">edit</span>
+<span>Edit Details</span>
+</a>
+<div class="my-space-xs mx-space-sm h-[1px] bg-surface-container-high"></div>
+<a class="flex items-center gap-space-sm px-space-md py-space-xs text-body-sm font-body-sm text-error hover:bg-error-container" href="#">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+<span>Delete</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Lecture Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-space-lg items-start sm:items-center justify-between relative group">
+<div class="flex items-start sm:items-center gap-space-md min-w-0">
+<div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-surface-container-high flex flex-col items-center justify-center shrink-0 relative overflow-hidden group-hover:bg-surface-container-highest transition-colors">
+<div class="absolute inset-0 opacity-20 flex items-center justify-center gap-0.5 px-2">
+<div class="w-1 bg-secondary h-8 rounded-full"></div>
+<div class="w-1 bg-secondary h-5 rounded-full"></div>
+<div class="w-1 bg-secondary h-9 rounded-full"></div>
+<div class="w-1 bg-secondary h-6 rounded-full"></div>
+<div class="w-1 bg-secondary h-3 rounded-full"></div>
+</div>
+<span class="material-symbols-outlined text-secondary text-[26px] z-10">smart_display</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant z-10 mt-0.5">56m</span>
+</div>
+<div class="flex flex-col min-w-0 gap-1">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="px-space-xs py-0.5 rounded text-label-sm font-label-sm bg-secondary-fixed text-secondary font-medium">Operating Systems</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Oct 22, 2024</span>
+<span class="text-outline text-label-sm font-label-sm">•</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">56 min</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold truncate hover:text-primary-container transition-colors cursor-pointer">
+                  Operating Systems — Process Scheduling
+                </h3>
+<div class="flex items-center gap-space-sm mt-0.5">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container-low text-tertiary-container font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                    Ready
+                  </span>
+<span class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">psychology</span>
+                    Flashcards Prepared
+                  </span>
+</div>
+</div>
+</div>
+<div class="relative shrink-0 self-end sm:self-center">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-low transition-colors" data-menu-trigger="menu-2">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+<div class="hidden absolute right-0 top-10 w-44 bg-surface-container-lowest rounded-xl shadow-xl py-space-xs z-30" id="menu-2">
+<a class="flex items-center gap-space-sm px-space-md py-space-xs text-body-sm font-body-sm text-on-surface hover:bg-surface-container-low" href="#">
+<span class="material-symbols-outlined text-[18px] text-outline">description</span>
+<span>View Notes</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-space-xs text-body-sm font-body-sm text-on-surface hover:bg-surface-container-low" href="#">
+<span class="material-symbols-outlined text-[18px] text-outline">edit</span>
+<span>Edit Details</span>
+</a>
+<div class="my-space-xs mx-space-sm h-[1px] bg-surface-container-high"></div>
+<a class="flex items-center gap-space-sm px-space-md py-space-xs text-body-sm font-body-sm text-error hover:bg-error-container" href="#">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+<span>Delete</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Lecture Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-space-lg items-start sm:items-center justify-between relative group">
+<div class="flex items-start sm:items-center gap-space-md min-w-0">
+<div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-surface-container-high flex flex-col items-center justify-center shrink-0 relative overflow-hidden group-hover:bg-surface-container-highest transition-colors">
+<div class="absolute inset-0 opacity-20 flex items-center justify-center gap-0.5 px-2">
+<div class="w-1 bg-outline h-4 rounded-full"></div>
+<div class="w-1 bg-outline h-7 rounded-full"></div>
+<div class="w-1 bg-outline h-10 rounded-full"></div>
+<div class="w-1 bg-outline h-5 rounded-full"></div>
+<div class="w-1 bg-outline h-6 rounded-full"></div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[26px] z-10">smart_display</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant z-10 mt-0.5">42m</span>
+</div>
+<div class="flex flex-col min-w-0 gap-1">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="px-space-xs py-0.5 rounded text-label-sm font-label-sm bg-surface-container-high text-on-surface font-medium">Computer Networks</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Oct 19, 2024</span>
+<span class="text-outline text-label-sm font-label-sm">•</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">42 min</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold truncate hover:text-primary-container transition-colors cursor-pointer">
+                  Computer Networks — TCP/IP Fundamentals
+                </h3>
+<div class="flex items-center gap-space-sm mt-0.5">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-variant text-on-surface-variant font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                    Revision Pending
+                  </span>
+<span class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">alarm</span>
+                    Review in 2 days
+                  </span>
+</div>
+</div>
+</div>
+<div class="relative shrink-0 self-end sm:self-center">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-low transition-colors" data-menu-trigger="menu-3">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+<div class="hidden absolute right-0 top-10 w-44 bg-surface-container-lowest rounded-xl shadow-xl py-space-xs z-30" id="menu-3">
+<a class="flex items-center gap-space-sm px-space-md py-space-xs text-body-sm font-body-sm text-on-surface hover:bg-surface-container-low" href="#">
+<span class="material-symbols-outlined text-[18px] text-outline">description</span>
+<span>View Notes</span>
+</a>
+<a class="flex items-center gap-space-sm px-space-md py-space-xs text-body-sm font-body-sm text-on-surface hover:bg-surface-container-low" href="#">
+<span class="material-symbols-outlined text-[18px] text-outline">edit</span>
+<span>Edit Details</span>
+</a>
+<div class="my-space-xs mx-space-sm h-[1px] bg-surface-container-high"></div>
+<a class="flex items-center gap-space-sm px-space-md py-space-xs text-body-sm font-body-sm text-error hover:bg-error-container" href="#">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+<span>Delete</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<!-- My Subjects Section -->
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">My Subjects</h2>
+<button class="text-primary-container font-label-md text-label-md hover:underline flex items-center gap-space-xs" id="add-subject-btn">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span>Add Subject</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<!-- Subject 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div class="w-12 h-12 rounded-xl bg-secondary-fixed text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">database</span>
+</div>
+<span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">4 lectures</span>
+</div>
+<div class="mt-space-lg">
+<h3 class="font-title-md text-title-md text-on-surface font-semibold group-hover:text-secondary transition-colors">Database Management Systems</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Relational schema, SQL optimization & ACID</p>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-space-md overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 75%;"></div>
+</div>
+</div>
+</div>
+<!-- Subject 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div class="w-12 h-12 rounded-xl bg-primary-fixed text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">memory</span>
+</div>
+<span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">3 lectures</span>
+</div>
+<div class="mt-space-lg">
+<h3 class="font-title-md text-title-md text-on-surface font-semibold group-hover:text-primary-container transition-colors">Operating Systems</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Kernels, multithreading & virtual memory</p>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-space-md overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 60%;"></div>
+</div>
+</div>
+</div>
+<!-- Subject 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div class="w-12 h-12 rounded-xl bg-secondary-fixed-dim text-on-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">hub</span>
+</div>
+<span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">3 lectures</span>
+</div>
+<div class="mt-space-lg">
+<h3 class="font-title-md text-title-md text-on-surface font-semibold group-hover:text-secondary transition-colors">Computer Networks</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">OSI model, routing protocols & sockets</p>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-space-md overflow-hidden">
+<div class="bg-secondary-container h-full rounded-full" style="width: 45%;"></div>
+</div>
+</div>
+</div>
+<!-- Subject 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div class="w-12 h-12 rounded-xl bg-surface-container-low text-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">account_tree</span>
+</div>
+<span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">2 lectures</span>
+</div>
+<div class="mt-space-lg">
+<h3 class="font-title-md text-title-md text-on-surface font-semibold group-hover:text-tertiary transition-colors">Data Structures & Algorithms</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Complexity analysis, graphs & dynamic programming</p>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full mt-space-md overflow-hidden">
+<div class="bg-tertiary-container h-full rounded-full" style="width: 85%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- SECONDARY COLUMN (w-1/3) -->
+<div class="lg:col-span-4 flex flex-col gap-space-xl">
+<!-- Quick Actions Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">Quick Actions</h3>
+<span class="material-symbols-outlined text-outline text-[20px]">bolt</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<button class="w-full flex items-center gap-space-md p-space-sm rounded-lg hover:bg-surface-container-low transition-colors text-left group" id="qa-add-lecture">
+<div class="w-9 h-9 rounded-lg bg-primary-fixed text-primary flex items-center justify-center shrink-0 group-hover:bg-primary-container group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">upload_file</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-medium">Add New Lecture</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Upload audio, video or slides</span>
+</div>
+</button>
+<button class="w-full flex items-center gap-space-md p-space-sm rounded-lg hover:bg-surface-container-low transition-colors text-left group">
+<div class="w-9 h-9 rounded-lg bg-secondary-fixed text-secondary flex items-center justify-center shrink-0 group-hover:bg-secondary group-hover:text-on-secondary transition-colors">
+<span class="material-symbols-outlined text-[18px]">folder_copy</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-medium">Browse Lecture Library</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Inspect full catalog archive</span>
+</div>
+</button>
+<button class="w-full flex items-center gap-space-md p-space-sm rounded-lg hover:bg-surface-container-low transition-colors text-left group">
+<div class="w-9 h-9 rounded-lg bg-surface-container-high text-on-surface flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">feed</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-medium">Access Saved Notes</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Read AI synthesis & briefs</span>
+</div>
+</button>
+<button class="w-full flex items-center gap-space-md p-space-sm rounded-lg hover:bg-surface-container-low transition-colors text-left group">
+<div class="w-9 h-9 rounded-lg bg-surface-variant text-on-surface-variant flex items-center justify-center shrink-0 group-hover:bg-inverse-surface group-hover:text-inverse-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-medium">Start Revision Drill</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Run active recall cards</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Recent Activity Timeline Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">Recent Activity</h3>
+<span class="material-symbols-outlined text-outline text-[20px]">schedule</span>
+</div>
+<div class="flex flex-col gap-space-md relative before:absolute before:top-2 before:bottom-2 before:left-4 before:w-[2px] before:bg-surface-container-high">
+<!-- Event 1 -->
+<div class="flex items-start gap-space-md relative z-10">
+<div class="w-8 h-8 rounded-full bg-primary-fixed text-primary flex items-center justify-center shrink-0 ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[16px]">file_upload</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-medium">Added lecture: DBMS Normalization</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">2 hours ago</span>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="flex items-start gap-space-md relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container-low text-tertiary-container flex items-center justify-center shrink-0 ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[16px]">task_alt</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-medium">Notes saved for Process Scheduling</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Yesterday, 4:15 PM</span>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="flex items-start gap-space-md relative z-10">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed text-secondary flex items-center justify-center shrink-0 ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[16px]">create_new_folder</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-medium">Created new subject: Computer Networks</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">3 days ago</span>
+</div>
+</div>
+<!-- Event 4 -->
+<div class="flex items-start gap-space-md relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center shrink-0 ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-medium">Completed review: Binary Search Trees</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">5 days ago</span>
+</div>
+</div>
+</div>
+</div>
+<!-- System Readiness & Architecture Info Pill Card -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex items-center gap-space-sm text-on-surface-variant shadow-sm">
+<div class="w-2.5 h-2.5 rounded-full bg-tertiary shrink-0 animate-ping"></div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface">Platform Foundation Active</span>
+<span class="font-body-sm text-body-sm truncate text-on-surface-variant">Cloud sync enabled • Ready for transcription module</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Slide-Over Add Lecture Modal / Drawer -->
+<div aria-labelledby="slide-over-title" aria-modal="true" class="fixed inset-0 z-50 hidden" id="add-lecture-modal" role="dialog">
+<!-- Backdrop -->
+<div class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm transition-opacity" id="modal-backdrop"></div>
+<div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+<div class="w-screen max-w-md bg-surface-container-lowest shadow-2xl flex flex-col">
+<!-- Drawer Header -->
+<div class="p-space-lg flex items-center justify-between bg-surface-container-low">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-primary-container text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface" id="slide-over-title">Add New Lecture</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Prepare recording for smart ingestion</p>
+</div>
+</div>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors" id="close-modal-btn">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Drawer Content Form -->
+<div class="p-space-lg flex-1 overflow-y-auto flex flex-col gap-space-lg">
+<!-- Lecture Title -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-medium">Lecture Title</label>
+<input class="h-10 px-space-md rounded-lg bg-surface-container-low text-on-surface placeholder:text-outline font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none" placeholder="e.g. Distributed Consensus & Raft Protocol" type="text"/>
+</div>
+<!-- Subject Selection -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-medium">Subject / Course</label>
+<div class="relative">
+<select class="w-full h-10 px-space-md pr-8 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md appearance-none focus:outline-none focus:bg-surface-container-lowest">
+<option value="dbms">Database Management Systems</option>
+<option value="os">Operating Systems</option>
+<option value="cn">Computer Networks</option>
+<option value="dsa">Data Structures & Algorithms</option>
+</select>
+<span class="material-symbols-outlined text-outline text-[18px] absolute right-3 top-2.5 pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- File Upload Zone -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-medium">Lecture Media or Slide Pack</label>
+<div class="rounded-xl p-space-xl flex flex-col items-center justify-center gap-space-sm bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer text-center">
+<div class="w-12 h-12 rounded-full bg-primary-fixed text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">cloud_upload</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-medium">Drag & drop audio, video or PDF</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">MP4, MP3, WAV, or PPTX up to 500MB</span>
+</div>
+<button class="mt-space-xs h-8 px-space-md rounded-lg bg-surface-container-lowest text-on-surface text-label-sm font-label-sm shadow-sm hover:bg-surface-container-high transition-colors" type="button">
+                Browse Files
+              </button>
+</div>
+</div>
+<!-- Ingestion Preset -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-medium">AI Ingestion Preset</label>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="p-space-sm rounded-lg bg-primary-fixed text-primary text-left flex flex-col gap-0.5" type="button">
+<span class="font-label-md text-label-md font-semibold">Comprehensive</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Transcript + Flashcards</span>
+</button>
+<button class="p-space-sm rounded-lg bg-surface-container-low text-on-surface text-left flex flex-col gap-0.5 hover:bg-surface-container transition-colors" type="button">
+<span class="font-label-md text-label-md font-semibold">Fast Summary</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Core takeaways only</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Drawer Footer -->
+<div class="p-space-lg bg-surface-container-low flex items-center justify-end gap-space-sm">
+<button class="h-10 px-space-md rounded-xl text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-colors" id="cancel-modal-btn">
+            Cancel
+          </button>
+<button class="h-10 px-space-lg rounded-xl bg-primary-container text-on-primary hover:bg-primary font-label-md text-label-md shadow-sm transition-colors flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">publish</span>
+<span>Upload & Process</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+    // Slide-over Modal Controls
+    const addLectureModal = document.getElementById('add-lecture-modal');
+    const openAddLectureBtn = document.getElementById('open-add-lecture-btn');
+    const qaAddLectureBtn = document.getElementById('qa-add-lecture');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const cancelModalBtn = document.getElementById('cancel-modal-btn');
+    const modalBackdrop = document.getElementById('modal-backdrop');
+
+    function openModal() {
+      if (addLectureModal) {
+        addLectureModal.classList.remove('hidden');
+      }
+    }
+
+    function closeModal() {
+      if (addLectureModal) {
+        addLectureModal.classList.add('hidden');
+      }
+    }
+
+    if (openAddLectureBtn) openAddLectureBtn.addEventListener('click', openModal);
+    if (qaAddLectureBtn) qaAddLectureBtn.addEventListener('click', openModal);
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+
+    // Dropdown Context Menu logic
+    document.querySelectorAll('[data-menu-trigger]').forEach(trigger => {
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const menuId = trigger.getAttribute('data-menu-trigger');
+        const menu = document.getElementById(menuId);
+        
+        // Close others
+        document.querySelectorAll('[id^="menu-"]').forEach(m => {
+          if (m.id !== menuId) m.classList.add('hidden');
+        });
+
+        if (menu) {
+          menu.classList.toggle('hidden');
+        }
+      });
+    });
+
+    // Close menus on outside click
+    window.addEventListener('click', () => {
+      document.querySelectorAll('[id^="menu-"]').forEach(m => {
+        m.classList.add('hidden');
+      });
+    });
+  </script>
+</div></main></div></body></html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"secondary-fixed":"#acedff","surface-container-low":"#f2f3ff","on-error":"#ffffff","surface-dim":"#d2d9f4","on-tertiary-fixed":"#002109","surface-bright":"#faf8ff","on-error-container":"#93000a","on-primary-container":"#dad7ff","on-surface-variant":"#464555","on-tertiary":"#ffffff","surface-container-high":"#e2e7ff","surface-container-highest":"#dae2fd","secondary":"#00687a","on-secondary-container":"#006172","on-primary":"#ffffff","background":"#faf8ff","tertiary":"#005522","on-secondary-fixed-variant":"#004e5c","on-secondary-fixed":"#001f26","on-primary-fixed":"#0f0069","on-surface":"#131b2e","inverse-on-surface":"#eef0ff","inverse-primary":"#c3c0ff","tertiary-container":"#00702f","on-tertiary-fixed-variant":"#005320","primary-fixed-dim":"#c3c0ff","on-secondary":"#ffffff","secondary-container":"#57dffe","outline":"#777587","on-primary-fixed-variant":"#3323cc","tertiary-fixed":"#7ffc97","surface-tint":"#4d44e3","surface-container":"#eaedff","primary":"#3525cd","tertiary-fixed-dim":"#62df7d","primary-container":"#4f46e5","primary-fixed":"#e2dfff","secondary-fixed-dim":"#4cd7f6","inverse-surface":"#283044","error":"#ba1a1a","surface-container-lowest":"#ffffff","on-background":"#131b2e","error-container":"#ffdad6","surface-variant":"#dae2fd","surface":"#faf8ff","outline-variant":"#c7c4d8","on-tertiary-container":"#78f591"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-lg":"1.25rem","margin-mobile":"1rem","space-md":"0.75rem","space-xl":"2rem","space-xs":"0.25rem","gutter-mobile":"1rem","margin":"2rem","gutter":"1.5rem","space-sm":"0.5rem"},fontFamily:{"headline-lg-mobile":["Inter"],"label-sm":["Inter"],"headline-md":["Inter"],"display":["Inter"],"headline-lg":["Inter"],"title-md":["Inter"],"body-lg":["Inter"],"headline-sm":["Inter"],"label-md":["Inter"],"body-md":["Inter"],"code-sm":["JetBrains Mono"],"body-sm":["Inter"]},fontSize:{"headline-lg-mobile":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.02em","fontWeight":"600"}],"label-sm":["0.75rem",{"lineHeight":"1rem","letterSpacing":"0.025em","fontWeight":"600"}],"headline-md":["1.5rem",{"lineHeight":"2rem","letterSpacing":"-0.02em","fontWeight":"600"}],"display":["3.5rem",{"lineHeight":"4rem","letterSpacing":"-0.03em","fontWeight":"700"}],"headline-lg":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.025em","fontWeight":"600"}],"title-md":["1.125rem",{"lineHeight":"1.5rem","letterSpacing":"-0.01em","fontWeight":"500"}],"body-lg":["1.0625rem",{"lineHeight":"1.75rem","letterSpacing":"-0.005em","fontWeight":"400"}],"headline-sm":["1.25rem",{"lineHeight":"1.75rem","letterSpacing":"-0.015em","fontWeight":"600"}],"label-md":["0.875rem",{"lineHeight":"1.25rem","letterSpacing":"0.01em","fontWeight":"500"}],"body-md":["0.9375rem",{"lineHeight":"1.5rem","letterSpacing":"0em","fontWeight":"400"}],"code-sm":["0.8125rem",{"lineHeight":"1.25rem","letterSpacing":"0em","fontWeight":"400"}],"body-sm":["0.8125rem",{"lineHeight":"1.25rem","letterSpacing":"0.005em","fontWeight":"400"}]}}}}</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-screen w-[250px] bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between"><div class="flex flex-col flex-1 min-h-0"><div class="h-16 flex items-center px-space-lg gap-space-sm"><div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-[20px]">all_inclusive</span></div><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface">Lecture</span><span class="font-headline-sm text-headline-sm tracking-tight text-primary-container">Loop</span></div></div><div class="px-space-md py-space-xs"><div class="text-label-sm font-label-sm uppercase tracking-wider text-outline px-space-sm mb-space-xs">Study Workspace</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-primary-container font-medium rounded-lg"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-label-md text-label-md">Overview</span></a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm transition-colors bg-surface-container-high text-primary-container font-medium rounded-lg" data-path="interactive-learning" href="#"><span class="material-symbols-outlined text-[20px]">psychology</span><span class="font-label-md text-label-md">Interactive Learning</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="my-lectures" href="#"><span class="material-symbols-outlined text-[20px]">video_library</span><span class="font-label-md text-label-md">My Lectures</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="subjects" href="#"><span class="material-symbols-outlined text-[20px]">folder_open</span><span class="font-label-md text-label-md">Subjects</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="notes" href="#"><span class="material-symbols-outlined text-[20px]">description</span><span class="font-label-md text-label-md">Notes</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="revision" href="#"><span class="material-symbols-outlined text-[20px]">cached</span><span class="font-label-md text-label-md">Revision</span></a></nav></div><div class="my-space-sm mx-space-md h-[1px] bg-surface-container-high"></div><div class="px-space-md py-space-xs"><div class="text-label-sm font-label-sm uppercase tracking-wider text-outline px-space-sm mb-space-xs">Preferences</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-primary-container font-medium rounded-lg"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span class="font-label-md text-label-md">Settings</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="help-support" href="#"><span class="material-symbols-outlined text-[20px]">help</span><span class="font-label-md text-label-md">Help &amp; Support</span></a></nav></div></div><div class="p-space-md bg-surface-container-lowest"><div class="flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer"><div class="flex items-center gap-space-sm min-w-0"><div class="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="min-w-0 flex flex-col"><span class="font-label-md text-label-md text-on-surface truncate font-medium">Prakash Sharma</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">CS Undergraduate</span></div></div><span class="material-symbols-outlined text-outline text-[18px]">unfold_more</span></div></div></aside><div class="pl-[250px]"><header class="fixed top-0 left-[250px] right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-gutter"><div class="flex items-center gap-space-sm"><span class="font-label-md text-label-md text-on-surface-variant">Workspace</span><span class="material-symbols-outlined text-outline text-[16px]">chevron_right</span><span class="font-label-md text-label-md text-on-surface font-semibold">Computer Science</span></div><div class="flex items-center gap-gutter"><div class="relative flex items-center"><div class="flex items-center bg-surface-container-lowest px-space-md py-space-xs rounded-lg shadow-sm gap-space-sm w-72"><span class="material-symbols-outlined text-outline text-[18px]">search</span><input class="w-full bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none" placeholder="Search lectures, notes, terms..." readonly="" type="text"/><kbd class="font-code-sm text-code-sm bg-surface-container px-space-xs py-0.5 rounded text-outline text-[11px]">⌘K</kbd></div></div><div class="flex items-center gap-space-sm"><button aria-label="Notifications" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 w-full min-h-screen bg-background"><div class="flex flex-col w-full">
+<!-- Top Context Bar & Session Header -->
+<header class="w-full bg-surface-container-lowest px-gutter py-space-sm flex flex-col md:flex-row md:items-center md:justify-between gap-space-sm shadow-sm relative z-20">
+<div class="flex items-center flex-wrap gap-space-xs text-on-surface">
+<div class="flex items-center gap-space-xs">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+          Interactive Learning
+        </a>
+<span class="material-symbols-outlined text-outline text-[16px]">chevron_right</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Database Management Systems</span>
+<span class="material-symbols-outlined text-outline text-[16px]">chevron_right</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md font-semibold text-primary">Topic 03: Primary Keys &amp; Uniqueness</span>
+</div>
+</div>
+<!-- Top Action Group -->
+<div class="flex items-center gap-space-md shrink-0">
+<div class="flex items-center gap-space-xs bg-surface-container-high px-space-md py-1 rounded-full">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="font-label-sm text-label-sm text-on-surface font-medium">Topic 3 of 5 • 60%</span>
+</div>
+<div class="h-4 w-[1px] bg-surface-container"></div>
+<button class="flex items-center gap-space-xs px-space-md py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all text-label-md font-label-md" type="button">
+<span class="material-symbols-outlined text-[18px]">description</span>
+<span>Full Notes</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-error hover:bg-error-container/30 transition-all text-label-md font-label-md" type="button">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+<span>Save Session &amp; Exit</span>
+</button>
+</div>
+</header>
+<!-- 3-PANE WORKSPACE WRAPPER -->
+<div class="flex flex-col lg:flex-row w-full min-h-[calc(100vh-8.5rem)] p-space-md gap-gutter">
+<!-- LEFT PANEL: Topic Navigation & Segment List (260px desktop fixed) -->
+<aside class="w-full lg:w-[260px] shrink-0 flex flex-col gap-space-md">
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col h-full justify-between">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-md text-title-md text-on-surface font-semibold">Lecture Topics</span>
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant">5</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">view_timeline</span>
+</div>
+<!-- Topics List -->
+<div class="flex flex-col gap-1.5 pt-space-xs">
+<!-- Topic 1 -->
+<button class="w-full text-left p-space-sm rounded-lg bg-surface-bright hover:bg-surface-container-low transition-colors flex items-start gap-space-sm group" type="button">
+<span class="material-symbols-outlined text-tertiary text-[20px] shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface line-clamp-1">01. Intro to DBMS</span>
+<span class="font-code-sm text-code-sm text-outline">00:00 – 04:20</span>
+</div>
+</button>
+<!-- Topic 2 -->
+<button class="w-full text-left p-space-sm rounded-lg bg-surface-bright hover:bg-surface-container-low transition-colors flex items-start gap-space-sm group" type="button">
+<span class="material-symbols-outlined text-tertiary text-[20px] shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface line-clamp-1">02. Models &amp; Schemas</span>
+<span class="font-code-sm text-code-sm text-outline">04:20 – 10:15</span>
+</div>
+</button>
+<!-- Topic 3: Active Segment -->
+<div class="w-full text-left p-space-sm rounded-lg bg-surface-container-high shadow-sm flex items-start gap-space-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">radio_button_checked</span>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<span class="font-label-sm text-label-sm font-semibold text-primary line-clamp-1">03. Primary Keys &amp; Uniqueness</span>
+</div>
+<div class="flex items-center justify-between gap-1 mt-0.5">
+<span class="font-code-sm text-code-sm text-primary font-medium">10:15 – 17:30</span>
+<span class="font-label-sm text-[10px] px-1.5 py-0.2 rounded bg-primary text-on-primary font-medium">Current</span>
+</div>
+</div>
+</div>
+<!-- Topic 4 -->
+<button class="w-full text-left p-space-sm rounded-lg bg-surface-bright/70 hover:bg-surface-container-low transition-colors flex items-start gap-space-sm opacity-70 group" type="button">
+<span class="material-symbols-outlined text-outline text-[20px] shrink-0 mt-0.5">lock</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant line-clamp-1">04. Foreign Keys &amp; Integrity</span>
+<span class="font-code-sm text-code-sm text-outline">17:30 – 24:10</span>
+</div>
+</button>
+<!-- Topic 5 -->
+<button class="w-full text-left p-space-sm rounded-lg bg-surface-bright/70 hover:bg-surface-container-low transition-colors flex items-start gap-space-sm opacity-70 group" type="button">
+<span class="material-symbols-outlined text-outline text-[20px] shrink-0 mt-0.5">lock_clock</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant line-clamp-1">05. Normalization</span>
+<span class="font-code-sm text-code-sm text-outline">24:10 – 35:00</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Bottom topic segment widget -->
+<div class="mt-space-md pt-space-md bg-surface-container-low rounded-lg p-space-sm flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-sm text-label-sm font-medium">Segment Status</span>
+<span class="font-code-sm text-code-sm text-primary">7m 15s</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">
+            1 active interactive checkpoint pending on this segment.
+          </p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-primary h-full rounded-full w-full"></div>
+</div>
+</div>
+</div>
+</aside>
+<!-- CENTER PANEL: Lecture Video & Segment Player (Fluid Flex Center) -->
+<main class="flex-1 flex flex-col gap-space-md min-w-0">
+<!-- Video Container Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-md overflow-hidden flex flex-col">
+<!-- Video Screen Player Display -->
+<div class="relative w-full aspect-video bg-inverse-surface overflow-hidden flex items-center justify-center">
+<!-- Slide Presentation View Layer -->
+<div class="w-full h-full bg-cover bg-center flex flex-col justify-between p-space-lg relative" data-alt="Lecture presentation slide titled CS 145 Relational Keys and Invariants. Clean slide typography with relational algebra mathematical symbols and an illustrative table schema mapping primary keys and foreign keys in a subtle high-tech classroom setting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDZAQybFWleMksErInyYAFqTPZ4pxDJGLZW2M8oC7yYmnH5Zita_3Fq6monavQlRbOHIqwBT6Q_J5P8bmNhKPwmbGiZYHQNGhQM8nx4AwF8YgjXuQhJ_NGSkUGsEtQtDd-KWRFTiuci9vIPkRXQZBnkpT_B4x4aseRE87DePyh1M_k_oO5gy88Yj2zoqefbu9eaXetQiAdZEbZXgmORBWhNgV0wloNm4mfyenUjtVvly8Wbco5gmkEA')">
+<!-- Dark gradient backdrop scrim for high contrast lecture visibility -->
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/90 via-inverse-surface/40 to-inverse-surface/80"></div>
+<!-- Header slide metadata -->
+<div class="relative z-10 flex items-center justify-between">
+<div class="flex items-center gap-space-sm bg-inverse-surface/80 backdrop-blur-md px-space-md py-1 rounded-lg">
+<span class="w-2.5 h-2.5 rounded-full bg-error animate-ping"></span>
+<span class="font-code-sm text-code-sm text-inverse-on-surface tracking-wide uppercase">CS 145 • Lecture 03</span>
+</div>
+<div class="bg-inverse-surface/80 backdrop-blur-md px-space-sm py-1 rounded text-inverse-on-surface font-code-sm text-code-sm">
+                1080p 60fps
+              </div>
+</div>
+<!-- Slide Core Concept graphic overlay -->
+<div class="relative z-10 max-w-xl mx-auto text-center flex flex-col items-center">
+<div class="px-space-md py-1 rounded-full bg-primary/40 backdrop-blur-md text-primary-fixed font-code-sm text-code-sm mb-space-sm">
+                RULE: PRIMARY KEY ≠ CANDIDATE KEY WITH NULL
+              </div>
+<h2 class="font-headline-md text-headline-md text-inverse-on-surface font-semibold tracking-tight">
+                Entity Integrity &amp; Strict Uniqueness
+              </h2>
+<div class="mt-space-sm p-space-sm rounded-lg bg-inverse-surface/90 backdrop-blur-md text-surface-container-high font-code-sm text-code-sm text-left max-w-md w-full shadow-lg">
+<p class="text-tertiary-fixed font-medium">• Superkey: Any set uniquely identifying tuples</p>
+<p class="text-secondary-fixed">• Candidate Key: Minimal superkey</p>
+<p class="text-on-error font-medium">• Primary Key: Candidate key + NOT NULL enforced</p>
+</div>
+</div>
+<!-- Professor Picture-in-Picture Video Overlay in lower-right corner -->
+<div class="absolute bottom-4 right-4 z-20 w-32 md:w-44 aspect-video rounded-lg overflow-hidden shadow-2xl bg-surface-container-high border-2 border-primary/40">
+<div class="w-full h-full bg-cover bg-center flex items-end p-1.5 relative" data-alt="Mid-angle webcam shot of a male computer science professor wearing glasses and headphones, explaining database theory in front of a modern minimalist bookshelf office setup." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAVLVE7Dj47xmFwhbGsTzxU0PXLHvOV5ui2BK4F2KuwpaQ6x_FOsAHHGeHpLbakz3AupuIkxgDHwHEg_sqZAy-9ut07R6Nf2il0v3DETbg60-zqCXD0hJEBwAqjWfPUIWsDgCy3MDHg0TNIPkdwdJt6hRIw6CRaBZ8RuxM6mTgpu9Jm8u23tTgQpvDp2D6K0qeuke-J6EFcuRY66k4dIWxh7keFiOPuHNRB7FruXmsmRC5DPiGZqcpg')">
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-transparent"></div>
+<div class="relative z-10 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+<span class="font-label-sm text-[10px] text-inverse-on-surface font-medium truncate">Prof. Henderson</span>
+</div>
+</div>
+</div>
+<!-- Checkpoint Overlay Watermark -->
+<div class="absolute inset-0 bg-inverse-surface/60 backdrop-blur-[2px] z-10 flex items-center justify-center p-space-lg">
+<div class="bg-surface-container-lowest/95 backdrop-blur-xl p-space-lg rounded-2xl shadow-xl max-w-md text-center flex flex-col items-center gap-space-sm">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]">pause_circle</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md font-semibold text-on-surface">Playback Paused at Checkpoint</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                    Checkpoint reached at <span class="font-code-sm font-semibold text-on-surface">17:30</span>. Complete the remediation prompt in the right panel to resume.
+                  </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Player Controls Bar -->
+<div class="p-space-md bg-surface-container-lowest flex flex-col gap-space-sm">
+<!-- Segmented Timeline Slider -->
+<div class="flex flex-col gap-1 w-full">
+<div class="relative w-full h-2.5 bg-surface-container rounded-full overflow-hidden flex cursor-pointer">
+<!-- Prior Topics Dimmed Track: 00:00 to 10:15 (~29% of 35m) -->
+<div class="h-full bg-surface-container-high opacity-60 w-[29%]"></div>
+<!-- Active Segment Range: 10:15 to 17:30 (21% of 35m) -->
+<div class="h-full bg-primary relative w-[21%]">
+<div class="absolute right-0 top-0 bottom-0 w-2 bg-on-primary shadow-md rounded-full"></div>
+</div>
+<!-- Future Segment Track: 17:30 to 35:00 (50% of 35m) -->
+<div class="h-full bg-surface-container opacity-40 w-[50%]"></div>
+</div>
+<!-- Segment Indicators beneath slider -->
+<div class="flex items-center justify-between text-outline font-code-sm text-code-sm">
+<span>10:15 (Start)</span>
+<div class="flex items-center gap-1 font-semibold text-primary">
+<span class="material-symbols-outlined text-[14px]">flag</span>
+<span>Checkpoint • 17:30</span>
+</div>
+<span>17:30 (Segment End)</span>
+</div>
+</div>
+<!-- Bottom Control Bar -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs">
+<!-- Left Controls: Play, 10s Rewind, Volume -->
+<div class="flex items-center gap-space-xs">
+<button aria-label="Play/Pause" class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">pause</span>
+</button>
+<button aria-label="Rewind 10 seconds" class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">replay_10</span>
+</button>
+<button aria-label="Forward 10 seconds" class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors opacity-50 cursor-not-allowed" type="button">
+<span class="material-symbols-outlined text-[20px]">forward_10</span>
+</button>
+<div class="flex items-center gap-1 pl-space-xs">
+<span class="material-symbols-outlined text-outline text-[18px]">volume_up</span>
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-on-surface-variant h-full w-[70%]"></div>
+</div>
+</div>
+</div>
+<!-- Center Replay Current Segment action -->
+<div class="flex items-center">
+<button class="flex items-center gap-space-xs px-space-md py-1.5 rounded-lg bg-surface-container-high text-primary hover:bg-surface-variant transition-colors font-label-md text-label-md font-medium" type="button">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+<span>Replay Current Segment (10:15–17:30)</span>
+</button>
+</div>
+<!-- Right Controls: Navigation between topics -->
+<div class="flex items-center gap-space-xs">
+<button class="flex items-center gap-1 px-space-sm py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md" type="button">
+<span class="material-symbols-outlined text-[16px]">skip_previous</span>
+<span>Topic 02</span>
+</button>
+<button class="flex items-center gap-1 px-space-sm py-1.5 rounded-lg bg-surface-container-low text-outline opacity-50 cursor-not-allowed font-label-md text-label-md" disabled="" type="button">
+<span>Topic 04</span>
+<span class="material-symbols-outlined text-[16px]">skip_next</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Current Topic Context & Key Information Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="font-code-sm text-code-sm uppercase px-2 py-0.5 rounded bg-surface-container text-primary font-semibold">In-Progress Topic</span>
+<span class="text-outline text-xs">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Core Relational Model • Chapter 3</span>
+</div>
+<button class="text-primary hover:text-on-primary-fixed-variant font-label-sm text-label-sm flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[16px]">bookmark_border</span>
+<span>Bookmark Timestamp</span>
+</button>
+</div>
+<h1 class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight mt-1">
+          Topic 03: Primary Keys &amp; Uniqueness
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Covers the formal definition of minimal superkeys, candidate keys, and why primary keys disallow NULL attributes in standard SQL relational tables to guarantee tuple addressability.
+        </p>
+<!-- Topic Highlights pills -->
+<div class="flex flex-wrap items-center gap-space-xs pt-space-xs mt-1">
+<span class="px-2.5 py-1 rounded-full bg-surface-bright text-on-surface-variant font-code-sm text-code-sm">Minimal Superkey</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-bright text-on-surface-variant font-code-sm text-code-sm">Entity Integrity</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-bright text-on-surface-variant font-code-sm text-code-sm">Disallowing NULLs</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-bright text-on-surface-variant font-code-sm text-code-sm">Unique Constraints</span>
+</div>
+</div>
+</main>
+<!-- RIGHT PANEL: Adaptive Remediation Workspace (400px fixed dock) -->
+<aside class="w-full lg:w-[400px] shrink-0 flex flex-col gap-space-md">
+<div class="bg-surface-container-lowest rounded-xl shadow-md p-space-lg flex flex-col gap-space-lg h-full justify-between">
+<!-- Header & Remediation State -->
+<div class="flex flex-col gap-space-md">
+<!-- Status Pill & Attempt tracking -->
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/40 text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+              Attempt 1 of 2 • Remediation Active
+            </div>
+<span class="material-symbols-outlined text-outline text-[20px]">help_center</span>
+</div>
+<!-- Remediation Headline -->
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">
+              Let's Review This Concept
+            </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">
+              You didn't get it quite right, but that's part of learning! Revisit the key explanation below and try again.
+            </p>
+</div>
+<!-- SECTION A: Watch This Part Again -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-outline">
+                Section A: Watch This Part Again
+              </span>
+<span class="font-code-sm text-code-sm text-primary font-medium">12:45 – 14:20</span>
+</div>
+<!-- Video Jump Card -->
+<div class="bg-surface-container-low rounded-xl p-space-sm flex items-center gap-space-md group hover:bg-surface-container transition-all">
+<div class="relative w-24 h-16 rounded-lg overflow-hidden bg-cover bg-center shrink-0 shadow-sm" data-alt="Close up lecture slide showing a highlighted database table comparison between candidate keys and primary key column constraints with zero NULL values permitted." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCUJ3ZEIZXdej6F0ZGYMMgODjH1LwFrCs1dDsPYarCl6FXyzg1IBcs32t9cmv13R27rR2JDLDb2A0nyQOmX33GmnAqtoK83JVRYIJNtQ4UFLAkcJ_UUQpT3bXBlDSChqGgLfdHKGcpnvL1X-fp01BahuGJ-k2svToxyrFq2DtjBFW2p858HegqwfwwkTrXTH0o9d43MOHfy2QfRk7SasEbX3g3-FD5gLxJWtFMsF-eQM__eOq5hLrLG')">
+<div class="absolute inset-0 bg-inverse-surface/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-[22px] group-hover:scale-110 transition-transform">play_circle</span>
+</div>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface group-hover:text-primary transition-colors line-clamp-1">
+                  Primary Key vs. NULL Rule
+                </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-xs line-clamp-2">
+                  Slide 14 breakdown of the SQL NOT NULL constraint requirement.
+                </span>
+</div>
+</div>
+<!-- Replay Key Moment CTA Button -->
+<button class="w-full flex items-center justify-center gap-space-xs py-2 px-space-md rounded-lg bg-surface-container-high text-primary hover:bg-surface-variant transition-colors font-label-md text-label-md font-semibold mt-1" type="button">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+<span>Replay Key Moment (12:45–14:20)</span>
+</button>
+</div>
+<!-- SECTION B: Topic-Specific Notes (Synced) -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-outline">
+                Section B: Synced Topic Notes
+              </span>
+<span class="material-symbols-outlined text-outline text-[16px]">sync</span>
+</div>
+<!-- Key Invariant Card with Amber/Indigo Accent Callout -->
+<div class="bg-surface-bright rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col gap-space-xs">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-secondary-container"></div>
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm font-bold tracking-wide text-secondary uppercase">Key Invariant</span>
+<span class="material-symbols-outlined text-secondary text-[16px]">lock_reset</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface leading-relaxed">
+<strong class="font-medium text-on-surface">Primary Keys:</strong> A candidate key chosen by the database designer. Must uniquely identify each tuple <em class="text-primary font-semibold">AND</em> must strictly disallow NULL values (Entity Integrity rule).
+              </p>
+<div class="bg-surface-container-lowest p-space-xs rounded-lg mt-1">
+<p class="font-code-sm text-code-sm text-on-surface-variant text-xs leading-normal">
+<strong class="text-error font-medium">Common Trip-up:</strong> Do not confuse primary keys with candidate keys that allow NULLs or unique constraints that permit a single NULL value.
+                </p>
+</div>
+<!-- Open Full Notes Link -->
+<div class="pt-space-xs flex justify-end">
+<a class="font-label-sm text-label-sm text-primary hover:underline flex items-center gap-1 font-medium" href="#">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+<span>Open Full Topic Notes</span>
+</a>
+</div>
+</div>
+</div>
+<!-- SECTION C: Action CTAs (Try Again) -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<!-- Primary Action -->
+<button class="w-full py-2.5 px-space-md rounded-xl bg-primary text-on-primary hover:bg-on-primary-fixed-variant active:scale-[0.99] transition-all font-label-md text-label-md font-semibold shadow-md flex items-center justify-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[20px]">refresh</span>
+<span>Retry Question</span>
+</button>
+<!-- Secondary Action -->
+<button class="w-full py-2 px-space-md rounded-xl bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-md text-label-md font-medium flex items-center justify-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">fast_rewind</span>
+<span>Review Topic from Start (10:15)</span>
+</button>
+</div>
+</div>
+<!-- Collapsed Previous Question Context Footer -->
+<div class="pt-space-md bg-surface-container-lowest">
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col gap-1">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-sm text-label-sm font-semibold uppercase text-xs">Question 3 Checkpoint</span>
+<span class="font-code-sm text-code-sm text-error font-medium">Your Pick: D • Correct: A</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface line-clamp-2">
+              “Which statement best describes a primary key in a standard SQL relational database?”
+            </p>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div></main></div></body></html>

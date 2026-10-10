@@ -1,0 +1,32 @@
+# Node modules & build artifacts
+node_modules/
+dist/
+build/
+.cache/
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+
+# AI agent memory & tracking
+.agent/
+.agents/
+.gemini/
+.gsd/
+
+# Graphify artifacts
+graphify-out/
+.graphify/
+.graphify_analysis.json
+.graphify_labels.json
+
+# Logs & temp files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS specific
+.DS_Store
+Thumbs.db

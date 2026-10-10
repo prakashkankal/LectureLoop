@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"secondary-fixed":"#acedff","surface-container-low":"#f2f3ff","on-error":"#ffffff","surface-dim":"#d2d9f4","on-tertiary-fixed":"#002109","surface-bright":"#faf8ff","on-error-container":"#93000a","on-primary-container":"#dad7ff","on-surface-variant":"#464555","on-tertiary":"#ffffff","surface-container-high":"#e2e7ff","surface-container-highest":"#dae2fd","secondary":"#00687a","on-secondary-container":"#006172","on-primary":"#ffffff","background":"#faf8ff","tertiary":"#005522","on-secondary-fixed-variant":"#004e5c","on-secondary-fixed":"#001f26","on-primary-fixed":"#0f0069","on-surface":"#131b2e","inverse-on-surface":"#eef0ff","inverse-primary":"#c3c0ff","tertiary-container":"#00702f","on-tertiary-fixed-variant":"#005320","primary-fixed-dim":"#c3c0ff","on-secondary":"#ffffff","secondary-container":"#57dffe","outline":"#777587","on-primary-fixed-variant":"#3323cc","tertiary-fixed":"#7ffc97","surface-tint":"#4d44e3","surface-container":"#eaedff","primary":"#3525cd","tertiary-fixed-dim":"#62df7d","primary-container":"#4f46e5","primary-fixed":"#e2dfff","secondary-fixed-dim":"#4cd7f6","inverse-surface":"#283044","error":"#ba1a1a","surface-container-lowest":"#ffffff","on-background":"#131b2e","error-container":"#ffdad6","surface-variant":"#dae2fd","surface":"#faf8ff","outline-variant":"#c7c4d8","on-tertiary-container":"#78f591"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-lg":"1.25rem","margin-mobile":"1rem","space-md":"0.75rem","space-xl":"2rem","space-xs":"0.25rem","gutter-mobile":"1rem","margin":"2rem","gutter":"1.5rem","space-sm":"0.5rem"},fontFamily:{"headline-lg-mobile":["Inter"],"label-sm":["Inter"],"headline-md":["Inter"],"display":["Inter"],"headline-lg":["Inter"],"title-md":["Inter"],"body-lg":["Inter"],"headline-sm":["Inter"],"label-md":["Inter"],"body-md":["Inter"],"code-sm":["JetBrains Mono"],"body-sm":["Inter"]},fontSize:{"headline-lg-mobile":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.02em","fontWeight":"600"}],"label-sm":["0.75rem",{"lineHeight":"1rem","letterSpacing":"0.025em","fontWeight":"600"}],"headline-md":["1.5rem",{"lineHeight":"2rem","letterSpacing":"-0.02em","fontWeight":"600"}],"display":["3.5rem",{"lineHeight":"4rem","letterSpacing":"-0.03em","fontWeight":"700"}],"headline-lg":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.025em","fontWeight":"600"}],"title-md":["1.125rem",{"lineHeight":"1.5rem","letterSpacing":"-0.01em","fontWeight":"500"}],"body-lg":["1.0625rem",{"lineHeight":"1.75rem","letterSpacing":"-0.005em","fontWeight":"400"}],"headline-sm":["1.25rem",{"lineHeight":"1.75rem","letterSpacing":"-0.015em","fontWeight":"600"}],"label-md":["0.875rem",{"lineHeight":"1.25rem","letterSpacing":"0.01em","fontWeight":"500"}],"body-md":["0.9375rem",{"lineHeight":"1.5rem","letterSpacing":"0em","fontWeight":"400"}],"code-sm":["0.8125rem",{"lineHeight":"1.25rem","letterSpacing":"0em","fontWeight":"400"}],"body-sm":["0.8125rem",{"lineHeight":"1.25rem","letterSpacing":"0.005em","fontWeight":"400"}]}}}}</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-screen w-[250px] bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between"><div class="flex flex-col flex-1 min-h-0"><div class="h-16 flex items-center px-space-lg gap-space-sm"><div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-[20px]">all_inclusive</span></div><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface">Lecture</span><span class="font-headline-sm text-headline-sm tracking-tight text-primary-container">Loop</span></div></div><div class="px-space-md py-space-xs"><div class="text-label-sm font-label-sm uppercase tracking-wider text-outline px-space-sm mb-space-xs">Study Workspace</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-primary-container font-medium rounded-lg"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-label-md text-label-md">Overview</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="my-lectures" href="#"><span class="material-symbols-outlined text-[20px]">video_library</span><span class="font-label-md text-label-md">My Lectures</span></a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm transition-colors bg-surface-container-high text-primary-container font-medium rounded-lg" data-path="subjects" href="#"><span class="material-symbols-outlined text-[20px]">folder_open</span><span class="font-label-md text-label-md">Subjects</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="notes" href="#"><span class="material-symbols-outlined text-[20px]">description</span><span class="font-label-md text-label-md">Notes</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="revision" href="#"><span class="material-symbols-outlined text-[20px]">cached</span><span class="font-label-md text-label-md">Revision</span></a></nav></div><div class="my-space-sm mx-space-md h-[1px] bg-surface-container-high"></div><div class="px-space-md py-space-xs"><div class="text-label-sm font-label-sm uppercase tracking-wider text-outline px-space-sm mb-space-xs">Preferences</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-primary-container font-medium rounded-lg"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span class="font-label-md text-label-md">Settings</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="help-support" href="#"><span class="material-symbols-outlined text-[20px]">help</span><span class="font-label-md text-label-md">Help & Support</span></a></nav></div></div><div class="p-space-md bg-surface-container-lowest"><div class="flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer"><div class="flex items-center gap-space-sm min-w-0"><div class="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="min-w-0 flex flex-col"><span class="font-label-md text-label-md text-on-surface truncate font-medium">Prakash Sharma</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate">CS Undergraduate</span></div></div><span class="material-symbols-outlined text-outline text-[18px]">unfold_more</span></div></div></aside><div class="pl-[250px]"><header class="fixed top-0 left-[250px] right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-gutter"><div class="flex items-center gap-space-sm"><span class="font-label-md text-label-md text-on-surface-variant">Workspace</span><span class="material-symbols-outlined text-outline text-[16px]">chevron_right</span><span class="font-label-md text-label-md text-on-surface font-semibold">Computer Science</span></div><div class="flex items-center gap-gutter"><div class="relative flex items-center"><div class="flex items-center bg-surface-container-lowest px-space-md py-space-xs rounded-lg shadow-sm gap-space-sm w-72"><span class="material-symbols-outlined text-outline text-[18px]">search</span><input class="w-full bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none" placeholder="Search lectures, notes, terms..." readonly="" type="text"/><kbd class="font-code-sm text-code-sm bg-surface-container px-space-xs py-0.5 rounded text-outline text-[11px]">⌘K</kbd></div></div><div class="flex items-center gap-space-sm"><button aria-label="Notifications" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 w-full min-h-screen bg-background"><div class="flex flex-col w-full">
+<div class="px-gutter py-space-xl flex flex-col gap-space-xl max-w-7xl mx-auto w-full">
+<!-- Header Section with Actions -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg">
+<div class="flex flex-col gap-space-xs max-w-2xl">
+<div class="flex items-center gap-space-xs text-label-sm font-label-sm text-outline tracking-wider uppercase">
+<span>Overview</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-medium">Subjects & Curriculum</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+          Subjects Management
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Group your lecture recordings by course, track lecture counts, and organize your academic semester.
+        </p>
+</div>
+<!-- Action Cluster -->
+<div class="flex items-center gap-space-md shrink-0">
+<button class="h-10 px-space-lg rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors shadow-sm flex items-center gap-space-xs" id="btn-open-new-subject" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>New Subject</span>
+</button>
+<button class="h-10 px-space-lg rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-all shadow-md flex items-center gap-space-xs" id="btn-open-upload-modal" type="button">
+<span class="material-symbols-outlined text-[18px]">cloud_upload</span>
+<span>Upload Lecture</span>
+</button>
+</div>
+</div>
+<!-- Analytics / Semester Snapshot Strip -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Active Courses</span>
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">4 Subjects</span>
+</div>
+<div class="w-11 h-11 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">menu_book</span>
+</div>
+</div>
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Total Recorded</span>
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">12 Lectures</span>
+</div>
+<div class="w-11 h-11 rounded-lg bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[24px]">graphic_eq</span>
+</div>
+</div>
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Audio Material</span>
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">9.7 Hours</span>
+</div>
+<div class="w-11 h-11 rounded-lg bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[24px]">timelapse</span>
+</div>
+</div>
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Current Term</span>
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">Fall 2024</span>
+</div>
+<div class="w-11 h-11 rounded-lg bg-tertiary-fixed flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[24px]">event_repeat</span>
+</div>
+</div>
+</div>
+<!-- Subjects Management Grid -->
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<h2 class="font-title-md text-title-md text-on-surface font-semibold">Enrolled Course Tracks</h2>
+<div class="flex items-center gap-space-xs text-body-sm font-body-sm text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>Semester Sync Active</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
+<!-- Subject Card 1: DBMS -->
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-primary-container/10 text-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">database</span>
+</div>
+<div class="min-w-0 flex flex-col">
+<span class="font-label-sm text-label-sm text-primary font-semibold tracking-wide">CS-301</span>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold truncate group-hover:text-primary transition-colors">
+                    Database Management Systems (DBMS)
+                  </h3>
+</div>
+</div>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm shrink-0">
+                Fall 2024
+              </span>
+</div>
+<!-- Meta information -->
+<div class="flex flex-wrap items-center gap-x-space-md gap-y-space-xs text-body-sm font-body-sm text-on-surface-variant">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">record_voice_over</span>
+<span>Prof. Aris Thorne</span>
+</div>
+<span class="text-outline">·</span>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">audio_file</span>
+<span>4 Recorded Lectures</span>
+</div>
+<span class="text-outline">·</span>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<span>3.2 Hours Total</span>
+</div>
+</div>
+<!-- Course Progress Bar & Coverage -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<div class="flex justify-between items-center text-label-sm font-label-sm">
+<span class="text-on-surface-variant">Syllabus Loop Coverage</span>
+<span class="text-primary font-semibold">68%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 68%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-lg pt-space-md flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+<span>Vector indexing up to date</span>
+</div>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container text-primary font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center gap-space-xs" type="button">
+<span>View Lectures (4)</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Subject Card 2: Operating Systems -->
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed text-secondary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">memory</span>
+</div>
+<div class="min-w-0 flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary font-semibold tracking-wide">CS-302</span>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold truncate group-hover:text-primary transition-colors">
+                    Operating Systems (OS)
+                  </h3>
+</div>
+</div>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm shrink-0">
+                Fall 2024
+              </span>
+</div>
+<div class="flex flex-wrap items-center gap-x-space-md gap-y-space-xs text-body-sm font-body-sm text-on-surface-variant">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">record_voice_over</span>
+<span>Dr. Elena Rostova</span>
+</div>
+<span class="text-outline">·</span>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">audio_file</span>
+<span>3 Recorded Lectures</span>
+</div>
+<span class="text-outline">·</span>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<span>2.6 Hours Total</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<div class="flex justify-between items-center text-label-sm font-label-sm">
+<span class="text-on-surface-variant">Syllabus Loop Coverage</span>
+<span class="text-secondary font-semibold">52%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary-container rounded-full" style="width: 52%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-lg pt-space-md flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px] text-secondary">cached</span>
+<span>1 sync scheduled</span>
+</div>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container text-primary font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center gap-space-xs" type="button">
+<span>View Lectures (3)</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Subject Card 3: Computer Networks -->
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">hub</span>
+</div>
+<div class="min-w-0 flex flex-col">
+<span class="font-label-sm text-label-sm text-primary font-semibold tracking-wide">CS-404</span>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold truncate group-hover:text-primary transition-colors">
+                    Computer Networks
+                  </h3>
+</div>
+</div>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm shrink-0">
+                Fall 2024
+              </span>
+</div>
+<div class="flex flex-wrap items-center gap-x-space-md gap-y-space-xs text-body-sm font-body-sm text-on-surface-variant">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">record_voice_over</span>
+<span>Prof. Kenneth Wu</span>
+</div>
+<span class="text-outline">·</span>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">audio_file</span>
+<span>3 Recorded Lectures</span>
+</div>
+<span class="text-outline">·</span>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<span>2.1 Hours Total</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<div class="flex justify-between items-center text-label-sm font-label-sm">
+<span class="text-on-surface-variant">Syllabus Loop Coverage</span>
+<span class="text-primary font-semibold">44%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 44%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-lg pt-space-md flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+<span>All flashcards generated</span>
+</div>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container text-primary font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center gap-space-xs" type="button">
+<span>View Lectures (3)</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Subject Card 4: Data Structures & Algorithms -->
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed text-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">account_tree</span>
+</div>
+<div class="min-w-0 flex flex-col">
+<span class="font-label-sm text-label-sm text-tertiary font-semibold tracking-wide">CS-202</span>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold truncate group-hover:text-primary transition-colors">
+                    Data Structures & Algorithms
+                  </h3>
+</div>
+</div>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm shrink-0">
+                Fall 2024
+              </span>
+</div>
+<div class="flex flex-wrap items-center gap-x-space-md gap-y-space-xs text-body-sm font-body-sm text-on-surface-variant">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">record_voice_over</span>
+<span>Dr. Marcus Vance</span>
+</div>
+<span class="text-outline">·</span>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">audio_file</span>
+<span>2 Recorded Lectures</span>
+</div>
+<span class="text-outline">·</span>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<span>1.8 Hours Total</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<div class="flex justify-between items-center text-label-sm font-label-sm">
+<span class="text-on-surface-variant">Syllabus Loop Coverage</span>
+<span class="text-tertiary font-semibold">31%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-tertiary-container rounded-full" style="width: 31%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-lg pt-space-md flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px] text-outline">pending</span>
+<span>2 quizzes pending</span>
+</div>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container text-primary font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center gap-space-xs" type="button">
+<span>View Lectures (2)</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Workflow Banner / Local Sync Status -->
+<div class="p-space-lg rounded-xl bg-surface-container flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-medium">Automatic Adaptive Recall Scheduler</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Lectures uploaded today will be scheduled for active spaced reviews across a 1-day, 3-day, and 7-day loop.</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="px-space-md py-space-xs rounded-full bg-surface-container-lowest text-primary font-label-sm text-label-sm font-medium shadow-sm">
+          4 Lectures Due This Week
+        </span>
+</div>
+</div>
+</div>
+<!-- Interactive "Add Lecture Modal" Form Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-space-md bg-inverse-surface/40 backdrop-blur-sm transition-opacity" id="modal-overlay">
+<div class="w-full max-w-2xl bg-surface-container-lowest rounded-xl shadow-xl flex flex-col max-h-[92vh] overflow-hidden" id="modal-container">
+<!-- Modal Header -->
+<div class="p-space-lg bg-surface-container-low flex items-start justify-between gap-space-md">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-space-xs text-primary font-label-sm text-label-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">library_add</span>
+<span>Upload Pipeline</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">
+            Add a Lecture
+          </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Keep your classroom lectures organized in one place.
+          </p>
+</div>
+<button aria-label="Close modal" class="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container transition-colors" id="btn-close-modal" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Modal Body (Form) -->
+<div class="p-space-lg overflow-y-auto flex flex-col gap-space-lg">
+<!-- Field 1: Lecture Title -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-medium flex items-center justify-between" for="lecture-title">
+<span>Lecture Title <span class="text-error">*</span></span>
+<span class="text-outline text-label-sm font-label-sm">Primary topic identifier</span>
+</label>
+<input class="h-10 px-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:shadow-sm transition-all" id="lecture-title" placeholder="e.g., Relational Normalization and BCNF" type="text" value="Relational Normalization and BCNF"/>
+</div>
+<!-- Field 2 & 3: Course Selection & Date (2 columns) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<!-- Subject Dropdown -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-medium" for="lecture-subject">
+              Subject <span class="text-error">*</span>
+</label>
+<div class="relative">
+<select class="w-full h-10 pl-space-md pr-10 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest focus:shadow-sm transition-all appearance-none cursor-pointer" id="lecture-subject">
+<option selected="">Database Management Systems (CS-301)</option>
+<option>Operating Systems (CS-302)</option>
+<option>Computer Networks (CS-404)</option>
+<option>Data Structures & Algorithms (CS-202)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-outline pointer-events-none text-[20px]">
+                expand_more
+              </span>
+</div>
+</div>
+<!-- Date Picker -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-medium" for="lecture-date">
+              Lecture Date <span class="text-error">*</span>
+</label>
+<div class="relative">
+<input class="w-full h-10 pl-space-md pr-10 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest focus:shadow-sm transition-all cursor-pointer" id="lecture-date" type="date" value="2024-10-24"/>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-outline pointer-events-none text-[18px]">
+                calendar_today
+              </span>
+</div>
+</div>
+</div>
+<!-- Field 4: Description / Professor Notes -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-medium flex items-center justify-between" for="lecture-notes">
+<span>Professor Notes / Key Topics</span>
+<span class="text-outline text-label-sm font-label-sm">Optional context for AI</span>
+</label>
+<textarea class="p-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:shadow-sm transition-all resize-none" id="lecture-notes" placeholder="Covered 1NF, 2NF, 3NF and Boyce-Codd normal forms with classroom examples." rows="3">Covered 1NF, 2NF, 3NF and Boyce-Codd normal forms with classroom examples.</textarea>
+</div>
+<!-- Field 5: Audio/Media Upload Area -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-medium">
+            Audio / Media Recording <span class="text-error">*</span>
+</label>
+<!-- Upload Dropzone -->
+<div class="p-space-lg rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer flex flex-col items-center justify-center text-center gap-space-xs relative" id="dropzone">
+<div class="w-12 h-12 rounded-full bg-primary-container/10 text-primary-container flex items-center justify-center mb-1">
+<span class="material-symbols-outlined text-[26px]">mic_none</span>
+</div>
+<div class="font-label-md text-label-md text-on-surface font-medium">
+              Drop your lecture audio here, or <span class="text-primary hover:underline">Browse files</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline">
+              Supported formats: MP3, M4A, WAV, AAC (up to 200MB)
+            </p>
+<input accept=".mp3,.m4a,.wav,.aac" class="absolute inset-0 opacity-0 cursor-pointer" type="file"/>
+</div>
+<!-- Selected File Preview Badge -->
+<div class="mt-space-xs p-space-md rounded-lg bg-surface-container flex items-center justify-between shadow-xs">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-8 h-8 rounded-lg bg-tertiary-fixed text-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">audiotrack</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-medium truncate">
+                  lecture_dbms_oct24.mp3
+                </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">
+                  42.4 MB • <span class="text-tertiary font-medium">Ready to save</span>
+</span>
+</div>
+</div>
+<button class="w-7 h-7 rounded-md flex items-center justify-center text-outline hover:text-error hover:bg-error-container/30 transition-colors" title="Remove file" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="p-space-lg bg-surface-container-low flex flex-col gap-space-sm">
+<div class="flex items-center justify-end gap-space-md">
+<button class="h-10 px-space-lg rounded-lg bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors" id="btn-cancel-modal" type="button">
+            Cancel
+          </button>
+<button class="h-10 px-space-xl rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-all shadow-md flex items-center gap-space-xs" id="btn-save-lecture" type="button">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span>Save Lecture</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-outline text-center sm:text-left">
+          Lecture metadata and audio will be saved to your local library. Future AI transcript and topic processing will link directly to this entry.
+        </p>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const overlay = document.getElementById('modal-overlay');
+    const btnOpenUpload = document.getElementById('btn-open-upload-modal');
+    const btnClose = document.getElementById('btn-close-modal');
+    const btnCancel = document.getElementById('btn-cancel-modal');
+    const btnSave = document.getElementById('btn-save-lecture');
+    const btnOpenNewSubject = document.getElementById('btn-open-new-subject');
+
+    function openModal() {
+      if (overlay) {
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+      }
+    }
+
+    function closeModal() {
+      if (overlay) {
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+      }
+    }
+
+    if (btnOpenUpload) btnOpenUpload.addEventListener('click', openModal);
+    if (btnClose) btnClose.addEventListener('click', closeModal);
+    if (btnCancel) btnCancel.addEventListener('click', closeModal);
+    if (btnSave) {
+      btnSave.addEventListener('click', function() {
+        const btn = this;
+        const origText = btn.innerHTML;
+        btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span><span>Saving...</span>';
+        setTimeout(function() {
+          btn.innerHTML = origText;
+          closeModal();
+        }, 600);
+      });
+    }
+
+    if (btnOpenNewSubject) {
+      btnOpenNewSubject.addEventListener('click', function() {
+        alert('New Subject creation workflow: Please configure course name, instructor, and semester settings in Settings.');
+      });
+    }
+
+    // Dismiss on overlay click outside content
+    if (overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+          closeModal();
+        }
+      });
+    }
+  })();
+</script></main></div></body></html>
