@@ -6,6 +6,12 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import DashboardOverview from './pages/DashboardOverview';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import InteractiveLearningHub from './pages/InteractiveLearningHub';
+import MyLecturesPage from './pages/MyLecturesPage';
+import LearningSessionPage from './pages/LearningSessionPage';
+import SessionResultsPage from './pages/SessionResultsPage';
+import SubjectsPage from './pages/SubjectsPage';
+import LearningAnalysisHub from './pages/LearningAnalysisHub';
 
 function PlaceholderPage({ title, icon, description }) {
   return (
@@ -38,36 +44,12 @@ export default function App() {
             }
           >
             <Route index element={<DashboardOverview />} />
-            <Route
-              path="interactive"
-              element={
-                <PlaceholderPage
-                  title="Interactive Learning Hub"
-                  icon="psychology"
-                  description="Turn any lecture into topic-based checkpoint sessions. Coming in Phase 4!"
-                />
-              }
-            />
-            <Route
-              path="lectures"
-              element={
-                <PlaceholderPage
-                  title="My Lectures Library"
-                  icon="video_library"
-                  description="Your saved classroom and video lectures organized by subject."
-                />
-              }
-            />
-            <Route
-              path="subjects"
-              element={
-                <PlaceholderPage
-                  title="Subjects & Curriculum"
-                  icon="folder_open"
-                  description="Manage your enrolled courses and semester subjects."
-                />
-              }
-            />
+            <Route path="interactive" element={<InteractiveLearningHub />} />
+            <Route path="interactive/analysis" element={<LearningAnalysisHub />} />
+            <Route path="interactive/session" element={<LearningSessionPage />} />
+            <Route path="lectures" element={<MyLecturesPage />} />
+            <Route path="session-results" element={<SessionResultsPage />} />
+            <Route path="subjects" element={<SubjectsPage />} />
             <Route
               path="notes"
               element={

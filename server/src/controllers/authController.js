@@ -58,6 +58,7 @@ export const register = async (req, res) => {
         },
       });
     } else {
+      console.warn('[AUTH] MongoDB is NOT connected (readyState = ' + mongoose.connection.readyState + '). User saved only in temporary memory!');
       // Robust Fallback in-memory store
       if (inMemoryUsers.has(normalizedEmail)) {
         return res.status(400).json({ error: 'An account with this email already exists' });
