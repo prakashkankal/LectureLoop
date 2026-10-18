@@ -12,6 +12,7 @@ import LearningSessionPage from './pages/LearningSessionPage';
 import SessionResultsPage from './pages/SessionResultsPage';
 import SubjectsPage from './pages/SubjectsPage';
 import LearningAnalysisHub from './pages/LearningAnalysisHub';
+import OralPracticePage from './pages/OralPracticePage';
 
 function PlaceholderPage({ title, icon, description }) {
   return (
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="interactive/session" element={<LearningSessionPage />} />
             <Route path="lectures" element={<MyLecturesPage />} />
             <Route path="session-results" element={<SessionResultsPage />} />
+            <Route path="oral-practice" element={<OralPracticePage />} />
             <Route path="subjects" element={<SubjectsPage />} />
             <Route
               path="notes"

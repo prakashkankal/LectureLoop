@@ -18,6 +18,7 @@ This document describes the proposed system architecture for LectureLoop: the ma
 - Separate presentation, API handling, business rules, data persistence, and external AI integrations.
 - Support the complete YouTube lecture learning loop.
 - Persist lecture processing status, questions, attempts, and learning progress.
+- Keep oral practice in the authenticated workspace, with account-scoped history.
 - Isolate external provider dependencies so they can be changed without rewriting the UI.
 - Handle slow processing and external failures without losing saved state.
 - Leave clear extension points for classroom audio, oral assessment, mind maps, teacher tools, and research evaluation.
@@ -75,6 +76,17 @@ flowchart TB
 | MongoDB/Mongoose | Persist users (if auth exists), lectures, transcripts, segments, questions, sessions, attempts, and notes. |
 | External providers | Supply permitted transcript retrieval, transcription, and language-model capabilities. |
 | YouTube player | Play the source video through the official embed and seek/play/pause at topic timestamps. |
+
+### 3.2 Oral practice
+
+Oral practice is part of the protected LectureLoop workspace at `/oral-practice`.
+It reuses the signed-in user's lecture topics as source material, accepts pasted
+notes, and stores answer attempts under the authenticated account in MongoDB.
+Browser speech recognition is preferred; recorded audio can use the server-side
+OpenAI transcription adapter when `OPENAI_API_KEY` is configured. OpenAI-powered
+questions, answer feedback, and language help are optional; when no key is set,
+the app uses clearly labeled local prompts and heuristic scores. Provider errors
+are surfaced rather than silently presented as successful AI results.
 
 ## 4. Proposed Technology Choices
 
