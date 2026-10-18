@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 const LECTURES = [
@@ -138,6 +139,7 @@ const SUBJECT_THUMB = {
 
 // ─── Grid Card ────────────────────────────────────────────────────────────────
 function LectureGridCard({ lecture }) {
+  const navigate = useNavigate();
   const thumb = SUBJECT_THUMB[lecture.subject] || SUBJECT_THUMB.dbms;
   return (
     <div
@@ -207,11 +209,16 @@ function LectureGridCard({ lecture }) {
           <span className="text-[11px] text-secondary font-medium">{lecture.aiLabel}</span>
         </div>
         <div className="flex items-center gap-space-xs">
-          <button className="px-space-md py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface text-[11px] font-medium transition-colors flex items-center gap-1">
+          <button
+            onClick={() => navigate('/notes')}
+            className="px-space-md py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface text-[11px] font-medium transition-colors flex items-center gap-1 cursor-pointer"
+          >
             <span className="material-symbols-outlined text-[15px]">description</span>
             <span>Open Notes</span>
           </button>
           <button
+            type="button"
+            onClick={() => navigate('/interactive')}
             className={`px-space-md py-1.5 rounded-lg text-[11px] font-medium transition-colors ${
               lecture.highlight
                 ? 'bg-primary text-on-primary hover:bg-primary-container'
@@ -228,6 +235,7 @@ function LectureGridCard({ lecture }) {
 
 // ─── List Row ─────────────────────────────────────────────────────────────────
 function LectureListRow({ lecture }) {
+  const navigate = useNavigate();
   const thumb = SUBJECT_THUMB[lecture.subject] || SUBJECT_THUMB.dbms;
   return (
     <div
@@ -274,11 +282,18 @@ function LectureListRow({ lecture }) {
 
       {/* Actions */}
       <div className="flex items-center gap-space-xs shrink-0">
-        <button className="hidden sm:flex items-center gap-1 px-space-md py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface text-[11px] font-medium transition-colors">
+        <button
+          onClick={() => navigate('/notes')}
+          className="hidden sm:flex items-center gap-1 px-space-md py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface text-[11px] font-medium transition-colors cursor-pointer"
+        >
           <span className="material-symbols-outlined text-[14px]">description</span>
           <span>Notes</span>
         </button>
-        <button className="px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary text-[11px] font-medium hover:opacity-90 transition-opacity">
+        <button
+          type="button"
+          onClick={() => navigate('/interactive')}
+          className="px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary text-[11px] font-medium hover:opacity-90 transition-opacity"
+        >
           Review
         </button>
         <button

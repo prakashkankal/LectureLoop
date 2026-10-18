@@ -12,6 +12,7 @@ import LearningSessionPage from './pages/LearningSessionPage';
 import SessionResultsPage from './pages/SessionResultsPage';
 import SubjectsPage from './pages/SubjectsPage';
 import LearningAnalysisHub from './pages/LearningAnalysisHub';
+import NotesPage from './pages/NotesPage';
 
 function PlaceholderPage({ title, icon, description }) {
   return (
@@ -50,16 +51,7 @@ export default function App() {
             <Route path="lectures" element={<MyLecturesPage />} />
             <Route path="session-results" element={<SessionResultsPage />} />
             <Route path="subjects" element={<SubjectsPage />} />
-            <Route
-              path="notes"
-              element={
-                <PlaceholderPage
-                  title="Notes & Summaries"
-                  icon="description"
-                  description="Topic notes and synced invariant cheat-sheets."
-                />
-              }
-            />
+            <Route path="notes" element={<NotesPage />} />
             <Route
               path="revision"
               element={
@@ -80,6 +72,7 @@ export default function App() {
                 />
               }
             />
+            <Route path="help" element={<PlaceholderPage title="Help & Support" icon="help" description="Find guidance for managing lectures, notes, and interactive learning sessions." />} />
           </Route>
 
           {/* Fallback */}

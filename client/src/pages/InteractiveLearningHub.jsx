@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { deleteLecture, fetchUserLectures, startLectureAnalysis } from '../services/api.js';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const YOUTUBE_REGEX = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)[\w-]{11}/;
@@ -11,82 +12,88 @@ const FILTER_TABS = [
   { id: 'needs-review', label: 'Needs Review' },
 ];
 
-const SESSIONS = [
-  {
-    id: '1',
-    category: 'in-progress',
-    title: 'Database Management Systems — Normalization & Keys',
-    lastStudied: 'Today, 10:30 AM',
-    duration: '48:20',
-    topics: 8,
-    completed: 5,
-    progress: 62,
-    progressColor: 'bg-primary-container',
-    progressLabel: 'text-primary-container',
-    badge: { text: 'In Progress', bg: 'bg-primary-container text-on-primary', dot: 'bg-surface-bright animate-pulse' },
-    action: { label: 'Continue Learning', icon: 'play_arrow', primary: true },
-    secondaryAction: { icon: 'more_vert' },
-    extra: null,
-    thumbnail: 'dbms',
-  },
-  {
-    id: '2',
-    category: 'completed',
-    title: 'Operating Systems — Process Scheduling & Threads',
-    lastStudied: 'Yesterday',
-    duration: '1:12:45',
-    topics: 6,
-    completed: 6,
-    progress: 100,
-    progressColor: 'bg-tertiary-container',
-    progressLabel: 'text-tertiary',
-    badge: { text: 'Completed', bg: 'bg-tertiary-fixed text-on-tertiary-fixed', icon: 'check_circle' },
-    action: { label: 'View Results', icon: 'analytics', primary: false },
-    secondaryAction: { icon: 'replay' },
-    extra: { icon: 'workspace_premium', text: '92% First-pass accuracy', color: 'text-tertiary' },
-    thumbnail: 'os',
-  },
-  {
-    id: '3',
-    category: 'needs-review',
-    title: 'Computer Networks — TCP/IP 3-Way Handshake',
-    lastStudied: '3 days ago',
-    duration: '35:10',
-    topics: 9,
-    completed: 3,
-    progress: 33,
-    progressColor: 'bg-primary-container',
-    progressLabel: 'text-primary-container',
-    badge: { text: 'Needs Review', bg: 'bg-error-container text-on-error-container', icon: 'priority_high' },
-    action: { label: 'Resume Session', icon: 'play_circle', primary: true },
-    secondaryAction: { icon: 'more_vert' },
-    extra: { icon: 'warning', text: '1 Weak Topic flagged (TCP Congestion Window)', color: 'text-error' },
-    thumbnail: 'cn',
-  },
+const SUBJECT_STYLES = [
+  { match: /database|dbms|sql/i, icon: 'database', color: 'text-primary' },
+  { match: /operating system|kernel/i, icon: 'memory', color: 'text-secondary' },
+  { match: /network|tcp|internet/i, icon: 'hub', color: 'text-tertiary' },
+  { match: /algorithm|data structure/i, icon: 'account_tree', color: 'text-primary-container' },
 ];
 
-const THUMBNAIL_GRADIENT = {
-  dbms: 'from-primary-fixed/60 via-primary-fixed/20 to-transparent',
-  os: 'from-secondary-fixed/60 via-secondary-fixed/20 to-transparent',
-  cn: 'from-tertiary-fixed/60 via-tertiary-fixed/20 to-transparent',
-};
+function formatDuration(seconds) {
+  if (!seconds || seconds <= 0) return '—';
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainder = Math.floor(seconds % 60);
+  return hours ? `${hours}:${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`
+    : `${minutes}:${String(remainder).padStart(2, '0')}`;
+}
 
-const THUMBNAIL_ICON = {
-  dbms: { icon: 'database', color: 'text-primary' },
-  os: { icon: 'memory', color: 'text-secondary' },
-  cn: { icon: 'hub', color: 'text-tertiary' },
-};
+function formatLastStudied(dateValue) {
+  if (!dateValue) return 'Not studied yet';
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) return 'Not studied yet';
+  const elapsed = Date.now() - date.getTime();
+  if (elapsed < 60 * 60 * 1000) return 'Today, recently';
+  if (elapsed < 24 * 60 * 60 * 1000) return 'Today';
+  if (elapsed < 48 * 60 * 60 * 1000) return 'Yesterday';
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
 
-const BOTTOM_STATS = [
-  { value: '24.5 hrs', label: 'Active Study Time', icon: 'timer', color: 'text-primary-container' },
-  { value: '142', label: 'Checkpoints Cleared', icon: 'rule', color: 'text-secondary' },
-  { value: '88.4%', label: 'Retention Score', icon: 'trending_up', color: 'text-tertiary-container' },
-  { value: '14 Days', label: 'Consecutive Loop Streak', icon: 'bolt', color: 'text-primary-container' },
-];
+function toSession(lecture) {
+  const topics = lecture.topics || [];
+  const completed = topics.filter((topic) => topic.completed).length;
+  const total = topics.length;
+  const progress = total ? Math.round((completed / total) * 100) : 0;
+  const flagged = topics.some((topic) => topic.flagged || topic.needsReview || topic.status === 'needs-review');
+  const category = lecture.analysisStatus === 'failed' || flagged
+    ? 'needs-review'
+    : total > 0 && completed === total
+      ? 'completed'
+      : 'in-progress';
+  const durationSeconds = topics.reduce((max, topic) => Math.max(max, Number(topic.endSec) || 0), 0)
+    || topics.reduce((sum, topic) => sum + Math.max(0, (Number(topic.endSec) || 0) - (Number(topic.startSec) || 0)), 0);
+  const style = SUBJECT_STYLES.find((entry) => entry.match.test(lecture.subject || ''))
+    || { icon: 'menu_book', color: 'text-primary' };
+  const isAnalyzed = lecture.analysisStatus === 'complete';
+  const isCompleted = category === 'completed';
+  const needsReview = category === 'needs-review';
+
+  return {
+    id: String(lecture._id),
+    title: lecture.title || 'Untitled Lecture',
+    subject: lecture.subject || 'General',
+    lastStudied: formatLastStudied(lecture.updatedAt || lecture.createdAt),
+    duration: lecture.duration || formatDuration(durationSeconds),
+    topics: total,
+    completed,
+    completedDurationSeconds: topics.filter((topic) => topic.completed)
+      .reduce((sum, topic) => sum + Math.max(0, (Number(topic.endSec) || 0) - (Number(topic.startSec) || 0)), 0),
+    progress,
+    progressColor: isCompleted ? 'bg-tertiary-container' : 'bg-primary-container',
+    progressLabel: isCompleted ? 'text-tertiary' : 'text-primary-container',
+    category,
+    badge: needsReview
+      ? { text: lecture.analysisStatus === 'failed' ? 'Analysis Failed' : 'Needs Review', bg: 'bg-error-container text-on-error-container', icon: 'priority_high' }
+      : isCompleted
+        ? { text: 'Completed', bg: 'bg-tertiary-fixed text-on-tertiary-fixed', icon: 'check_circle' }
+        : { text: isAnalyzed ? 'In Progress' : 'Analyzing', bg: 'bg-primary-container text-on-primary', dot: 'bg-surface-bright animate-pulse' },
+    action: !isAnalyzed
+      ? { label: 'View Status', icon: 'hourglass_top', primary: true, href: `/interactive/analysis?lectureId=${lecture._id}` }
+      : isCompleted
+        ? { label: 'Review & Replay', icon: 'replay', primary: false, href: `/interactive/session?lectureId=${lecture._id}` }
+        : { label: 'Continue Learning', icon: 'play_arrow', primary: true, href: `/interactive/session?lectureId=${lecture._id}` },
+    secondaryAction: { icon: 'more_vert' },
+    extra: needsReview
+      ? { icon: 'warning', text: lecture.analysisStatus === 'failed' ? 'Analysis needs attention' : 'Review flagged topics', color: 'text-error' }
+      : null,
+    thumbnail: style,
+    analysisHref: `/interactive/analysis?lectureId=${lecture._id}`,
+  };
+}
 
 // ─── Thumbnail placeholder ────────────────────────────────────────────────────
-function SessionThumbnail({ type, duration }) {
-  const t = THUMBNAIL_ICON[type] || THUMBNAIL_ICON.dbms;
+function SessionThumbnail({ thumbnail, duration }) {
+  const t = thumbnail || { icon: 'menu_book', color: 'text-primary' };
   const waveHeights = [32, 56, 20, 44, 28, 36, 16, 48];
   return (
     <div className="relative w-full h-44 rounded-xl overflow-hidden bg-surface-container-high">
@@ -116,7 +123,8 @@ function SessionThumbnail({ type, duration }) {
 }
 
 // ─── Session Card ─────────────────────────────────────────────────────────────
-function SessionCard({ session, hidden, onAction }) {
+function SessionCard({ session, hidden, onAction, onViewBreakdown, onDelete }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   if (hidden) return null;
   const { badge, action, secondaryAction, extra } = session;
   return (
@@ -124,7 +132,7 @@ function SessionCard({ session, hidden, onAction }) {
       <div className="flex flex-col gap-space-md">
         {/* Thumbnail */}
         <div className="relative">
-          <SessionThumbnail type={session.thumbnail} duration={session.duration} />
+          <SessionThumbnail thumbnail={session.thumbnail} duration={session.duration} />
           {/* Status badge */}
           <div className="absolute top-3 left-3">
             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full ${badge.bg} text-[11px] font-semibold shadow-sm`}>
@@ -139,7 +147,7 @@ function SessionCard({ session, hidden, onAction }) {
         <div className="flex flex-col gap-space-xs">
           <div className="flex items-center gap-space-xs text-outline text-xs">
             <span className="material-symbols-outlined text-[15px]">schedule</span>
-            <span>Last studied: {session.lastStudied}</span>
+          <span>Last active: {session.lastStudied}</span>
           </div>
           <h3 className="text-sm font-semibold text-on-surface line-clamp-2 group-hover:text-primary transition-colors">
             {session.title}
@@ -172,7 +180,7 @@ function SessionCard({ session, hidden, onAction }) {
       {/* Footer actions */}
       <div className="pt-space-lg mt-space-sm flex items-center gap-space-sm">
         <button
-          onClick={() => onAction && onAction(session)}
+          onClick={() => onAction?.(session)}
           className={`w-full inline-flex items-center justify-center gap-space-sm py-2.5 px-space-md rounded-xl text-sm font-medium shadow-sm transition-colors cursor-pointer ${
             action.primary
               ? 'bg-primary-container text-on-primary hover:bg-primary'
@@ -182,12 +190,31 @@ function SessionCard({ session, hidden, onAction }) {
           <span className="material-symbols-outlined text-[18px]">{action.icon}</span>
           <span>{action.label}</span>
         </button>
-        <button
-          onClick={() => onAction && onAction(session)}
-          className="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors shrink-0 cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[18px]">{secondaryAction.icon}</span>
-        </button>
+        <div className="relative shrink-0">
+          <button
+            type="button"
+            aria-label={`More options for ${session.title}`}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+            className="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[18px]">{secondaryAction.icon}</span>
+          </button>
+          {menuOpen && (
+            <div className="absolute right-0 bottom-12 z-20 min-w-48 rounded-xl bg-surface-container-lowest p-1.5 shadow-xl ring-1 ring-outline-variant/30">
+              <button
+                type="button"
+                onClick={() => { setMenuOpen(false); onViewBreakdown?.(session); }}
+                className="w-full rounded-lg px-3 py-2 text-left text-sm text-on-surface hover:bg-surface-container-low"
+              >View Topic Breakdown</button>
+              <button
+                type="button"
+                onClick={() => { setMenuOpen(false); onDelete?.(session); }}
+                className="w-full rounded-lg px-3 py-2 text-left text-sm text-error hover:bg-error-container/30"
+              >Delete Session</button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -200,7 +227,42 @@ export default function InteractiveLearningHub() {
   const [urlError, setUrlError] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [stats, setStats] = useState({ totalTime: '0.0 hrs', checkpoints: 0, activeSessions: 0, completedCount: 0 });
   const inputRef = useRef(null);
+
+  const loadSessions = useCallback(async () => {
+    setLoading(true);
+    setLoadError('');
+    try {
+      const lectures = await fetchUserLectures();
+      setSessions(lectures.map(toSession));
+    } catch (err) {
+      console.warn('Interactive sessions failed to load:', err.message);
+      setSessions([]);
+      setLoadError('Could not load your saved lectures. Check your connection and try again.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadSessions();
+  }, [loadSessions]);
+
+  useEffect(() => {
+    const topicCount = sessions.reduce((sum, session) => sum + session.topics, 0);
+    const completedCount = sessions.reduce((sum, session) => sum + session.completed, 0);
+    const studiedSeconds = sessions.reduce((sum, session) => sum + session.completedDurationSeconds, 0);
+    setStats({
+      totalTime: `${(studiedSeconds / 3600).toFixed(1)} hrs`,
+      checkpoints: completedCount,
+      activeSessions: sessions.length,
+      completedCount: topicCount ? Math.round((completedCount / topicCount) * 100) : 0,
+    });
+  }, [sessions]);
 
   const validateUrl = (val) => {
     if (!val.trim()) return 'Please enter a YouTube URL.';
@@ -208,7 +270,7 @@ export default function InteractiveLearningHub() {
     return '';
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     const err = validateUrl(url);
     if (err) {
       setUrlError(err);
@@ -217,10 +279,20 @@ export default function InteractiveLearningHub() {
     }
     setUrlError('');
     setIsAnalyzing(true);
-    setTimeout(() => {
-      setIsAnalyzing(false);
+
+    try {
+      const lecture = await startLectureAnalysis({
+        youtubeUrl: url.trim(),
+        title: 'Lecture',
+        subject: 'General',
+      });
+      navigate(`/interactive/analysis?lectureId=${lecture._id}`);
+    } catch (apiErr) {
+      console.error('Analysis start error:', apiErr);
       navigate(`/interactive/analysis?url=${encodeURIComponent(url.trim())}`);
-    }, 600);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const handleAddYTBtn = () => {
@@ -229,7 +301,17 @@ export default function InteractiveLearningHub() {
     inputRef.current?.select();
   };
 
-  const filteredSessions = SESSIONS.filter(
+  const handleDeleteSession = async (session) => {
+    if (!window.confirm(`Delete “${session.title}”? This will remove the saved lecture and its analysis.`)) return;
+    try {
+      await deleteLecture(session.id);
+      setSessions((current) => current.filter((item) => item.id !== session.id));
+    } catch (err) {
+      setLoadError(err.message || 'Could not delete this session.');
+    }
+  };
+
+  const filteredSessions = sessions.filter(
     (s) => activeFilter === 'all' || s.category === activeFilter
   );
 
@@ -247,10 +329,10 @@ export default function InteractiveLearningHub() {
             <div className="flex flex-col gap-space-xs">
               <div className="flex items-center gap-space-xs text-primary-container">
                 <span className="material-symbols-outlined text-[18px]">psychology</span>
-                <span className="text-[11px] uppercase tracking-wider font-semibold">Active Synthesis Protocol</span>
+                <span className="text-[11px] uppercase tracking-wider font-semibold">Active Learning</span>
               </div>
               <h1 className="text-3xl font-bold text-on-surface tracking-tight">Interactive Learning</h1>
-              <p className="text-sm text-on-surface-variant">Turn any lecture into an active learning experience.</p>
+              <p className="text-sm text-on-surface-variant">Turn any video lecture into an interactive study session with checkpoints.</p>
             </div>
             <button
               onClick={handleAddYTBtn}
@@ -278,12 +360,9 @@ export default function InteractiveLearningHub() {
                 <div className="flex flex-col">
                   <div className="flex items-center gap-space-sm flex-wrap">
                     <h2 className="text-xl font-semibold text-on-surface">Learn from a YouTube Lecture</h2>
-                    <span className="px-2 py-0.5 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed-variant text-[11px] font-semibold">
-                      AI Engine v2.4
-                    </span>
                   </div>
                   <p className="text-sm text-on-surface-variant mt-1">
-                    Paste a lecture link and we'll organize its topics into an interactive learning session with segmented playback and active checkpoint questions.
+                    Paste a lecture link to organize topics into an interactive session with chapter checkpoints and review quizzes.
                   </p>
                 </div>
               </div>
@@ -305,7 +384,7 @@ export default function InteractiveLearningHub() {
                       value={url}
                       onChange={(e) => { setUrl(e.target.value); if (urlError) setUrlError(''); }}
                       onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
-                      placeholder="https://www.youtube.com/watch?v=... (e.g. Stanford CS145 - Databases)"
+                      placeholder="https://www.youtube.com/watch?v=... (Paste YouTube lecture URL)"
                       className="w-full bg-transparent text-sm text-on-surface placeholder:text-outline focus:outline-none pr-space-sm"
                     />
                     {url && (
@@ -371,8 +450,8 @@ export default function InteractiveLearningHub() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
               <div className="flex items-baseline gap-space-md">
                 <h2 className="text-xl font-semibold text-on-surface">Recent Learning Sessions</h2>
-                <button className="text-sm text-primary-container hover:underline inline-flex items-center gap-0.5">
-                  <span>View All (8)</span>
+                <button onClick={() => setActiveFilter('all')} className="text-sm text-primary-container hover:underline inline-flex items-center gap-0.5">
+                  <span>View All ({sessions.length})</span>
                   <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
                 </button>
               </div>
@@ -396,23 +475,47 @@ export default function InteractiveLearningHub() {
               </div>
             </div>
 
+            {loadError && (
+              <div role="alert" className="flex items-center justify-between gap-space-md rounded-xl bg-error-container/40 px-space-md py-space-sm text-sm text-error">
+                <span>{loadError}</span>
+                <button type="button" onClick={loadSessions} className="shrink-0 font-semibold underline">Retry</button>
+              </div>
+            )}
+
             {/* Cards grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg">
-              {filteredSessions.length > 0 ? (
+              {loading ? (
+                <div className="col-span-full flex items-center justify-center gap-space-sm py-12 text-on-surface-variant">
+                  <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                  <span>Loading your learning sessions...</span>
+                </div>
+              ) : filteredSessions.length > 0 ? (
                 filteredSessions.map((session) => (
                   <SessionCard
                     key={session.id}
                     session={session}
                     hidden={false}
-                    onAction={(sess) => {
-                      if (sess.action.label === 'View Results') {
-                        navigate('/session-results');
-                      } else {
-                        navigate('/interactive/session');
-                      }
-                    }}
+                    onAction={(sess) => navigate(sess.action.href)}
+                    onViewBreakdown={(sess) => navigate(sess.analysisHref)}
+                    onDelete={handleDeleteSession}
                   />
                 ))
+              ) : sessions.length === 0 && activeFilter === 'all' && !loadError ? (
+                <div className="col-span-full flex flex-col items-center justify-center rounded-2xl bg-surface-container-lowest py-14 px-space-xl text-center shadow-sm">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-fixed text-primary mb-4">
+                    <span className="material-symbols-outlined text-[32px]">play_lesson</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-on-surface">Your learning sessions will appear here</h3>
+                  <p className="mt-2 max-w-lg text-sm text-on-surface-variant">Paste a YouTube lecture link above to create your first interactive session. We’ll organize it into topics and checkpoints.</p>
+                  <div className="mt-4 flex flex-wrap justify-center gap-2">
+                    {['Computer Science', 'Study a lecture', 'Practice with quizzes'].map((suggestion) => (
+                      <span key={suggestion} className="rounded-full bg-surface-container px-3 py-1 text-xs text-on-surface-variant">{suggestion}</span>
+                    ))}
+                  </div>
+                  <button type="button" onClick={handleAddYTBtn} className="mt-5 rounded-xl bg-primary-container px-space-lg py-2.5 text-sm font-medium text-on-primary hover:bg-primary">
+                    Add your first lecture
+                  </button>
+                </div>
               ) : (
                 <div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
                   <div className="w-16 h-16 rounded-2xl bg-surface-container-low flex items-center justify-center text-outline mb-4">
@@ -501,7 +604,12 @@ export default function InteractiveLearningHub() {
 
           {/* ── Bottom Stats Row ── */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-space-md py-space-sm">
-            {BOTTOM_STATS.map((stat) => (
+            {[
+              { value: stats.totalTime, label: 'Active Study Time', icon: 'timer', color: 'text-primary-container' },
+              { value: String(stats.checkpoints), label: 'Checkpoints Cleared', icon: 'rule', color: 'text-secondary' },
+              { value: String(stats.activeSessions), label: 'Active Sessions', icon: 'play_lesson', color: 'text-tertiary-container' },
+              { value: `${stats.completedCount}%`, label: 'Topic Completion', icon: 'trending_up', color: 'text-primary-container' },
+            ].map((stat) => (
               <div key={stat.label} className="flex items-center gap-space-md p-space-md rounded-xl bg-surface-container-lowest shadow-sm">
                 <div className={`w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center ${stat.color}`}>
                   <span className="material-symbols-outlined text-[20px]">{stat.icon}</span>
@@ -516,6 +624,90 @@ export default function InteractiveLearningHub() {
 
         </div>
       </div>
+
+      {/* ── AI Analysis Loading Modal Overlay ── */}
+      {isAnalyzing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-inverse-surface/60 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-lg rounded-2xl bg-surface-container-lowest p-6 sm:p-8 shadow-2xl border border-outline-variant/30 flex flex-col gap-6 overflow-hidden">
+            {/* Glowing accent backdrop */}
+            <div className="pointer-events-none absolute -top-20 -right-20 w-48 h-48 rounded-full bg-primary-container/20 blur-3xl animate-pulse" />
+            <div className="pointer-events-none absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-secondary-container/20 blur-3xl" />
+
+            {/* Header with animated AI badge */}
+            <div className="flex items-center justify-between">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-container/10 text-primary-container font-semibold text-xs tracking-wide">
+                <span className="w-2 h-2 rounded-full bg-primary-container animate-ping" />
+                <span>AI ANALYSIS IN PROGRESS</span>
+              </div>
+              <span className="material-symbols-outlined text-outline animate-spin text-[20px]">
+                progress_activity
+              </span>
+            </div>
+
+            {/* Title & Description */}
+            <div className="flex flex-col gap-1.5">
+              <h3 className="text-xl font-bold text-on-surface">Decomposing Lecture with AI</h3>
+              <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                We are transcribing speech, indexing semantic chapter boundaries, and creating retrieval checkpoints.
+              </p>
+            </div>
+
+            {/* Video Target Pill */}
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-surface-container-low border border-outline-variant/20 min-w-0">
+              <span className="material-symbols-outlined text-error text-[22px] shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>
+                smart_display
+              </span>
+              <span className="text-xs text-on-surface font-mono truncate flex-1">
+                {url || 'Processing YouTube Video...'}
+              </span>
+            </div>
+
+            {/* Progress Pipeline Animation */}
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center text-xs shadow-sm">
+                  <span className="material-symbols-outlined text-[16px] animate-spin">sync</span>
+                </div>
+                <div className="flex-1">
+                  <span className="text-xs font-semibold text-on-surface">1. Extracting Video Audio & Transcript</span>
+                  <div className="text-[11px] text-on-surface-variant">Accessing YouTube captions or Groq Whisper pipeline</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 opacity-80">
+                <div className="w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center text-xs">
+                  <span className="material-symbols-outlined text-[16px]">psychology</span>
+                </div>
+                <div className="flex-1">
+                  <span className="text-xs font-semibold text-on-surface">2. Semantic Topic Segmentation</span>
+                  <div className="text-[11px] text-on-surface-variant">Detecting timestamp transitions & key concepts</div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 opacity-60">
+                <div className="w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center text-xs">
+                  <span className="material-symbols-outlined text-[16px]">quiz</span>
+                </div>
+                <div className="flex-1">
+                  <span className="text-xs font-semibold text-on-surface">3. Checkpoint Quiz Construction</span>
+                  <div className="text-[11px] text-on-surface-variant">Generating in-video recall challenges</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Animated Indeterminate Progress Bar */}
+            <div className="relative w-full h-2 rounded-full bg-surface-container-high overflow-hidden">
+              <div className="absolute top-0 bottom-0 left-0 right-0 bg-gradient-to-r from-primary via-primary-container to-secondary-container rounded-full animate-pulse" />
+            </div>
+
+            {/* Footer Status Note */}
+            <div className="flex items-center justify-between text-[11px] text-outline pt-1 border-t border-outline-variant/15">
+              <span>Transferring to Analysis Studio...</span>
+              <span className="font-semibold text-primary">Please wait</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

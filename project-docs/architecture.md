@@ -487,13 +487,20 @@ NODE_ENV=development
 PORT=5000
 MONGODB_URI=
 CLIENT_ORIGIN=http://localhost:5173
-# Add the chosen provider's keys only when configured.
-# LLM_API_KEY=
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4.1-mini
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-2.5-flash
+GROQ_API_KEY=
+GROQ_TRANSCRIPTION_MODEL=whisper-large-v3-turbo
 # TRANSCRIPTION_API_KEY=
 ```
 
 Requirements:
 - Commit `.env.example`, never real `.env` credentials.
+- `OPENAI_API_KEY` (or legacy `OPEN-AI-API`) is used first for server-side transcript analysis; `GEMINI_API_KEY` is used if OpenAI fails. Model IDs can be overridden with `OPENAI_MODEL` and `GEMINI_MODEL`.
+- `GROQ_API_KEY` (or legacy `WISPER_API_KEY`) is used only when YouTube captions are unavailable. The server extracts audio with yt-dlp and sends it to Groq Whisper; the current upload limit is 25 MB. Only use this fallback for videos you are authorized to download and transcribe.
+- Install server dependencies with Python 3.9+ available for the yt-dlp wrapper's installation.
 - Document where each variable is used.
 - Keep local frontend and backend origins configurable.
 - Configure CORS for approved origins.

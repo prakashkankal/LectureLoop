@@ -81,6 +81,21 @@
 }
 
 @layer base {
+  :root[data-theme="dark"] {
+    --color-background: #11131b;
+    --color-surface: #171a24;
+    --color-surface-container-lowest: #1b1f2b;
+    --color-surface-container-low: #222735;
+    --color-surface-container: #2a3040;
+    --color-surface-container-high: #343b4d;
+    --color-surface-container-highest: #3e4658;
+    --color-on-surface: #edf0ff;
+    --color-on-surface-variant: #c0c5d8;
+    --color-on-background: #edf0ff;
+    --color-outline: #9ba2b8;
+    --color-outline-variant: #4c5366;
+  }
+
   html, body {
     margin: 0;
     padding: 0;
@@ -88,4 +103,30 @@
     color: var(--color-on-surface);
     font-family: var(--font-body-md);
   }
+}
+
+#video-player-container:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+}
+
+#video-player-container:fullscreen .video-player-stage {
+  flex: 1;
+  min-height: 0;
+  aspect-ratio: auto;
+}
+
+#video-player-container:fullscreen .video-player-stage iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#video-player-container .video-player-controls {
+  position: absolute;
+  z-index: 20;
+  inset-inline: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 90%), transparent);
 }
