@@ -9,8 +9,10 @@ export default function Sidebar() {
   const navItems = [
     { name: 'Overview', path: '/', icon: 'dashboard' },
     { name: 'Interactive Learning', path: '/interactive', icon: 'psychology', badge: 'AI' },
+    { name: 'Audio Analysis', path: '/audio-analysis', icon: 'graphic_eq' },
     { name: 'My Lectures', path: '/lectures', icon: 'video_library' },
     { name: 'Subjects', path: '/subjects', icon: 'folder_open' },
+    ...(user?.role === 'teacher' ? [{ name: 'Timetable', path: '/timetable', icon: 'calendar_month' }] : []),
     { name: 'Notes', path: '/notes', icon: 'description' },
     { name: 'Revision', path: '/revision', icon: 'cached' },
   ];

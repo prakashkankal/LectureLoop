@@ -132,7 +132,7 @@ export default function LearningAnalysisHub() {
               </button>
               <button
                 type="button"
-                onClick={() => setActiveTab('upload')}
+                onClick={() => navigate('/audio-analysis')}
                 className={`px-space-md py-2 rounded-lg font-label-md text-sm flex items-center gap-space-xs transition-colors cursor-pointer ${
                   activeTab === 'upload'
                     ? 'bg-primary-container text-on-primary font-medium shadow-sm'

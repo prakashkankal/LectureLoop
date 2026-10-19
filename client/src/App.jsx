@@ -1,17 +1,19 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import AppShell from './components/layout/AppShell';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import DashboardOverview from './pages/DashboardOverview';
+import DashboardOverview from './modules/student/Overview';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import InteractiveLearningHub from './pages/InteractiveLearningHub';
-import MyLecturesPage from './pages/MyLecturesPage';
+import MyLecturesPage from './modules/student/MyLectures';
 import LearningSessionPage from './pages/LearningSessionPage';
 import SessionResultsPage from './pages/SessionResultsPage';
-import SubjectsPage from './pages/SubjectsPage';
+import SubjectsPage from './modules/student/Subjects';
 import LearningAnalysisHub from './pages/LearningAnalysisHub';
+import AudioLectureAnalysis from './modules/student/AudioAnalysis';
+import TimetableUpload from './modules/timetable/TimetableUpload';
 
 function PlaceholderPage({ title, icon, description }) {
   return (
@@ -46,10 +48,15 @@ export default function App() {
             <Route index element={<DashboardOverview />} />
             <Route path="interactive" element={<InteractiveLearningHub />} />
             <Route path="interactive/analysis" element={<LearningAnalysisHub />} />
+            <Route path="audio-analysis" element={<AudioLectureAnalysis />} />
             <Route path="interactive/session" element={<LearningSessionPage />} />
             <Route path="lectures" element={<MyLecturesPage />} />
             <Route path="session-results" element={<SessionResultsPage />} />
             <Route path="subjects" element={<SubjectsPage />} />
+            <Route
+              path="timetable"
+              element={<TeacherTimetableRoute />}
+            />
             <Route
               path="notes"
               element={
@@ -88,4 +95,9 @@ export default function App() {
       </BrowserRouter>
     </AuthProvider>
   );
+}
+
+function TeacherTimetableRoute() {
+  const { user } = useAuth();
+  return user?.role === 'teacher' ? <TimetableUpload /> : <Navigate to="/" replace />;
 }

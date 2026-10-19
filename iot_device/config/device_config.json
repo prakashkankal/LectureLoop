@@ -1,0 +1,9 @@
+{
+  "device_id": "Pi-301",
+  "room": "301",
+  "wifi": "classroom-wifi",
+  "server_url": "http://localhost:5000",
+  "device_token": "set-this-on-the-device",
+  "camera_index": 0,
+  "show_attendance_display": true
+}

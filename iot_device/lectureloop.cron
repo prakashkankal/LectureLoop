@@ -1,0 +1,1 @@
+@reboot cd /home/pi/iot_device && /usr/bin/python3 /home/pi/iot_device/main.py >> /home/pi/iot_device/main.log 2>&1

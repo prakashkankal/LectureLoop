@@ -3,10 +3,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import dns from 'dns';
-import authRoutes from './routes/authRoutes.js';
+import authRoutes from './modules/student/routes/authRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
-import lectureRoutes from './routes/lectureRoutes.js';
+import lectureRoutes from './modules/student/routes/lectureRoutes.js';
 import subjectRoutes from './routes/subjectRoutes.js';
+import timetableRoutes from './modules/timetable/timetable.routes.js';
+import audioRoutes from './modules/audio/audio.routes.js';
 
 dotenv.config();
 
@@ -31,8 +33,10 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api', audioRoutes);
 app.use('/api/lectures', lectureRoutes);
 app.use('/api/subjects', subjectRoutes);
+app.use('/api', timetableRoutes);
 
 // Basic Health Check Endpoint
 app.get('/api/health', (req, res) => {
