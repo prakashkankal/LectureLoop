@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 const navItems = [
   { name: 'Overview', path: '/', icon: 'dashboard' },
   { name: 'Interactive Learning', path: '/interactive', icon: 'psychology', badge: 'AI' },
+  { name: 'Oral Practice', path: '/oral-practice', icon: 'record_voice_over' },
   { name: 'My Lectures', path: '/lectures', icon: 'video_library' },
   { name: 'Subjects', path: '/subjects', icon: 'folder_open' },
   { name: 'Notes', path: '/notes', icon: 'description' },

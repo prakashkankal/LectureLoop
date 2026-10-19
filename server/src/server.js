@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import lectureRoutes from './routes/lectureRoutes.js';
 import subjectRoutes from './routes/subjectRoutes.js';
+import oralPracticeRoutes from './routes/oralPracticeRoutes.js';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/lectures', lectureRoutes);
 app.use('/api/subjects', subjectRoutes);
+app.use('/api/oral-practice', oralPracticeRoutes);
 
 // Basic Health Check Endpoint
 app.get('/api/health', (req, res) => {

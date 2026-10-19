@@ -137,8 +137,27 @@ const SUBJECT_THUMB = {
   dsa: { icon: 'account_tree', color: 'text-primary-container', bg: 'bg-primary-container/10' },
 };
 
+const ORAL_PRACTICE_ORIGIN = 'http://127.0.0.1:5179';
+
+function createOralPracticeMaterial(lecture) {
+  const keyTerms = lecture.description.split(/,| and /i).map((term) => term.trim()).filter(Boolean);
+  return {
+    schemaVersion: 1,
+    material: {
+      subject: lecture.subjectLabel,
+      lecture: lecture.title,
+      topic: lecture.title,
+      notes: [
+        `${lecture.title} covers the concepts listed in its lecture description.`,
+        ...keyTerms.map((term) => `${term} is one of the concepts covered in ${lecture.title}.`),
+      ].join(' '),
+      keyTerms,
+    },
+  };
+}
+
 // ─── Grid Card ────────────────────────────────────────────────────────────────
-function LectureGridCard({ lecture }) {
+function LectureGridCard({ lecture, onPracticeOrally }) {
   const navigate = useNavigate();
   const thumb = SUBJECT_THUMB[lecture.subject] || SUBJECT_THUMB.dbms;
   return (
@@ -218,6 +237,13 @@ function LectureGridCard({ lecture }) {
           </button>
           <button
             type="button"
+            onClick={() => onPracticeOrally(lecture)}
+            className="px-space-md py-1.5 rounded-lg bg-secondary-container text-on-secondary-container text-[11px] font-medium transition-colors hover:opacity-90"
+          >
+            Practice orally
+          </button>
+          <button
+            type="button"
             onClick={() => navigate('/interactive')}
             className={`px-space-md py-1.5 rounded-lg text-[11px] font-medium transition-colors ${
               lecture.highlight
@@ -234,7 +260,7 @@ function LectureGridCard({ lecture }) {
 }
 
 // ─── List Row ─────────────────────────────────────────────────────────────────
-function LectureListRow({ lecture }) {
+function LectureListRow({ lecture, onPracticeOrally }) {
   const navigate = useNavigate();
   const thumb = SUBJECT_THUMB[lecture.subject] || SUBJECT_THUMB.dbms;
   return (
@@ -291,6 +317,13 @@ function LectureListRow({ lecture }) {
         </button>
         <button
           type="button"
+          onClick={() => onPracticeOrally(lecture)}
+          className="px-space-md py-1.5 rounded-lg bg-secondary-container text-on-secondary-container text-[11px] font-medium transition-colors hover:opacity-90"
+        >
+          Practice orally
+        </button>
+        <button
+          type="button"
           onClick={() => navigate('/interactive')}
           className="px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary text-[11px] font-medium hover:opacity-90 transition-opacity"
         >
@@ -313,6 +346,48 @@ export default function MyLecturesPage() {
   const [activeSubject, setActiveSubject] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+  const [oralStatus, setOralStatus] = useState('');
+
+  const practiceOrally = (lecture) => {
+    const requestId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const message = {
+      type: 'lectureloop:import-material',
+      requestId,
+      ...createOralPracticeMaterial(lecture),
+    };
+
+    if (window.opener) {
+      window.opener.postMessage(message, ORAL_PRACTICE_ORIGIN);
+      setOralStatus(`Sending "${lecture.title}" notes to Oral Practice…`);
+      return;
+    }
+
+    const oralWindow = window.open(ORAL_PRACTICE_ORIGIN, '_blank');
+    if (!oralWindow) {
+      setOralStatus('Allow pop-ups to open the Oral Practice module.');
+      return;
+    }
+
+    let timeoutId;
+
+    const handleMessage = (event) => {
+      if (event.source !== oralWindow || event.origin !== ORAL_PRACTICE_ORIGIN) return;
+      if (event.data?.type === 'lectureloop:oral-practice-ready') {
+        oralWindow.postMessage(message, ORAL_PRACTICE_ORIGIN);
+      } else if (event.data?.type === 'lectureloop:material-imported' && event.data.requestId === requestId) {
+        window.removeEventListener('message', handleMessage);
+        window.clearTimeout(timeoutId);
+        setOralStatus(`"${lecture.title}" notes are ready in Oral Practice. Review them and start your test.`);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    timeoutId = window.setTimeout(() => {
+      window.removeEventListener('message', handleMessage);
+      setOralStatus('Could not connect to Oral Practice. Start it with npm run dev in oral-test-module and try again.');
+    }, 15000);
+    setOralStatus(`Opening Oral Practice with "${lecture.title}"…`);
+  };
 
   const filtered = useMemo(() => {
     let list = LECTURES;
@@ -372,6 +447,7 @@ export default function MyLecturesPage() {
             <p className="text-sm text-on-surface-variant">
               Search, organize, and review your recorded classroom lectures across all subjects with synchronized transcript analysis.
             </p>
+            {oralStatus && <p className="text-xs text-primary" role="status">{oralStatus}</p>}
           </div>
           <div className="flex items-center gap-space-md shrink-0">
             <button
@@ -505,13 +581,13 @@ export default function MyLecturesPage() {
           viewMode === 'grid' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg">
               {filtered.map((l) => (
-                <LectureGridCard key={l.id} lecture={l} />
+                <LectureGridCard key={l.id} lecture={l} onPracticeOrally={practiceOrally} />
               ))}
             </div>
           ) : (
             <div className="flex flex-col gap-space-sm">
               {filtered.map((l) => (
-                <LectureListRow key={l.id} lecture={l} />
+                <LectureListRow key={l.id} lecture={l} onPracticeOrally={practiceOrally} />
               ))}
             </div>
           )
