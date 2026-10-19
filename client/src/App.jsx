@@ -11,6 +11,7 @@ import MyLecturesPage from './pages/MyLecturesPage';
 import LearningSessionPage from './pages/LearningSessionPage';
 import SessionResultsPage from './pages/SessionResultsPage';
 import SubjectsPage from './pages/SubjectsPage';
+import SubjectFolderPage from './pages/SubjectFolderPage';
 import LearningAnalysisHub from './pages/LearningAnalysisHub';
 import NotesPage from './pages/NotesPage';
 
@@ -51,6 +52,7 @@ export default function App() {
             <Route path="lectures" element={<MyLecturesPage />} />
             <Route path="session-results" element={<SessionResultsPage />} />
             <Route path="subjects" element={<SubjectsPage />} />
+            <Route path="subjects/:subjectKey" element={<SubjectFolderPage />} />
             <Route path="notes" element={<NotesPage />} />
             <Route
               path="revision"

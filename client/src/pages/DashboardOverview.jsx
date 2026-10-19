@@ -223,9 +223,14 @@ function LectureCard({ lecture }) {
 
 // ─── Subject Card ─────────────────────────────────────────────────────────────
 function SubjectCard({ subject }) {
+  const navigate = useNavigate();
   const colors = SUBJECT_COLOR_MAP[subject.color] || SUBJECT_COLOR_MAP.primary;
   return (
-    <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col justify-between">
+    <button
+      type="button"
+      onClick={() => navigate(`/subjects/${encodeURIComponent(subject.id)}`)}
+      className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col justify-between text-left"
+    >
       <div className="flex items-start justify-between">
         <div className={`w-12 h-12 rounded-xl ${colors.icon} flex items-center justify-center`}>
           <span className="material-symbols-outlined text-[24px]">{subject.icon}</span>
@@ -246,7 +251,7 @@ function SubjectCard({ subject }) {
           />
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
