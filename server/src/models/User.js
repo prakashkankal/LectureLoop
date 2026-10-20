@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: 'Semester 5 • Fall 2024',
     },
+    subjectsInitialized: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

@@ -2,68 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:5000/api';
-
-const DEFAULT_SUBJECTS = [
-  {
-    _id: 'sub_dbms_1',
-    code: 'CS-301',
-    title: 'Database Management Systems (DBMS)',
-    instructor: 'Prof. Aris Thorne',
-    term: 'Fall 2024',
-    icon: 'database',
-    color: 'primary',
-    coverage: 68,
-    lectureCount: 4,
-    totalHours: '3.2 Hours',
-    statusNote: 'Vector indexing up to date',
-  },
-  {
-    _id: 'sub_os_2',
-    code: 'CS-302',
-    title: 'Operating Systems (OS)',
-    instructor: 'Dr. Elena Rostova',
-    term: 'Fall 2024',
-    icon: 'memory',
-    color: 'secondary',
-    coverage: 52,
-    lectureCount: 3,
-    totalHours: '2.6 Hours',
-    statusNote: '1 sync scheduled',
-  },
-  {
-    _id: 'sub_cn_3',
-    code: 'CS-404',
-    title: 'Computer Networks',
-    instructor: 'Prof. Kenneth Wu',
-    term: 'Fall 2024',
-    icon: 'hub',
-    color: 'primary',
-    coverage: 44,
-    lectureCount: 3,
-    totalHours: '2.1 Hours',
-    statusNote: 'All flashcards generated',
-  },
-  {
-    _id: 'sub_dsa_4',
-    code: 'CS-202',
-    title: 'Data Structures & Algorithms',
-    instructor: 'Dr. Marcus Vance',
-    term: 'Fall 2024',
-    icon: 'account_tree',
-    color: 'tertiary',
-    coverage: 31,
-    lectureCount: 2,
-    totalHours: '1.8 Hours',
-    statusNote: '2 quizzes pending',
-  },
-];
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
 
 export default function SubjectsPage() {
   const navigate = useNavigate();
-  const [subjects, setSubjects] = useState(DEFAULT_SUBJECTS);
-  const [loading, setLoading] = useState(false);
+  const [subjects, setSubjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [toastMessage, setToastMessage] = useState(null);
+  const [toastIsError, setToastIsError] = useState(false);
+  const [deletingSubjectId, setDeletingSubjectId] = useState(null);
 
   // Modals state
   const [isAddLectureOpen, setIsAddLectureOpen] = useState(false);
@@ -93,17 +40,20 @@ export default function SubjectsPage() {
       try {
         setLoading(true);
         const res = await axios.get(`${API_BASE}/subjects`);
-        if (res.data?.success && res.data?.data?.length > 0) {
+        if (res.data?.success && Array.isArray(res.data?.data) && res.data.data.length > 0) {
           setSubjects(res.data.data);
-          if (!lectureSubject) {
+          if (!lectureSubject && res.data.data[0]?.code) {
             setLectureSubject(res.data.data[0].code);
           }
-        } else {
-          setLectureSubject('CS-301');
+          return;
         }
+
+        setSubjects([]);
+        setLectureSubject('');
       } catch (err) {
-        console.warn('Could not load subjects from API, using default items.', err);
-        setLectureSubject('CS-301');
+        console.warn('Could not load subjects from API.', err);
+        setSubjects([]);
+        setLectureSubject('');
       } finally {
         setLoading(false);
       }
@@ -112,15 +62,40 @@ export default function SubjectsPage() {
     fetchSubjects();
   }, []);
 
-  const showToast = (msg) => {
+  const showToast = (msg, isError = false) => {
     setToastMessage(msg);
+    setToastIsError(isError);
     setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const handleDeleteSubject = async (subject) => {
+    if (!window.confirm(`Delete ${subject.code} — ${subject.title}? Saved lectures will not be deleted.`)) return;
+
+    const subjectId = subject._id || subject.code;
+    setDeletingSubjectId(subjectId);
+    try {
+      await axios.delete(`${API_BASE}/subjects/${subjectId}`);
+      setSubjects((current) => current.filter((item) => (item._id || item.code) !== subjectId));
+      setLectureSubject((current) => {
+        if (current !== subject.code && !subject.title.includes(current)) return current;
+        const nextSubject = subjects.find((item) => (item._id || item.code) !== subjectId);
+        return nextSubject?.code || '';
+      });
+      showToast(`Subject "${subject.code}" deleted.`);
+    } catch (err) {
+      console.error('Error deleting subject:', err);
+      showToast(err.response?.data?.error || 'Could not delete subject. Please try again.', true);
+    } finally {
+      setDeletingSubjectId(null);
+    }
   };
 
   // Compute analytics
   const totalCourses = subjects.length;
   const totalLectures = subjects.reduce((acc, s) => acc + (s.lectureCount || 0), 0);
-  const totalHours = '9.7 Hours';
+  const totalHours = subjects.length
+    ? `${Math.max(1, Math.round((totalLectures || 1) * 1.4))}.0 Hours`
+    : '0.0 Hours';
 
   // Helper for card styling
   const getColorClasses = (color) => {
@@ -260,8 +235,10 @@ export default function SubjectsPage() {
     <div className="flex flex-col w-full pb-16">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-space-sm bg-inverse-surface text-inverse-on-surface px-space-lg py-space-md rounded-xl shadow-2xl border border-outline-variant/30 animate-bounce">
-          <span className="material-symbols-outlined text-tertiary-fixed text-[20px]">check_circle</span>
+        <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-space-sm ${toastIsError ? 'bg-error text-on-error' : 'bg-inverse-surface text-inverse-on-surface'} px-space-lg py-space-md rounded-xl shadow-2xl border border-outline-variant/30 animate-bounce`}>
+          <span className={`material-symbols-outlined text-[20px] ${toastIsError ? '' : 'text-tertiary-fixed'}`}>
+            {toastIsError ? 'error' : 'check_circle'}
+          </span>
           <span className="font-label-md text-sm font-medium">{toastMessage}</span>
         </div>
       )}
@@ -364,7 +341,15 @@ export default function SubjectsPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
-            {subjects.map((sub) => {
+            {loading ? (
+              <div className="col-span-full rounded-xl border border-dashed border-outline-variant bg-surface-container-lowest p-space-xl text-center text-on-surface-variant">
+                Loading subjects…
+              </div>
+            ) : subjects.length === 0 ? (
+              <div className="col-span-full rounded-xl border border-dashed border-outline-variant bg-surface-container-lowest p-space-xl text-center text-on-surface-variant">
+                No subjects yet. Create one to start organizing your lecture library.
+              </div>
+            ) : subjects.map((sub) => {
               const styles = getColorClasses(sub.color);
               return (
                 <div
@@ -382,9 +367,13 @@ export default function SubjectsPage() {
                           <span className={`font-label-sm text-label-sm ${styles.badgeText} font-semibold tracking-wide`}>
                             {sub.code}
                           </span>
-                          <h3 className="font-title-md text-title-md text-on-surface font-semibold truncate group-hover:text-primary transition-colors">
+                          <button
+                            type="button"
+                            onClick={() => navigate(`/subjects/${encodeURIComponent(sub._id || sub.code)}`)}
+                            className="text-left font-title-md text-title-md text-on-surface font-semibold truncate group-hover:text-primary transition-colors"
+                          >
                             {sub.title}
-                          </h3>
+                          </button>
                         </div>
                       </div>
                       <span className="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm shrink-0">
@@ -426,19 +415,33 @@ export default function SubjectsPage() {
                   </div>
 
                   {/* Card Footer Actions */}
-                  <div className="mt-space-lg pt-space-md flex items-center justify-between border-t border-surface-container-high/40">
+                  <div className="mt-space-lg pt-space-md flex items-center justify-between gap-space-sm border-t border-surface-container-high/40">
                     <div className="flex items-center gap-space-xs text-label-sm font-label-sm text-outline">
                       <span className="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
                       <span>{sub.statusNote || 'Vector indexing up to date'}</span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => navigate('/lectures')}
-                      className="px-space-md py-space-sm rounded-lg bg-surface-container text-primary font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center gap-space-xs cursor-pointer"
-                    >
-                      <span>View Lectures ({sub.lectureCount || 0})</span>
-                      <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                    </button>
+                    <div className="flex items-center gap-space-xs shrink-0">
+                      <button
+                        type="button"
+                        aria-label={`Delete ${sub.title}`}
+                        title="Delete subject"
+                        disabled={deletingSubjectId === (sub._id || sub.code)}
+                        onClick={() => handleDeleteSubject(sub)}
+                        className="px-space-sm py-space-sm rounded-lg text-error hover:bg-error-container transition-colors disabled:opacity-50 disabled:cursor-wait cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">
+                          {deletingSubjectId === (sub._id || sub.code) ? 'hourglass_top' : 'delete'}
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/subjects/${encodeURIComponent(sub._id || sub.code)}`)}
+                        className="px-space-md py-space-sm rounded-lg bg-surface-container text-primary font-label-md text-label-md hover:bg-surface-container-high transition-colors flex items-center gap-space-xs cursor-pointer"
+                      >
+                        <span>View Lectures ({sub.lectureCount || 0})</span>
+                        <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               );

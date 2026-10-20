@@ -1,40 +1,9 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-
-// ─── Mock Results Data ────────────────────────────────────────────────────────
-const RESULTS = {
-  lectureCode: 'Lecture 04 • Relational Schema Architecture',
-  lectureTitle: 'Database Management Systems',
-  summary: '4 out of 5 topic checkpoints',
-  retentionPercent: 80,
-  retentionLabel: 'Proficient Tier II',
-  examEstimate: '89% on Exam',
-  kpis: [
-    { label: 'First-Pass Accuracy', value: '80%', delta: '+12%', deltaColor: 'text-tertiary', icon: 'query_stats', iconColor: 'text-primary-container', sub: 'Post targeted segment replay' },
-    { label: 'Active Engagement', value: '32', unit: 'm', valueNote: 'vs 48m passive', icon: 'timer', iconColor: 'text-secondary', sub: '33% time saved via active loops' },
-    { label: 'Topic Checkpoints', value: '4 / 5', badge: '80% Cleared', badgeColor: 'text-tertiary-container', icon: 'verified', iconColor: 'text-tertiary', sub: '1 review milestone remaining' },
-    { label: 'Remediations Resolved', value: '2', unit: 'Replays', icon: 'auto_fix_high', iconColor: 'text-secondary', sub: 'AI-assisted precision clips' },
-  ],
-  checkpoints: [
-    { idx: '01', title: 'Intro to DBMS Architecture', status: 'mastered', attempt: '1st Attempt', score: '100% Score', scoreColor: 'text-tertiary' },
-    { idx: '02', title: 'Relational Algebra & Schema Models', status: 'mastered', attempt: '1st Attempt', score: '100% Score', scoreColor: 'text-tertiary' },
-    { idx: '03', title: 'Primary Keys & Uniqueness Guarantees', status: 'recovered', attempt: '2 Attempts', score: '100% Post-Replay', scoreColor: 'text-secondary', clip: '12:45 clip' },
-    {
-      idx: '04',
-      title: 'Foreign Keys & Referential Integrity',
-      status: 'flagged',
-      attempt: '3 Attempts logged',
-      score: '50%',
-      scoreColor: 'text-error',
-      confidence: 'Low',
-      diagnosis: "Persistent confusion detected on semantic differences between ON DELETE CASCADE versus RESTRICT constraints under cascading updates.",
-    },
-    { idx: '05', title: 'Normalization Forms (1NF, 2NF, 3NF & BCNF)', status: 'mastered', attempt: '1st Attempt', score: '100% Score', scoreColor: 'text-tertiary' },
-  ],
-};
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { fetchLecture } from '../services/api.js';
 
 // ─── Mastery gauge (SVG circle) ───────────────────────────────────────────────
-function MasteryGauge({ percent, label, tier, exam }) {
+function MasteryGauge({ percent, tier, exam }) {
   const dash = percent; // stroke-dasharray out of 100
   return (
     <div className="flex items-center gap-space-md bg-surface-container-low p-space-md rounded-2xl self-start lg:self-center">
@@ -59,45 +28,14 @@ function MasteryGauge({ percent, label, tier, exam }) {
       <div className="flex flex-col">
         <span className="text-[10px] text-on-surface-variant uppercase tracking-wider">Overall Retention</span>
         <span className="text-sm text-on-surface font-semibold">{tier}</span>
-        <span className="text-[11px] font-mono text-tertiary font-medium">Estimated {exam}</span>
+        <span className="text-[11px] font-mono text-tertiary font-medium">{exam}</span>
       </div>
     </div>
   );
 }
 
-// ─── Mind-map SVG visualization ───────────────────────────────────────────────
-function MindMapPreview() {
-  return (
-    <svg className="w-full h-32 text-on-surface" fill="none" viewBox="0 0 300 120">
-      {/* Branches */}
-      <path d="M150 20 L70 65" stroke="currentColor" strokeDasharray="3 3" strokeOpacity="0.15" strokeWidth="2" />
-      <path d="M150 20 L150 65" stroke="currentColor" strokeOpacity="0.2" strokeWidth="2" />
-      <path d="M150 20 L230 65" stroke="currentColor" strokeDasharray="3 3" strokeOpacity="0.15" strokeWidth="2" />
-      <path d="M70 65 L40 100" stroke="currentColor" strokeOpacity="0.15" strokeWidth="2" />
-      <path d="M70 65 L95 100" stroke="currentColor" strokeOpacity="0.15" strokeWidth="2" />
-      <path d="M230 65 L210 100" stroke="currentColor" strokeOpacity="0.15" strokeWidth="2" />
-      <path d="M230 65 L260 100" stroke="currentColor" strokeOpacity="0.15" strokeWidth="2" />
-      {/* Root */}
-      <rect fill="#4f46e5" height="24" rx="12" width="80" x="110" y="8" />
-      <text fill="#ffffff" fontFamily="Inter" fontSize="9" fontWeight="600" textAnchor="middle" x="150" y="24">RDBMS Kernel</text>
-      {/* L1 nodes */}
-      <rect fill="#dae2fd" height="20" rx="10" width="70" x="35" y="55" />
-      <text fill="#131b2e" fontFamily="Inter" fontSize="8" textAnchor="middle" x="70" y="68">Schema</text>
-      <rect fill="#ffdad6" height="20" rx="10" width="70" x="115" y="55" />
-      <text fill="#93000a" fontFamily="Inter" fontSize="8" fontWeight="600" textAnchor="middle" x="150" y="68">Foreign Keys (!)</text>
-      <rect fill="#dae2fd" height="20" rx="10" width="70" x="195" y="55" />
-      <text fill="#131b2e" fontFamily="Inter" fontSize="8" textAnchor="middle" x="230" y="68">Normalization</text>
-      {/* L2 dots */}
-      <circle cx="40" cy="100" fill="#7ffc97" r="6" />
-      <circle cx="95" cy="100" fill="#7ffc97" r="6" />
-      <circle cx="210" cy="100" fill="#7ffc97" r="6" />
-      <circle cx="260" cy="100" fill="#7ffc97" r="6" />
-    </svg>
-  );
-}
-
 // ─── Checkpoint row ───────────────────────────────────────────────────────────
-function CheckpointRow({ cp }) {
+function CheckpointRow({ cp, onReplay }) {
   if (cp.status === 'flagged') {
     return (
       <div className="relative bg-surface-container-lowest p-space-lg rounded-2xl shadow-md border-l-4 border-l-error">
@@ -108,16 +46,12 @@ function CheckpointRow({ cp }) {
             </div>
             <div>
               <div className="flex items-center gap-space-xs">
-                <span className="text-[11px] font-mono text-error font-medium">{cp.idx} • CRITICAL GAP</span>
+                <span className="text-[11px] font-mono text-error font-medium">{cp.idx} • NEEDS ATTENTION</span>
                 <span className="inline-flex px-2 py-0.5 rounded-full bg-error-container/60 text-on-error-container text-[10px] font-semibold">Flagged for Review</span>
               </div>
               <h3 className="text-sm font-semibold text-on-surface mt-1">{cp.title}</h3>
               <div className="flex items-center gap-space-sm mt-1 text-on-surface-variant text-xs">
-                <span>Score: <strong className="text-error font-semibold">{cp.score}</strong></span>
-                <span className="text-outline">•</span>
-                <span>{cp.attempt}</span>
-                <span className="text-outline">•</span>
-                <span>Confidence: {cp.confidence}</span>
+                <span>Timestamp: <strong className="font-mono text-on-surface">{cp.time}</strong></span>
               </div>
             </div>
           </div>
@@ -125,21 +59,16 @@ function CheckpointRow({ cp }) {
         <div className="mt-space-md p-space-md bg-surface-container-low rounded-xl">
           <div className="flex items-center gap-space-xs text-primary text-[11px] font-semibold mb-1">
             <span className="material-symbols-outlined text-[15px]">psychology</span>
-            AI Remediation Diagnostics
+            Review Summary
           </div>
-          <p className="text-xs text-on-surface leading-relaxed">{cp.diagnosis}</p>
+          <p className="text-xs text-on-surface leading-relaxed">{cp.summary || 'Revisit this topic segment to solidify understanding.'}</p>
           <div className="mt-space-md flex flex-wrap items-center gap-space-sm">
-            <button className="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary text-[11px] font-medium hover:opacity-95 transition-all shadow-sm">
+            <button
+              onClick={() => onReplay?.(cp.index)}
+              className="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary text-[11px] font-medium hover:opacity-95 transition-all shadow-sm cursor-pointer"
+            >
               <span className="material-symbols-outlined text-[15px]">play_circle</span>
-              <span>Replay Clip (18:20)</span>
-            </button>
-            <button className="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-surface-container-lowest text-on-surface text-[11px] font-medium hover:bg-surface-container transition-all">
-              <span className="material-symbols-outlined text-[15px] text-outline">description</span>
-              <span>Synced Note</span>
-            </button>
-            <button className="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-surface-container-lowest text-on-surface text-[11px] font-medium hover:bg-surface-container transition-all">
-              <span className="material-symbols-outlined text-[15px] text-outline">bolt</span>
-              <span>Quick 2m Drill</span>
+              <span>Replay Topic Segment</span>
             </button>
           </div>
         </div>
@@ -147,15 +76,11 @@ function CheckpointRow({ cp }) {
     );
   }
 
-  const iconMap = { mastered: { bg: 'bg-tertiary-fixed text-on-tertiary-fixed', icon: 'done' }, recovered: { bg: 'bg-secondary-fixed text-on-secondary-fixed', icon: 'cached' } };
-  const { bg, icon } = iconMap[cp.status] || iconMap.mastered;
-  const badgeMap = { mastered: 'bg-tertiary-fixed/50 text-on-tertiary-fixed-variant', recovered: 'bg-secondary-fixed/50 text-on-secondary-fixed-variant' };
-
   return (
     <div className="group bg-surface-container-lowest p-space-md rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-between gap-space-md">
       <div className="flex items-center gap-space-md min-w-0">
-        <div className={`w-9 h-9 rounded-xl ${bg} flex items-center justify-center shrink-0`}>
-          <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>{icon}</span>
+        <div className="w-9 h-9 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center shrink-0">
+          <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
         </div>
         <div className="min-w-0">
           <div className="flex items-center gap-space-xs">
@@ -163,23 +88,14 @@ function CheckpointRow({ cp }) {
             <span className="text-sm font-medium text-on-surface truncate">{cp.title}</span>
           </div>
           <div className="flex items-center gap-space-sm mt-0.5 text-on-surface-variant text-xs">
-            <span>{cp.attempt}</span>
+            <span>Completed</span>
             <span className="text-outline">•</span>
-            <span className={`font-mono font-medium ${cp.scoreColor}`}>{cp.score}</span>
-            {cp.clip && (
-              <>
-                <span className="text-outline">•</span>
-                <span className="flex items-center gap-0.5">
-                  <span className="material-symbols-outlined text-[13px]">videocam</span>
-                  {cp.clip}
-                </span>
-              </>
-            )}
+            <span className="font-mono text-outline">{cp.time}</span>
           </div>
         </div>
       </div>
-      <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold shrink-0 capitalize ${badgeMap[cp.status] || 'bg-surface-container text-on-surface-variant'}`}>
-        {cp.status}
+      <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold shrink-0 bg-tertiary-fixed/50 text-on-tertiary-fixed-variant">
+        Mastered
       </span>
     </div>
   );
@@ -188,6 +104,83 @@ function CheckpointRow({ cp }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function SessionResultsPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const lectureId = searchParams.get('lectureId');
+
+  const [lecture, setLecture] = useState(null);
+  const [loading, setLoading] = useState(Boolean(lectureId));
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!lectureId) return;
+    const loadData = async () => {
+      try {
+        const data = await fetchLecture(lectureId);
+        setLecture(data);
+      } catch (err) {
+        setError(err.message || 'Failed to load lecture results.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, [lectureId]);
+
+  // Derive dynamic metrics from real lecture data
+  const topics = lecture?.topics || [];
+  const completedCount = topics.filter((t) => t.completed).length;
+  const totalTopics = topics.length || 1;
+  const retentionPercent = topics.length > 0 ? Math.round((completedCount / totalTopics) * 100) : 100;
+  
+  let retentionTier = 'Proficient';
+  if (retentionPercent >= 90) retentionTier = 'Mastery Cleared';
+  else if (retentionPercent < 60) retentionTier = 'Review Recommended';
+
+  const exportNotesAsMarkdown = () => {
+    if (!lecture) return;
+    const lines = [
+      `# ${lecture.title || 'Lecture Summary'}`,
+      `**Subject:** ${lecture.subject || 'General'}`,
+      `**Completion:** ${completedCount} / ${totalTopics} Chapters (${retentionPercent}%)`,
+      '',
+      '## Chapter Breakdown',
+      ...topics.map((t, i) => [
+        `### Chapter ${i + 1}: ${t.title} (${t.startTime || '00:00'} - ${t.endTime || '00:00'})`,
+        t.summary ? `${t.summary}\n` : '',
+        t.keyTerms?.length ? `*Key Terms:* ${t.keyTerms.join(', ')}\n` : '',
+      ].join('\n')),
+    ];
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${(lecture.title || 'lecture_notes').replace(/[^a-zA-Z0-9]/g, '_')}_notes.md`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleReplayTopic = () => {
+    if (lectureId) {
+      navigate(`/interactive/session?lectureId=${lectureId}`);
+    } else {
+      navigate('/interactive');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] gap-space-sm text-on-surface-variant">
+        <span className="material-symbols-outlined animate-spin text-[28px]">progress_activity</span>
+        <span>Loading session results...</span>
+      </div>
+    );
+  }
+
+  const lectureTitle = lecture?.title || 'Interactive Learning Session';
+  const lectureSubject = lecture?.subject || 'General';
 
   return (
     <div className="flex flex-col w-full">
@@ -202,7 +195,7 @@ export default function SessionResultsPage() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
             <div className="flex flex-col gap-space-xs">
               <div className="flex items-center gap-space-xs text-[11px] text-on-surface-variant">
-                {['Workspace', 'Computer Science', 'Interactive Learning', 'Session Results'].map((crumb, i, arr) => (
+                {['Workspace', lectureSubject, 'Interactive Learning', 'Session Results'].map((crumb, i, arr) => (
                   <React.Fragment key={crumb}>
                     <span className={i === arr.length - 1 ? 'text-primary-container font-semibold' : 'hover:text-primary cursor-pointer transition-colors'}>
                       {crumb}
@@ -220,13 +213,20 @@ export default function SessionResultsPage() {
               </div>
             </div>
             <div className="flex items-center gap-space-sm flex-wrap">
-              <button className="inline-flex items-center gap-space-xs px-space-md py-2 rounded-xl bg-surface-container-lowest shadow-sm text-on-surface text-sm font-medium hover:bg-surface-container-low transition-all">
-                <span className="material-symbols-outlined text-[18px] text-outline">picture_as_pdf</span>
-                <span>Export Summary</span>
+              <button
+                onClick={exportNotesAsMarkdown}
+                id="export-summary-btn"
+                className="inline-flex items-center gap-space-xs px-space-md py-2 rounded-xl bg-surface-container-lowest shadow-sm text-on-surface text-sm font-medium hover:bg-surface-container-low transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px] text-outline">download</span>
+                <span>Export Notes (.md)</span>
               </button>
-              <button className="inline-flex items-center gap-space-xs px-space-md py-2 rounded-xl bg-surface-container-high text-primary text-sm font-medium hover:bg-surface-container-highest transition-all">
-                <span className="material-symbols-outlined text-[18px]">account_tree</span>
-                <span>Save to Mind-Map</span>
+              <button
+                onClick={handleReplayTopic}
+                className="inline-flex items-center gap-space-xs px-space-md py-2 rounded-xl bg-surface-container-high text-primary text-sm font-medium hover:bg-surface-container-highest transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]">replay</span>
+                <span>Re-play Session</span>
               </button>
               <Link
                 to="/"
@@ -239,6 +239,12 @@ export default function SessionResultsPage() {
             </div>
           </div>
 
+          {error && (
+            <div role="alert" className="p-space-md rounded-xl bg-error-container/40 text-error text-sm">
+              {error}
+            </div>
+          )}
+
           {/* ── Hero celebration banner ── */}
           <div className="relative bg-surface-container-lowest rounded-2xl shadow-sm p-space-lg overflow-hidden">
             <div className="absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-bl from-tertiary-fixed/30 to-primary-fixed/20 rounded-full blur-2xl pointer-events-none" />
@@ -250,43 +256,58 @@ export default function SessionResultsPage() {
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-space-xs">
-                    <span className="text-[11px] font-mono text-primary font-medium uppercase tracking-wider">{RESULTS.lectureCode}</span>
+                    <span className="text-[11px] font-mono text-primary font-medium uppercase tracking-wider">{lectureSubject}</span>
                   </div>
-                  <h2 className="text-2xl font-semibold text-on-surface tracking-tight">{RESULTS.lectureTitle}</h2>
+                  <h2 className="text-2xl font-semibold text-on-surface tracking-tight">{lectureTitle}</h2>
                   <p className="text-sm text-on-surface-variant">
-                    You mastered <strong className="text-on-surface font-semibold">{RESULTS.summary} topic checkpoints</strong>. 1 concept flagged for targeted spaced repetition before midterms.
+                    You completed <strong className="text-on-surface font-semibold">{completedCount} of {totalTopics} topic checkpoints</strong>.
                   </p>
                 </div>
               </div>
               <MasteryGauge
-                percent={RESULTS.retentionPercent}
-                tier={RESULTS.retentionLabel}
-                exam={RESULTS.examEstimate}
+                percent={retentionPercent}
+                tier={retentionTier}
+                exam={`${retentionPercent}% Checkpoints`}
               />
             </div>
 
             {/* KPI metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
-              {RESULTS.kpis.map((kpi) => (
-                <div key={kpi.label} className="bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between">
-                  <div className="flex items-center justify-between text-on-surface-variant mb-space-xs">
-                    <span className="text-[11px] font-medium">{kpi.label}</span>
-                    <span className={`material-symbols-outlined text-[18px] ${kpi.iconColor}`}>{kpi.icon}</span>
-                  </div>
-                  <div className="flex items-baseline gap-space-xs">
-                    <span className="text-2xl font-semibold text-on-surface">{kpi.value}</span>
-                    {kpi.unit && <span className="text-base text-on-surface-variant">{kpi.unit}</span>}
-                    {kpi.delta && (
-                      <span className={`text-[11px] font-medium flex items-center ${kpi.deltaColor}`}>
-                        <span className="material-symbols-outlined text-[13px]">arrow_upward</span>{kpi.delta}
-                      </span>
-                    )}
-                    {kpi.badge && <span className={`text-[11px] font-medium ${kpi.badgeColor}`}>{kpi.badge}</span>}
-                    {kpi.valueNote && <span className="text-[11px] text-outline">{kpi.valueNote}</span>}
-                  </div>
-                  <span className="text-[11px] text-on-surface-variant mt-1">{kpi.sub}</span>
+              <div className="bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between">
+                <div className="flex items-center justify-between text-on-surface-variant mb-space-xs">
+                  <span className="text-[11px] font-medium">Topic Completion</span>
+                  <span className="material-symbols-outlined text-[18px] text-primary-container">rule</span>
                 </div>
-              ))}
+                <div className="text-2xl font-semibold text-on-surface">{completedCount} / {totalTopics}</div>
+                <span className="text-[11px] text-on-surface-variant mt-1">{retentionPercent}% of chapter goals met</span>
+              </div>
+
+              <div className="bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between">
+                <div className="flex items-center justify-between text-on-surface-variant mb-space-xs">
+                  <span className="text-[11px] font-medium">Lecture Chapters</span>
+                  <span className="material-symbols-outlined text-[18px] text-secondary">view_timeline</span>
+                </div>
+                <div className="text-2xl font-semibold text-on-surface">{totalTopics}</div>
+                <span className="text-[11px] text-on-surface-variant mt-1">AI-segmented topic chapters</span>
+              </div>
+
+              <div className="bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between">
+                <div className="flex items-center justify-between text-on-surface-variant mb-space-xs">
+                  <span className="text-[11px] font-medium">Mastery Tier</span>
+                  <span className="material-symbols-outlined text-[18px] text-tertiary">workspace_premium</span>
+                </div>
+                <div className="text-2xl font-semibold text-on-surface">{retentionTier}</div>
+                <span className="text-[11px] text-on-surface-variant mt-1">Based on retrieval performance</span>
+              </div>
+
+              <div className="bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between">
+                <div className="flex items-center justify-between text-on-surface-variant mb-space-xs">
+                  <span className="text-[11px] font-medium">Study Mode</span>
+                  <span className="material-symbols-outlined text-[18px] text-primary">play_lesson</span>
+                </div>
+                <div className="text-2xl font-semibold text-on-surface">Interactive</div>
+                <span className="text-[11px] text-on-surface-variant mt-1">Video checkpoints enabled</span>
+              </div>
             </div>
           </div>
 
@@ -298,12 +319,26 @@ export default function SessionResultsPage() {
               <div className="flex items-center justify-between pb-space-xs">
                 <div>
                   <h2 className="text-xl font-semibold text-on-surface">Checkpoint Breakdown</h2>
-                  <p className="text-xs text-on-surface-variant">Step-by-step topic performance and diagnostic logs</p>
+                  <p className="text-xs text-on-surface-variant">Step-by-step topic performance and chapter notes</p>
                 </div>
-                <span className="text-[11px] font-mono text-outline px-2.5 py-1 bg-surface-container rounded-lg">5 Checkpoints</span>
+                <span className="text-[11px] font-mono text-outline px-2.5 py-1 bg-surface-container rounded-lg">
+                  {topics.length} Checkpoints
+                </span>
               </div>
-              {RESULTS.checkpoints.map((cp) => (
-                <CheckpointRow key={cp.idx} cp={cp} />
+
+              {topics.map((t, idx) => (
+                <CheckpointRow
+                  key={t.index || idx}
+                  cp={{
+                    idx: String(idx + 1).padStart(2, '0'),
+                    index: t.index,
+                    title: t.title,
+                    time: `${t.startTime || '00:00'} - ${t.endTime || '00:00'}`,
+                    status: t.completed ? 'mastered' : 'flagged',
+                    summary: t.summary,
+                  }}
+                  onReplay={handleReplayTopic}
+                />
               ))}
             </div>
 
@@ -336,7 +371,10 @@ export default function SessionResultsPage() {
                     <span className="absolute bottom-1 right-2 text-[9px] text-outline font-mono">Auto-assembled in 1.4s</span>
                   </div>
                 </div>
-                <button className="w-full inline-flex items-center justify-center gap-space-xs px-space-md py-2.5 rounded-xl bg-surface-container text-primary text-sm font-medium hover:bg-surface-container-high transition-colors">
+                <button
+                  onClick={() => navigate(lectureId ? `/notes?lectureId=${lectureId}` : '/notes')}
+                  className="w-full inline-flex items-center justify-center gap-space-xs px-space-md py-2.5 rounded-xl bg-surface-container text-primary text-sm font-medium hover:bg-surface-container-high transition-colors cursor-pointer"
+                >
                   <span>Open in Notes & Mind-Maps Studio</span>
                   <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
                 </button>

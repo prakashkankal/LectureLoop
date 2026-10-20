@@ -30,19 +30,6 @@ const DEFAULT_SUBJECTS = [
     statusNote: '1 sync scheduled',
   },
   {
-    _id: 'sub_cn_3',
-    code: 'CS-404',
-    title: 'Computer Networks',
-    instructor: 'Prof. Kenneth Wu',
-    term: 'Fall 2024',
-    icon: 'hub',
-    color: 'primary',
-    coverage: 44,
-    lectureCount: 3,
-    totalHours: '2.1 Hours',
-    statusNote: 'All flashcards generated',
-  },
-  {
     _id: 'sub_dsa_4',
     code: 'CS-202',
     title: 'Data Structures & Algorithms',
@@ -68,7 +55,7 @@ export const getSubjects = async (req, res) => {
   try {
     if (mongoose.connection.readyState === 1) {
       let subjects = await Subject.find({ userId: req.user?._id }).sort({ createdAt: 1 });
-      if (subjects.length === 0) {
+      if (subjects.length === 0 && !req.user?.subjectsInitialized) {
         // Seed default subjects for this user
         const seeded = DEFAULT_SUBJECTS.map((s) => ({
           ...s,
@@ -76,6 +63,7 @@ export const getSubjects = async (req, res) => {
           userId: req.user?._id,
         }));
         subjects = await Subject.insertMany(seeded);
+        await req.user.updateOne({ subjectsInitialized: true });
       }
       return res.json({ success: true, data: subjects });
     }
@@ -128,5 +116,40 @@ export const createSubject = async (req, res) => {
   } catch (err) {
     console.error('createSubject error:', err);
     res.status(500).json({ success: false, error: 'Failed to create subject' });
+  }
+};
+
+/**
+ * DELETE /api/subjects/:id
+ * Delete one subject owned by the logged-in user
+ */
+export const deleteSubject = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (mongoose.connection.readyState === 1) {
+      if (!mongoose.isValidObjectId(id)) {
+        return res.status(400).json({ success: false, error: 'Invalid subject ID' });
+      }
+
+      const subject = await Subject.findOneAndDelete({ _id: id, userId: req.user?._id });
+      if (!subject) {
+        return res.status(404).json({ success: false, error: 'Subject not found' });
+      }
+
+      await req.user.updateOne({ subjectsInitialized: true });
+      return res.json({ success: true, data: { _id: subject._id } });
+    }
+
+    const subjectIndex = memorySubjects.findIndex((subject) => subject._id === id);
+    if (subjectIndex === -1) {
+      return res.status(404).json({ success: false, error: 'Subject not found' });
+    }
+
+    const [subject] = memorySubjects.splice(subjectIndex, 1);
+    return res.json({ success: true, data: { _id: subject._id }, _offline: true });
+  } catch (err) {
+    console.error('deleteSubject error:', err);
+    return res.status(500).json({ success: false, error: 'Failed to delete subject' });
   }
 };

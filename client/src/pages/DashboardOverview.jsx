@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-
-const API_BASE = 'http://localhost:5000/api';
+import { fetchDashboardStats } from '../services/api.js';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function getGreeting() {
@@ -87,7 +85,11 @@ function KpiCard({ label, value, icon, iconBg, iconColor, subLabel, subIcon, sub
 function LectureCard({ lecture }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const navigate = useNavigate();
   const status = STATUS_CONFIG[lecture.status] || STATUS_CONFIG['revision-pending'];
+  const openLecture = () => {
+    if (lecture.id) navigate(`/interactive/session?lectureId=${lecture.id}`);
+  };
 
   // waveform color
   const waveColor =
@@ -113,7 +115,21 @@ function LectureCard({ lecture }) {
   if (lecture.subjectColor === 'neutral') subjectBadge = 'bg-surface-container-high text-on-surface';
 
   return (
-    <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-space-lg items-start sm:items-center justify-between relative group">
+    <div
+      role="link"
+      tabIndex={lecture.id ? 0 : -1}
+      aria-label={`Open interactive session: ${lecture.title}`}
+      onClick={(event) => {
+        if (!event.target.closest('button, a')) openLecture();
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' && lecture.id) {
+          event.preventDefault();
+          openLecture();
+        }
+      }}
+      className={`bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-space-lg items-start sm:items-center justify-between relative group ${lecture.id ? 'cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary' : ''}`}
+    >
       <div className="flex items-start sm:items-center gap-space-md min-w-0">
         {/* Thumbnail */}
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-surface-container-high flex flex-col items-center justify-center shrink-0 relative overflow-hidden group-hover:bg-surface-container-highest transition-colors">
@@ -150,7 +166,7 @@ function LectureCard({ lecture }) {
             <span className="text-outline text-[11px]">•</span>
             <span className="text-[11px] text-on-surface-variant">{lecture.duration}</span>
           </div>
-          <h3 className="text-sm font-semibold text-on-surface truncate hover:text-primary-container transition-colors cursor-pointer">
+          <h3 className="text-sm font-semibold text-on-surface truncate group-hover:text-primary-container transition-colors">
             {lecture.title}
           </h3>
           <div className="flex items-center gap-space-sm mt-0.5">
@@ -177,7 +193,15 @@ function LectureCard({ lecture }) {
         </button>
         {menuOpen && (
           <div className="absolute right-0 top-10 w-44 bg-surface-container-lowest rounded-xl shadow-xl py-space-xs z-30 border border-outline-variant/20">
-            <button className="w-full flex items-center gap-space-sm px-space-md py-space-xs text-sm text-on-surface hover:bg-surface-container-low text-left">
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(false);
+                if (lecture.id) navigate(`/notes?lectureId=${encodeURIComponent(lecture.id)}`);
+                else navigate('/notes');
+              }}
+              className="w-full flex items-center gap-space-sm px-space-md py-space-xs text-sm text-on-surface hover:bg-surface-container-low text-left"
+            >
               <span className="material-symbols-outlined text-[18px] text-outline">description</span>
               <span>View Notes</span>
             </button>
@@ -199,9 +223,14 @@ function LectureCard({ lecture }) {
 
 // ─── Subject Card ─────────────────────────────────────────────────────────────
 function SubjectCard({ subject }) {
+  const navigate = useNavigate();
   const colors = SUBJECT_COLOR_MAP[subject.color] || SUBJECT_COLOR_MAP.primary;
   return (
-    <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col justify-between">
+    <button
+      type="button"
+      onClick={() => navigate(`/subjects/${encodeURIComponent(subject.id)}`)}
+      className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col justify-between text-left"
+    >
       <div className="flex items-start justify-between">
         <div className={`w-12 h-12 rounded-xl ${colors.icon} flex items-center justify-center`}>
           <span className="material-symbols-outlined text-[24px]">{subject.icon}</span>
@@ -222,7 +251,7 @@ function SubjectCard({ subject }) {
           />
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -398,44 +427,37 @@ export default function DashboardOverview() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [dashData, setDashData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
+
+  const loadDashboard = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      setDashData(await fetchDashboardStats());
+    } catch (err) {
+      setDashData(null);
+      setError(err.message || 'Could not load your dashboard. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await axios.get(`${API_BASE}/dashboard/stats`);
-        if (res.data?.success) {
-          setDashData(res.data.data);
+    let isMounted = true;
+    fetchDashboardStats()
+      .then((data) => {
+        if (isMounted) setDashData(data);
+      })
+      .catch((err) => {
+        if (isMounted) {
+          setDashData(null);
+          setError(err.message || 'Could not load your dashboard. Please try again.');
         }
-      } catch (err) {
-        console.warn('Dashboard stats fetch failed, using fallback data.');
-        setError('Could not load live stats. Showing sample data.');
-        // Fallback static data so the UI is never broken
-        setDashData({
-          stats: { totalLectures: 12, totalSubjects: 4, notesSaved: 8, pendingRevision: 3, weeklyGrowth: '+2 added this week' },
-          recentLectures: [
-            { id: '1', title: 'Database Management Systems — Normalization', subject: 'DBMS', subjectColor: 'primary', date: 'Oct 24, 2024', duration: '48m', status: 'ready-for-revision', statusLabel: 'Ready for Revision', statusMeta: 'Summary Synced', statusMetaIcon: 'auto_stories' },
-            { id: '2', title: 'Operating Systems — Process Scheduling', subject: 'Operating Systems', subjectColor: 'secondary', date: 'Oct 22, 2024', duration: '56m', status: 'ready', statusLabel: 'Ready', statusMeta: 'Flashcards Prepared', statusMetaIcon: 'psychology' },
-            { id: '3', title: 'Computer Networks — TCP/IP Fundamentals', subject: 'Computer Networks', subjectColor: 'neutral', date: 'Oct 19, 2024', duration: '42m', status: 'revision-pending', statusLabel: 'Revision Pending', statusMeta: 'Review in 2 days', statusMetaIcon: 'alarm' },
-          ],
-          subjects: [
-            { id: '1', name: 'Database Management Systems', description: 'Relational schema, SQL optimization & ACID', icon: 'database', color: 'secondary', lectureCount: 4, progress: 75 },
-            { id: '2', name: 'Operating Systems', description: 'Kernels, multithreading & virtual memory', icon: 'memory', color: 'primary', lectureCount: 3, progress: 60 },
-            { id: '3', name: 'Computer Networks', description: 'OSI model, routing protocols & sockets', icon: 'hub', color: 'secondary-dim', lectureCount: 3, progress: 45 },
-            { id: '4', name: 'Data Structures & Algorithms', description: 'Complexity analysis, graphs & dynamic programming', icon: 'account_tree', color: 'tertiary', lectureCount: 2, progress: 85 },
-          ],
-          recentActivity: [
-            { id: '1', label: 'Added lecture: DBMS Normalization', time: '2 hours ago', icon: 'file_upload', color: 'primary' },
-            { id: '2', label: 'Notes saved for Process Scheduling', time: 'Yesterday, 4:15 PM', icon: 'task_alt', color: 'tertiary' },
-            { id: '3', label: 'Created new subject: Computer Networks', time: '3 days ago', icon: 'create_new_folder', color: 'secondary' },
-            { id: '4', label: 'Completed review: Binary Search Trees', time: '5 days ago', icon: 'check_circle', color: 'neutral' },
-          ],
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStats();
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+    return () => { isMounted = false; };
   }, []);
 
   const stats = dashData?.stats;
@@ -455,9 +477,9 @@ export default function DashboardOverview() {
             <div className="flex flex-col gap-space-xs">
               <div className="flex items-center gap-space-xs text-xs">
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full font-medium bg-primary-fixed text-primary">
-                  {user?.semester || 'Semester 5 Workspace'}
+                  {user?.semester || 'Learning Workspace'}
                 </span>
-                <span className="text-outline">• Active Term</span>
+                <span className="text-outline">• Your overview</span>
               </div>
               <h1 className="text-3xl font-bold text-on-surface tracking-tight">
                 {getGreeting()},{' '}
@@ -468,6 +490,16 @@ export default function DashboardOverview() {
               </p>
             </div>
             <div className="flex items-center gap-space-sm shrink-0">
+              <button
+                type="button"
+                onClick={() => void loadDashboard()}
+                disabled={loading}
+                className="h-10 w-10 rounded-xl bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low disabled:opacity-50 transition-colors shadow-sm border border-outline-variant/30 flex items-center justify-center"
+                aria-label="Refresh overview"
+                title="Refresh overview"
+              >
+                <span className={`material-symbols-outlined text-[20px] ${loading ? 'animate-spin' : ''}`}>refresh</span>
+              </button>
               <Link
                 to="/subjects"
                 className="h-10 px-space-lg rounded-xl bg-surface-container-lowest text-on-surface hover:bg-surface-container-low transition-all text-sm font-medium shadow-sm flex items-center gap-space-xs border border-outline-variant/30"
@@ -488,15 +520,20 @@ export default function DashboardOverview() {
 
           {/* ── KPI Cards ── */}
           {error && (
-            <div className="text-xs text-on-surface-variant bg-surface-container-low px-space-md py-space-xs rounded-lg border border-outline-variant/30">
-              <span className="material-symbols-outlined text-[14px] align-middle mr-1">info</span>
-              {error}
+            <div role="alert" className="flex flex-col gap-3 rounded-lg border border-error/30 bg-error-container/30 px-space-md py-3 text-sm text-error sm:flex-row sm:items-center sm:justify-between">
+              <span className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px]">error</span>
+                {error}
+              </span>
+              <button type="button" onClick={() => void loadDashboard()} className="shrink-0 font-semibold underline underline-offset-2">
+                Retry
+              </button>
             </div>
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
             <KpiCard
               label="Total Lectures"
-              value={loading ? '—' : stats?.totalLectures ?? 0}
+              value={loading || error ? '—' : stats?.totalLectures ?? 0}
               icon="play_circle"
               iconBg="bg-primary-fixed"
               iconColor="text-primary"
@@ -506,27 +543,27 @@ export default function DashboardOverview() {
             />
             <KpiCard
               label="Subjects"
-              value={loading ? '—' : stats?.totalSubjects ?? 0}
+              value={loading || error ? '—' : stats?.totalSubjects ?? 0}
               icon="layers"
               iconBg="bg-secondary-fixed"
               iconColor="text-secondary"
-              subLabel="Across 2 semesters"
+              subLabel="Your saved subjects"
               subIcon="history_edu"
               subColor="text-on-surface-variant"
             />
             <KpiCard
               label="Notes Saved"
-              value={loading ? '—' : stats?.notesSaved ?? 0}
+              value={loading || error ? '—' : stats?.notesSaved ?? 0}
               icon="description"
               iconBg="bg-surface-container-low"
               iconColor="text-on-surface-variant"
-              subLabel="Structured summaries"
+              subLabel="Handwritten topic pages"
               subIcon="auto_awesome"
               subColor="text-on-surface-variant"
             />
             <KpiCard
               label="Pending Revision"
-              value={loading ? '—' : stats?.pendingRevision ?? 0}
+              value={loading || error ? '—' : stats?.pendingRevision ?? 0}
               icon="update"
               iconBg="bg-surface-variant"
               iconColor="text-on-surface-variant"
@@ -548,7 +585,7 @@ export default function DashboardOverview() {
                   <div className="flex items-center gap-space-sm">
                     <h2 className="text-xl font-semibold text-on-surface">Recent Lectures</h2>
                     <span className="px-1.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[11px]">
-                      {recentLectures.length} total
+                      {loading || error ? '—' : `${stats?.totalLectures ?? 0} total`}
                     </span>
                   </div>
                   <Link
@@ -567,10 +604,16 @@ export default function DashboardOverview() {
                       <div key={i} className="bg-surface-container-lowest rounded-xl p-space-lg h-24 animate-pulse" />
                     ))}
                   </div>
-                ) : (
+                ) : recentLectures.length ? (
                   recentLectures.map((lecture) => (
                     <LectureCard key={lecture.id} lecture={lecture} />
                   ))
+                ) : (
+                  <div className="rounded-xl border border-dashed border-outline-variant/50 bg-surface-container-lowest px-5 py-8 text-center">
+                    <span className="material-symbols-outlined text-[28px] text-outline">video_library</span>
+                    <p className="mt-2 text-sm font-medium text-on-surface">{error ? 'Recent lectures are unavailable.' : 'No lectures yet'}</p>
+                    {!error && <p className="mt-1 text-xs text-on-surface-variant">Add a lecture to see it in your overview.</p>}
+                  </div>
                 )}
               </div>
 
@@ -591,9 +634,15 @@ export default function DashboardOverview() {
                     ? [1, 2, 3, 4].map((i) => (
                         <div key={i} className="bg-surface-container-lowest rounded-xl p-space-lg h-36 animate-pulse" />
                       ))
-                    : subjects.map((subject) => (
+                    : subjects.length ? subjects.map((subject) => (
                         <SubjectCard key={subject.id} subject={subject} />
-                      ))}
+                      )) : (
+                        <div className="sm:col-span-2 rounded-xl border border-dashed border-outline-variant/50 bg-surface-container-lowest px-5 py-8 text-center">
+                          <span className="material-symbols-outlined text-[28px] text-outline">auto_stories</span>
+                          <p className="mt-2 text-sm font-medium text-on-surface">{error ? 'Subjects are unavailable.' : 'No subjects yet'}</p>
+                          {!error && <p className="mt-1 text-xs text-on-surface-variant">Create a subject to organize your lectures.</p>}
+                        </div>
+                      )}
                 </div>
               </div>
             </div>
@@ -674,7 +723,7 @@ export default function DashboardOverview() {
                   <span className="material-symbols-outlined text-outline text-[20px]">schedule</span>
                 </div>
                 <div className="flex flex-col gap-space-md relative before:absolute before:top-2 before:bottom-2 before:left-4 before:w-[2px] before:bg-surface-container-high">
-                  {recentActivity.map((event) => {
+                  {recentActivity.length ? recentActivity.map((event) => {
                     const colorClass = ACTIVITY_COLOR_MAP[event.color] || ACTIVITY_COLOR_MAP.neutral;
                     return (
                       <div key={event.id} className="flex items-start gap-space-md relative z-10">
@@ -689,17 +738,21 @@ export default function DashboardOverview() {
                         </div>
                       </div>
                     );
-                  })}
+                  }) : (
+                    <p className="py-4 text-center text-sm text-on-surface-variant">
+                      {loading ? 'Loading activity…' : error ? 'Activity is unavailable.' : 'Your lecture and subject activity will appear here.'}
+                    </p>
+                  )}
                 </div>
               </div>
 
-              {/* Platform status pill */}
+              {/* Live overview status */}
               <div className="bg-surface-container-low rounded-xl p-space-md flex items-center gap-space-sm text-on-surface-variant shadow-sm">
-                <div className="w-2.5 h-2.5 rounded-full bg-tertiary shrink-0 animate-ping" />
+                <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${error ? 'bg-error' : loading ? 'bg-amber-500 animate-pulse' : 'bg-tertiary'}`} />
                 <div className="flex flex-col min-w-0">
-                  <span className="text-xs font-semibold text-on-surface">Platform Foundation Active</span>
+                  <span className="text-xs font-semibold text-on-surface">{error ? 'Overview unavailable' : loading ? 'Updating overview…' : 'Overview up to date'}</span>
                   <span className="text-[11px] truncate text-on-surface-variant">
-                    Cloud sync enabled • Ready for transcription module
+                    {error ? 'Refresh to retry loading your account data.' : 'Based on your saved lectures, subjects, and notes.'}
                   </span>
                 </div>
               </div>
