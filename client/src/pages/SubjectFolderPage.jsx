@@ -6,7 +6,8 @@ import { fetchUserLectures } from '../services/api.js';
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
 
 export default function SubjectFolderPage() {
-  const { subjectKey } = useParams();
+  const { subjectKey, subjectId } = useParams();
+  const resolvedSubjectId = subjectId || subjectKey;
   const navigate = useNavigate();
   const [subject, setSubject] = useState(null);
   const [lectures, setLectures] = useState([]);
@@ -21,15 +22,12 @@ export default function SubjectFolderPage() {
       setError('');
       try {
         const [subjectResponse, userLectures] = await Promise.all([
-          axios.get(`${API_BASE}/subjects`),
+          axios.get(`${API_BASE}/subjects/${resolvedSubjectId}`),
           fetchUserLectures(),
         ]);
         if (!isMounted) return;
 
-        const subjects = subjectResponse.data?.data || [];
-        const selectedSubject = subjects.find((item) =>
-          String(item._id || item.code) === subjectKey || item.code === subjectKey
-        );
+        const selectedSubject = subjectResponse.data?.data;
 
         if (!selectedSubject) {
           setError('This subject could not be found.');
@@ -37,12 +35,7 @@ export default function SubjectFolderPage() {
         }
 
         setSubject(selectedSubject);
-        const subjectNames = [selectedSubject.code, selectedSubject.title]
-          .filter(Boolean)
-          .map((value) => value.trim().toLowerCase());
-        setLectures((userLectures || []).filter((lecture) =>
-          subjectNames.includes(String(lecture.subject || '').trim().toLowerCase())
-        ));
+        setLectures((userLectures || []).filter((lecture) => String(lecture.subjectId || '') === String(selectedSubject._id)));
       } catch (err) {
         if (!isMounted) return;
         console.error('Could not load subject folder:', err);
@@ -56,7 +49,7 @@ export default function SubjectFolderPage() {
     return () => {
       isMounted = false;
     };
-  }, [subjectKey]);
+  }, [resolvedSubjectId]);
 
   return (
     <div className="px-gutter py-space-xl max-w-7xl mx-auto w-full">
@@ -92,12 +85,13 @@ export default function SubjectFolderPage() {
                 </p>
               </div>
             </div>
+            <button type="button" onClick={() => navigate('/padhai-ai')} className="mt-5 rounded-lg bg-primary-container px-4 py-2 text-sm font-semibold text-on-primary hover:opacity-90">Add material with Padhai AI</button>
           </header>
 
           <section className="flex flex-col gap-space-md">
             <div className="flex items-end justify-between gap-space-md">
               <div>
-                <h2 className="text-lg font-semibold text-on-surface">Lecture Folder</h2>
+                <h2 className="text-lg font-semibold text-on-surface">Interactive lectures</h2>
                 <p className="mt-1 text-sm text-on-surface-variant">
                   {lectures.length} {lectures.length === 1 ? 'lecture' : 'lectures'} in this subject
                 </p>
@@ -109,7 +103,7 @@ export default function SubjectFolderPage() {
                 <span className="material-symbols-outlined text-3xl text-outline">video_library</span>
                 <p className="mt-space-sm font-medium text-on-surface">No lectures in this folder yet</p>
                 <p className="mt-1 text-sm text-on-surface-variant">
-                  Lectures assigned to {subject.code} or {subject.title} will appear here.
+                  Interactive lectures explicitly linked to this subject will appear here. Material and notes sections will be available when their processing pipeline is configured.
                 </p>
               </div>
             ) : (
@@ -118,7 +112,7 @@ export default function SubjectFolderPage() {
                   <button
                     key={lecture._id || lecture.id}
                     type="button"
-                    onClick={() => navigate(`/interactive/session?lectureId=${lecture._id || lecture.id}`)}
+                  onClick={() => navigate(`/interactive/${lecture._id || lecture.id}`)}
                     className="rounded-xl border border-outline-variant/20 bg-surface-container-lowest p-space-lg text-left shadow-sm hover:shadow-md hover:border-primary/30 transition-all"
                   >
                     <div className="flex items-start justify-between gap-space-md">

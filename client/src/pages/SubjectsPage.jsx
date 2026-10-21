@@ -30,7 +30,7 @@ export default function SubjectsPage() {
   const [newSubCode, setNewSubCode] = useState('');
   const [newSubTitle, setNewSubTitle] = useState('');
   const [newSubInstructor, setNewSubInstructor] = useState('');
-  const [newSubTerm, setNewSubTerm] = useState('Fall 2024');
+  const [newSubTerm, setNewSubTerm] = useState('');
   const [newSubIcon, setNewSubIcon] = useState('menu_book');
   const [isSubmittingSubject, setIsSubmittingSubject] = useState(false);
 
@@ -93,9 +93,7 @@ export default function SubjectsPage() {
   // Compute analytics
   const totalCourses = subjects.length;
   const totalLectures = subjects.reduce((acc, s) => acc + (s.lectureCount || 0), 0);
-  const totalHours = subjects.length
-    ? `${Math.max(1, Math.round((totalLectures || 1) * 1.4))}.0 Hours`
-    : '0.0 Hours';
+  const totalHours = '—';
 
   // Helper for card styling
   const getColorClasses = (color) => {
@@ -184,20 +182,14 @@ export default function SubjectsPage() {
         code: newSubCode.trim().toUpperCase(),
         title: newSubTitle.trim(),
         instructor: newSubInstructor.trim() || 'Staff Instructor',
-        term: newSubTerm.trim() || 'Fall 2024',
+        term: newSubTerm.trim(),
         icon: newSubIcon || 'menu_book',
         color: 'primary',
       };
 
       const res = await axios.post(`${API_BASE}/subjects`, payload);
-      const created = res.data?.data || {
-        ...payload,
-        _id: `sub_${Date.now()}`,
-        coverage: 0,
-        lectureCount: 0,
-        totalHours: '0.0 Hours',
-        statusNote: 'New course track initialized',
-      };
+      const created = res.data?.data;
+      if (!created?._id) throw new Error('The server did not return the saved subject.');
 
       setSubjects((prev) => [created, ...prev]);
       setIsNewSubjectOpen(false);
@@ -206,26 +198,8 @@ export default function SubjectsPage() {
       setNewSubInstructor('');
       showToast(`Course "${created.code}" created successfully!`);
     } catch (err) {
-      console.warn('Error creating subject, falling back to local state:', err);
-      const fallbackSubject = {
-        _id: `sub_${Date.now()}`,
-        code: newSubCode.trim().toUpperCase(),
-        title: newSubTitle.trim(),
-        instructor: newSubInstructor.trim() || 'Staff Instructor',
-        term: newSubTerm.trim() || 'Fall 2024',
-        icon: newSubIcon || 'menu_book',
-        color: 'primary',
-        coverage: 0,
-        lectureCount: 0,
-        totalHours: '0.0 Hours',
-        statusNote: 'New course track initialized',
-      };
-      setSubjects((prev) => [fallbackSubject, ...prev]);
-      setIsNewSubjectOpen(false);
-      setNewSubCode('');
-      setNewSubTitle('');
-      setNewSubInstructor('');
-      showToast(`Course "${fallbackSubject.code}" added!`);
+      console.warn('Could not create subject:', err);
+      showToast(err.response?.data?.error || err.message || 'Could not create subject. Please try again.', true);
     } finally {
       setIsSubmittingSubject(false);
     }
@@ -274,11 +248,11 @@ export default function SubjectsPage() {
             <button
               id="btn-open-upload-modal"
               type="button"
-              onClick={() => setIsAddLectureOpen(true)}
+              onClick={() => navigate('/padhai-ai')}
               className="h-10 px-space-lg rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-all shadow-md flex items-center gap-space-xs cursor-pointer hover:shadow-lg active:scale-95"
             >
               <span className="material-symbols-outlined text-[18px]">cloud_upload</span>
-              <span>Upload Lecture</span>
+              <span>Add Material</span>
             </button>
           </div>
         </div>
@@ -322,7 +296,7 @@ export default function SubjectsPage() {
           <div className="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between border border-outline-variant/20">
             <div className="flex flex-col">
               <span className="font-label-sm text-label-sm text-outline uppercase tracking-wider">Current Term</span>
-              <span className="font-headline-md text-headline-md text-on-surface font-semibold">Fall 2024</span>
+              <span className="font-headline-md text-headline-md text-on-surface font-semibold">{subjects.find((subject) => subject.term)?.term || '—'}</span>
             </div>
             <div className="w-11 h-11 rounded-lg bg-tertiary-fixed flex items-center justify-center text-tertiary">
               <span className="material-symbols-outlined text-[24px]">event_repeat</span>
@@ -758,7 +732,7 @@ export default function SubjectsPage() {
                     type="text"
                     value={newSubTerm}
                     onChange={(e) => setNewSubTerm(e.target.value)}
-                    placeholder="Fall 2024"
+                    placeholder="e.g., Fall 2026"
                     className="h-10 px-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-container transition-all"
                   />
                 </div>

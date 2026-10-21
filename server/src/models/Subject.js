@@ -5,7 +5,7 @@ const subjectSchema = new mongoose.Schema(
     code: { type: String, required: true, trim: true },
     title: { type: String, required: true, trim: true },
     instructor: { type: String, default: 'Staff Instructor', trim: true },
-    term: { type: String, default: 'Fall 2024', trim: true },
+    term: { type: String, default: '', trim: true },
     icon: { type: String, default: 'menu_book' },
     color: { type: String, default: 'primary' },
     coverage: { type: Number, default: 0 },

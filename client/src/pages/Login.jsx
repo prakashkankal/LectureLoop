@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('student');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -19,8 +20,8 @@ export default function Login() {
     setSubmitting(true);
 
     try {
-      await login(email, password);
-      navigate(from, { replace: true });
+      await login(email, password, role);
+      navigate(role === 'teacher' ? '/teacher' : from, { replace: true });
     } catch (err) {
       setError(err.response?.data?.error || err.message || 'Failed to sign in');
     } finally {
@@ -40,10 +41,10 @@ export default function Login() {
           <span className="text-2xl font-bold tracking-tight text-primary-container">Loop</span>
         </div>
         <h2 className="text-2xl font-bold tracking-tight text-on-surface">
-          Sign in to your Study Workspace
+          Sign in to LectureLoop
         </h2>
         <p className="mt-1 text-sm text-on-surface-variant">
-          Enter your student account to resume interactive lectures.
+          Choose your account type to continue.
         </p>
       </div>
 
@@ -57,6 +58,17 @@ export default function Login() {
           )}
 
           <form className="space-y-5" onSubmit={handleSubmit}>
+            <fieldset>
+              <legend className="mb-2 block text-xs font-semibold uppercase tracking-wider text-on-surface">Account type</legend>
+              <div className="grid grid-cols-2 gap-2">
+                {[['student', 'Student'], ['teacher', 'Teacher']].map(([value, label]) => (
+                  <button key={value} type="button" aria-pressed={role === value} onClick={() => setRole(value)} className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition-colors ${role === value ? 'border-primary bg-primary-fixed text-primary' : 'border-outline-variant/40 bg-surface-container-low text-on-surface-variant hover:bg-surface-container'}`}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {role === 'teacher' && <p className="mt-2 text-xs text-on-surface-variant">Teacher tools are being prepared. Teacher accounts open a separate workspace.</p>}
+            </fieldset>
             <div>
               <label className="block text-xs font-semibold text-on-surface uppercase tracking-wider mb-1" htmlFor="email">
                 Email Address
@@ -67,7 +79,7 @@ export default function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="student@university.edu"
+                placeholder="you@university.edu"
                 className="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-sm focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-all"
               />
             </div>
@@ -105,7 +117,7 @@ export default function Login() {
           <div className="mt-6 text-center text-xs text-on-surface-variant">
             Don't have an account?{' '}
             <Link to="/register" className="text-primary-container font-semibold hover:underline">
-              Create student account
+              Create an account
             </Link>
           </div>
         </div>

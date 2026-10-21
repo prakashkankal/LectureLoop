@@ -1,11 +1,13 @@
 import express from 'express';
-import { getSubjects, createSubject, deleteSubject } from '../controllers/subjectController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { getSubjects, getSubject, createSubject, updateSubject, deleteSubject } from '../controllers/subjectController.js';
+import { protectStudent } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', protect, getSubjects);
-router.post('/', protect, createSubject);
-router.delete('/:id', protect, deleteSubject);
+router.get('/', protectStudent, getSubjects);
+router.post('/', protectStudent, createSubject);
+router.get('/:id', protectStudent, getSubject);
+router.patch('/:id', protectStudent, updateSubject);
+router.delete('/:id', protectStudent, deleteSubject);
 
 export default router;

@@ -48,8 +48,8 @@ export function AuthProvider({ children }) {
     fetchMe();
   }, [token]);
 
-  const login = async (email, password) => {
-    const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
+  const login = async (email, password, role = 'student') => {
+    const res = await axios.post(`${API_BASE}/auth/login`, { email, password, role });
     if (res.data?.success) {
       setToken(res.data.token);
       setUser(res.data.user);
@@ -59,8 +59,8 @@ export function AuthProvider({ children }) {
     throw new Error(res.data?.error || 'Login failed');
   };
 
-  const register = async (name, email, password) => {
-    const res = await axios.post(`${API_BASE}/auth/register`, { name, email, password });
+  const register = async (name, email, password, role = 'student') => {
+    const res = await axios.post(`${API_BASE}/auth/register`, { name, email, password, role });
     if (res.data?.success) {
       setToken(res.data.token);
       setUser(res.data.user);

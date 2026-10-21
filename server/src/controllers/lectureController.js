@@ -2,6 +2,7 @@ import Lecture from '../models/Lecture.js';
 import mongoose from 'mongoose';
 import { fetchTranscript, fetchYouTubeVideoTitle, extractVideoId } from '../services/transcriptService.js';
 import { analyzeTranscript } from '../services/aiService.js';
+import Subject from '../models/Subject.js';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -13,7 +14,7 @@ import { analyzeTranscript } from '../services/aiService.js';
  * 4. Run async pipeline: transcript → AI → update lecture
  */
 export const analyzeLecture = async (req, res) => {
-  const { youtubeUrl, title, subject } = req.body;
+  const { youtubeUrl, title, subject, subjectId } = req.body;
 
   if (!youtubeUrl) {
     return res.status(400).json({ success: false, error: 'youtubeUrl is required' });
@@ -39,9 +40,19 @@ export const analyzeLecture = async (req, res) => {
   if (mongoose.connection.readyState !== 1) {
     return res.status(503).json({ success: false, error: 'Lecture analysis requires an active database connection' });
   }
+  // Avoid duplicate records when a client retries a submission.
+  const existing = await Lecture.findOne({ userId: req.user?._id, youtubeVideoId: videoId });
+  if (existing) return res.status(200).json({ success: true, data: { _id: existing._id, analysisStatus: existing.analysisStatus }, duplicate: true });
+  let associatedSubject = null;
+  if (subjectId) {
+    if (!mongoose.isValidObjectId(subjectId)) return res.status(400).json({ success: false, error: 'Invalid subject ID' });
+    associatedSubject = await Subject.findOne({ _id: subjectId, userId: req.user?._id });
+    if (!associatedSubject) return res.status(404).json({ success: false, error: 'Subject not found' });
+  }
   const lecture = await Lecture.create({
     title: lectureTitle,
-    subject: lectureSubject,
+    subject: associatedSubject ? associatedSubject.title : lectureSubject,
+    subjectId: associatedSubject?._id || null,
     youtubeUrl,
     youtubeVideoId: videoId,
     analysisStatus: 'processing',
@@ -168,9 +179,9 @@ export const createLecture = async (req, res) => {
 export const getLectures = async (req, res) => {
   try {
     if (mongoose.connection.readyState === 1) {
-      const lectures = await Lecture.find({ userId: req.user?._id })
+      const lectures = await Lecture.find({ userId: req.user?._id, youtubeVideoId: { $ne: '' } })
         .sort({ createdAt: -1 })
-        .select('title subject duration status analysisStatus analysisError topics createdAt updatedAt youtubeVideoId')
+        .select('title subject subjectId duration filename description status analysisStatus analysisError topics createdAt updatedAt youtubeVideoId')
         .lean();
       return res.json({ success: true, data: lectures });
     }

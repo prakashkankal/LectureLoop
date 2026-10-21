@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { protect } from '../middleware/authMiddleware.js';
+import { protectStudent } from '../middleware/authMiddleware.js';
 import {
   createQuestions,
   deleteAttempt,
@@ -29,7 +29,7 @@ const handleAudioUpload = (request, response, next) => {
   });
 };
 
-router.use(protect);
+router.use(protectStudent);
 router.get('/materials', getMaterials);
 router.get('/attempts', getAttempts);
 router.delete('/attempts/:id', deleteAttempt);

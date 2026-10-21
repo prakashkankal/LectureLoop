@@ -97,11 +97,11 @@ export const getDashboardStats = async (req, res) => {
 
     const [totalLectures, totalSubjects, notesSaved, pendingRevision, thisWeekCount] =
       await Promise.all([
-        Lecture.countDocuments({ userId }),
+        Lecture.countDocuments({ userId, youtubeVideoId: { $ne: '' } }),
         Subject.countDocuments({ userId }),
         TopicNote.countDocuments({ userId, generationStatus: 'completed', imageUrl: { $ne: '' } }),
-        Lecture.countDocuments({ userId, status: 'revision-due' }),
-        Lecture.countDocuments({ userId, createdAt: { $gte: oneWeekAgo } }),
+        Lecture.countDocuments({ userId, youtubeVideoId: { $ne: '' }, status: 'revision-due' }),
+        Lecture.countDocuments({ userId, youtubeVideoId: { $ne: '' }, createdAt: { $gte: oneWeekAgo } }),
       ]);
 
     const weeklyGrowth = thisWeekCount > 0
@@ -109,7 +109,7 @@ export const getDashboardStats = async (req, res) => {
       : 'No new lectures this week';
 
     // ── Recent Lectures (top 5) ──────────────────────────────────────────────
-    const rawLectures = await Lecture.find({ userId })
+    const rawLectures = await Lecture.find({ userId, youtubeVideoId: { $ne: '' } })
       .sort({ createdAt: -1 })
       .limit(5)
       .select('title subject duration status analysisStatus topics createdAt')
@@ -132,13 +132,18 @@ export const getDashboardStats = async (req, res) => {
     });
 
     // ── Subjects ─────────────────────────────────────────────────────────────
+    const subjectLectureCounts = await Lecture.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId), youtubeVideoId: { $ne: '' }, subjectId: { $in: allSubjects.map((subject) => subject._id) } } },
+      { $group: { _id: '$subjectId', count: { $sum: 1 } } },
+    ]);
+    const subjectLectureCountMap = new Map(subjectLectureCounts.map((item) => [String(item._id), item.count]));
     const subjects = allSubjects.map(s => ({
       id: s._id,
       name: s.title,
       description: `${s.instructor} • ${s.term}`,
       icon: s.icon || 'menu_book',
       color: s.color || 'primary',
-      lectureCount: s.lectureCount || 0,
+      lectureCount: subjectLectureCountMap.get(String(s._id)) || 0,
       progress: s.coverage || 0,
     }));
 
@@ -146,7 +151,7 @@ export const getDashboardStats = async (req, res) => {
     const activity = [];
 
     // Recent lectures as activity events
-    const recentCreatedLectures = await Lecture.find({ userId })
+    const recentCreatedLectures = await Lecture.find({ userId, youtubeVideoId: { $ne: '' } })
       .sort({ createdAt: -1 })
       .limit(5)
       .select('title createdAt analysisStatus')
@@ -159,12 +164,14 @@ export const getDashboardStats = async (req, res) => {
         time: timeAgo(lec.createdAt),
         icon: 'file_upload',
         color: 'primary',
+        sourceType: 'interactive-lecture',
+        href: `/interactive/${lec._id}`,
         sortDate: lec.createdAt,
       });
     });
 
     // Completed analyses as activity events
-    const completedLectures = await Lecture.find({ userId, analysisStatus: 'complete' })
+    const completedLectures = await Lecture.find({ userId, youtubeVideoId: { $ne: '' }, analysisStatus: 'complete' })
       .sort({ updatedAt: -1 })
       .limit(5)
       .select('title updatedAt')
@@ -177,6 +184,8 @@ export const getDashboardStats = async (req, res) => {
         time: timeAgo(lec.updatedAt),
         icon: 'task_alt',
         color: 'tertiary',
+        sourceType: 'interactive-lecture',
+        href: `/interactive/${lec._id}`,
         sortDate: lec.updatedAt,
       });
     });
@@ -195,6 +204,8 @@ export const getDashboardStats = async (req, res) => {
         time: timeAgo(sub.createdAt),
         icon: 'create_new_folder',
         color: 'secondary',
+        sourceType: 'subject',
+        href: `/my-subjects/${sub._id}`,
         sortDate: sub.createdAt,
       });
     });

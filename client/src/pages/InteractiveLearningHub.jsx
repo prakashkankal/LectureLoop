@@ -670,7 +670,7 @@ export default function InteractiveLearningHub() {
                 </div>
                 <div className="flex-1">
                   <span className="text-xs font-semibold text-on-surface">1. Extracting Video Audio & Transcript</span>
-                  <div className="text-[11px] text-on-surface-variant">Accessing YouTube captions or Groq Whisper pipeline</div>
+                  <div className="text-[11px] text-on-surface-variant">Transcribing lecture audio</div>
                 </div>
               </div>
 

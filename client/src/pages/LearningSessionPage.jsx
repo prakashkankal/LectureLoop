@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { createLectureBookmark, fetchLecture, fetchLectureSession, fetchLectureTopicNotes, generateTopicNote, downloadAuthenticatedFile, flagLectureTopicForReview, markLectureTopicComplete, saveLectureNote, saveLectureSession, submitLectureQuizAttempt } from '../services/api.js';
 
 // ─── Mock session data ────────────────────────────────────────────────────────
@@ -746,7 +746,8 @@ function CorrectPanel({ onContinue, isLastTopic, isLastQuestion, onBookmark, qui
 export default function LearningSessionPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const lectureId = searchParams.get('lectureId');
+  const { lectureId: routeLectureId } = useParams();
+  const lectureId = routeLectureId || searchParams.get('lectureId');
   const requestedTopicIndex = searchParams.has('topicIndex') ? Number(searchParams.get('topicIndex')) : null;
   const requestedSeek = searchParams.has('seek') ? Math.max(0, Number(searchParams.get('seek')) || 0) : null;
   const [lectureData, setLectureData] = useState(null);

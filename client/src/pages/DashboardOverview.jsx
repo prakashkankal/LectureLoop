@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { fetchDashboardStats } from '../services/api.js';
+import { apiFetch, fetchDashboardStats } from '../services/api.js';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function getGreeting() {
@@ -88,7 +88,7 @@ function LectureCard({ lecture }) {
   const navigate = useNavigate();
   const status = STATUS_CONFIG[lecture.status] || STATUS_CONFIG['revision-pending'];
   const openLecture = () => {
-    if (lecture.id) navigate(`/interactive/session?lectureId=${lecture.id}`);
+    if (lecture.id) navigate(`/interactive/${lecture.id}`);
   };
 
   // waveform color
@@ -256,15 +256,45 @@ function SubjectCard({ subject }) {
 }
 
 // ─── Add Lecture Drawer ───────────────────────────────────────────────────────
-function AddLectureDrawer({ isOpen, onClose }) {
+export function AddLectureDrawer({ isOpen, onClose }) {
   const [title, setTitle] = useState('');
-  const [subject, setSubject] = useState('dbms');
+  const [subjects, setSubjects] = useState([]);
+  const [subject, setSubject] = useState('');
+  const [subjectsLoading, setSubjectsLoading] = useState(false);
+  const [subjectsError, setSubjectsError] = useState('');
   const [preset, setPreset] = useState('comprehensive');
 
   // Trap body scroll while open
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    let active = true;
+    setSubjectsLoading(true);
+    setSubjectsError('');
+    apiFetch('/subjects')
+      .then((response) => {
+        if (!active) return;
+        const savedSubjects = Array.isArray(response.data) ? response.data : [];
+        setSubjects(savedSubjects);
+        setSubject((current) => savedSubjects.some((item) => String(item._id) === current)
+          ? current
+          : String(savedSubjects[0]?._id || ''));
+      })
+      .catch((error) => {
+        if (active) {
+          setSubjects([]);
+          setSubject('');
+          setSubjectsError(error.message || 'Could not load your subjects.');
+        }
+      })
+      .finally(() => {
+        if (active) setSubjectsLoading(false);
+      });
+    return () => { active = false; };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -333,17 +363,20 @@ function AddLectureDrawer({ isOpen, onClose }) {
                   id="lecture-subject"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full h-10 px-space-md pr-8 rounded-lg bg-surface-container-low text-on-surface text-sm appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary/40 transition-colors"
+                  disabled={subjectsLoading || subjects.length === 0}
+                  className="w-full h-10 px-space-md pr-8 rounded-lg bg-surface-container-low text-on-surface text-sm appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary/40 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  <option value="dbms">Database Management Systems</option>
-                  <option value="os">Operating Systems</option>
-                  <option value="cn">Computer Networks</option>
-                  <option value="dsa">Data Structures & Algorithms</option>
+                  <option value="">{subjectsLoading ? 'Loading subjects…' : subjects.length ? 'Select a subject' : 'No subjects available'}</option>
+                  {subjects.map((item) => (
+                    <option key={item._id} value={String(item._id)}>{item.code ? `${item.code} — ` : ''}{item.title}</option>
+                  ))}
                 </select>
                 <span className="material-symbols-outlined text-outline text-[18px] absolute right-3 top-2.5 pointer-events-none">
                   expand_more
                 </span>
               </div>
+              {subjectsError && <p role="alert" className="text-xs text-error">{subjectsError}</p>}
+              {!subjectsLoading && !subjectsError && subjects.length === 0 && <p className="text-xs text-on-surface-variant">Create a subject first in <Link to="/my-subjects" onClick={onClose} className="font-semibold text-primary hover:underline">My Subjects</Link>.</p>}
             </div>
 
             {/* Upload zone */}
@@ -354,15 +387,9 @@ function AddLectureDrawer({ isOpen, onClose }) {
                   <span className="material-symbols-outlined text-[24px]">cloud_upload</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-on-surface">Drag & drop audio, video or PDF</span>
-                  <span className="text-[11px] text-on-surface-variant">MP4, MP3, WAV, or PPTX up to 500MB</span>
+                  <span className="text-sm font-medium text-on-surface">Lecture file upload is unavailable</span>
+                  <span className="text-[11px] text-on-surface-variant">The material upload service has not been connected.</span>
                 </div>
-                <button
-                  type="button"
-                  className="mt-space-xs h-8 px-space-md rounded-lg bg-surface-container-lowest text-on-surface text-xs shadow-sm hover:bg-surface-container-high transition-colors"
-                >
-                  Browse Files
-                </button>
               </div>
             </div>
 
@@ -398,6 +425,9 @@ function AddLectureDrawer({ isOpen, onClose }) {
             </div>
           </div>
 
+          <div role="status" className="mx-space-lg rounded-lg border border-outline-variant bg-surface-container-low p-space-sm text-xs text-on-surface-variant">
+            Lecture uploads are not connected to a processing API yet. The form can be filled out, but submitting will not save or process a lecture.
+          </div>
           {/* Footer */}
           <div className="p-space-lg bg-surface-container-low flex items-center justify-end gap-space-sm border-t border-outline-variant/20">
             <button
@@ -408,7 +438,9 @@ function AddLectureDrawer({ isOpen, onClose }) {
             </button>
             <button
               type="button"
-              className="h-10 px-space-lg rounded-xl bg-primary-container text-on-primary hover:bg-primary text-sm font-medium shadow-sm transition-colors flex items-center gap-space-xs"
+              disabled
+              title="Lecture processing is not configured yet"
+              className="h-10 px-space-lg rounded-xl bg-primary-container text-on-primary text-sm font-medium shadow-sm flex items-center gap-space-xs opacity-50 cursor-not-allowed"
             >
               <span className="material-symbols-outlined text-[18px]">publish</span>
               <span>Upload & Process</span>
@@ -589,7 +621,7 @@ export default function DashboardOverview() {
                     </span>
                   </div>
                   <Link
-                    to="/lectures"
+                    to="/my-lectures"
                     className="text-primary-container text-sm font-medium hover:underline flex items-center gap-space-xs group"
                   >
                     <span>View All</span>
@@ -674,7 +706,7 @@ export default function DashboardOverview() {
 
                   {/* Browse library */}
                   <button
-                    onClick={() => navigate('/lectures')}
+                    onClick={() => navigate('/my-lectures')}
                     className="w-full flex items-center gap-space-md p-space-sm rounded-lg hover:bg-surface-container-low transition-colors text-left group"
                   >
                     <div className="w-9 h-9 rounded-lg bg-secondary-fixed text-secondary flex items-center justify-center shrink-0 group-hover:bg-secondary group-hover:text-on-secondary transition-colors">
@@ -726,7 +758,7 @@ export default function DashboardOverview() {
                   {recentActivity.length ? recentActivity.map((event) => {
                     const colorClass = ACTIVITY_COLOR_MAP[event.color] || ACTIVITY_COLOR_MAP.neutral;
                     return (
-                      <div key={event.id} className="flex items-start gap-space-md relative z-10">
+                      <button type="button" key={event.id} onClick={() => event.href && navigate(event.href)} disabled={!event.href} className="flex items-start gap-space-md relative z-10 text-left disabled:cursor-default">
                         <div
                           className={`w-8 h-8 rounded-full ${colorClass} flex items-center justify-center shrink-0 ring-4 ring-surface-container-lowest`}
                         >
@@ -736,7 +768,7 @@ export default function DashboardOverview() {
                           <span className="text-sm font-medium text-on-surface">{event.label}</span>
                           <span className="text-[11px] text-on-surface-variant">{event.time}</span>
                         </div>
-                      </div>
+                      </button>
                     );
                   }) : (
                     <p className="py-4 text-center text-sm text-on-surface-variant">

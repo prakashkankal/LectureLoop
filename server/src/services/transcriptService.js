@@ -1,23 +1,4 @@
-import { YoutubeTranscript } from 'youtube-transcript';
 import { transcribeYouTubeAudio } from './groqTranscriptService.js';
-
-function formatTimestamp(seconds) {
-  const wholeSeconds = Math.floor(seconds);
-  const hours = Math.floor(wholeSeconds / 3600);
-  const minutes = Math.floor((wholeSeconds % 3600) / 60);
-  const remainingSeconds = wholeSeconds % 60;
-  return hours
-    ? `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`
-    : `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-}
-
-function createTranscriptResult(rawSegments, videoId, source) {
-  if (!rawSegments.length) throw new Error(`${source} returned no timestamped transcript segments`);
-  const fullText = rawSegments
-    .map((segment) => `[${formatTimestamp(segment.start)}] ${segment.text}`)
-    .join(' ');
-  return { rawSegments, fullText, videoId, source };
-}
 
 export function getTranscriptProviderKeys(...configuredKeys) {
   return [...new Set(configuredKeys
@@ -116,24 +97,6 @@ export async function fetchTranscript(youtubeUrl) {
       console.warn(`[Transcript] OpenAI Whisper failed (${err.message}); trying the next transcription provider.`);
       errors.push(`OpenAI Whisper: ${err.message}`);
     }
-  }
-
-  try {
-    const rawSegments = await YoutubeTranscript.fetchTranscript(videoId);
-    if (!rawSegments?.length) throw new Error('No transcript found. The video may have no captions enabled.');
-    return createTranscriptResult(
-      rawSegments
-        .filter((segment) => typeof segment.text === 'string' && segment.text.trim() && Number.isFinite(segment.start))
-        .map((segment) => ({
-          text: segment.text.trim(),
-          start: segment.start,
-          duration: Number.isFinite(segment.duration) ? segment.duration : 0,
-        })),
-      videoId,
-      'youtube-captions'
-    );
-  } catch (err) {
-    errors.push(`YouTube captions: ${err.message}`);
   }
 
   throw new Error(`All transcript providers failed: ${errors.join('; ') || 'No transcription API keys are configured'}`);

@@ -30,7 +30,7 @@ export const protect = async (req, res, next) => {
         id: decoded.id,
         _id: decoded.id,
         name: 'Student User',
-        role: 'student',
+        role: decoded.role || 'student',
         semester: 'Semester 5 • Fall 2024',
       };
     }
@@ -44,3 +44,10 @@ export const protect = async (req, res, next) => {
     return res.status(401).json({ error: 'Not authorized, token invalid or expired' });
   }
 };
+
+export const protectStudent = (req, res, next) => protect(req, res, () => {
+  if (req.user?.role !== 'student') {
+    return res.status(403).json({ error: 'This feature is available to student accounts.' });
+  }
+  return next();
+});

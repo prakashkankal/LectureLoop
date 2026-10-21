@@ -4,6 +4,7 @@ const lectureSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
     subject: { type: String, required: true, trim: true },
+    subjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject', default: null, index: true },
     youtubeUrl: { type: String, default: '' },
     youtubeVideoId: { type: String, default: '' },
     duration: { type: String, default: '' },

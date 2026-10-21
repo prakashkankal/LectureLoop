@@ -306,7 +306,7 @@ Typical request flow:
 
 - **Lecture service:** create/list/get/delete lecture records, validate source metadata, track status.
 - **Analysis orchestrator:** coordinate transcript retrieval, segmentation, question generation, and failure recovery.
-- **Transcript service:** retrieve permitted YouTube captions or, in a later phase, transcribe uploaded audio.
+- **Transcript service:** extract permitted YouTube audio and transcribe it with a configured speech recognition provider.
 - **Segmentation service:** convert transcript text and timestamps into validated topic segments.
 - **Question service:** generate and validate questions and keep answer keys server-side.
 - **Session service:** create/resume sessions, record attempts, calculate correctness, apply retry policy, advance topics, and finish sessions.
@@ -433,7 +433,7 @@ API rules:
 - Keep quiz submission independent of player callback timing.
 - Test with real embeddable videos and edge cases.
 - Do not download or rehost video content.
-- Some videos may disable embedding or lack accessible captions. Display clear recovery guidance.
+- Some videos may disable embedding or audio extraction. Display clear recovery guidance.
 
 The player API does not by itself provide the complete adaptive-learning flow. Topic-boundary handling, quiz presentation, progress saving, and remediation must be implemented by LectureLoop.
 
@@ -511,7 +511,7 @@ GROQ_TRANSCRIPTION_MODEL=whisper-large-v3-turbo
 Requirements:
 - Commit `.env.example`, never real `.env` credentials.
 - `OPENAI_API_KEY` (or legacy `OPEN-AI-API`) is used first for server-side transcript analysis; `GEMINI_API_KEY` is used if OpenAI fails. Model IDs can be overridden with `OPENAI_MODEL` and `GEMINI_MODEL`.
-- `GROQ_API_KEY` (or legacy `WISPER_API_KEY`) is used only when YouTube captions are unavailable. The server extracts audio with yt-dlp and sends it to Groq Whisper; the current upload limit is 25 MB. Only use this fallback for videos you are authorized to download and transcribe.
+- `GROQ_API_KEY` (or legacy `WISPER_API_KEY`) can be used for audio transcription. The server extracts audio with yt-dlp and sends it to Groq Whisper; the current upload limit is 25 MB. Only use this for videos you are authorized to download and transcribe.
 - Install server dependencies with Python 3.9+ available for the yt-dlp wrapper's installation.
 - Document where each variable is used.
 - Keep local frontend and backend origins configurable.

@@ -3,13 +3,12 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const navItems = [
-  { name: 'Overview', path: '/', icon: 'dashboard' },
-  { name: 'Interactive Learning', path: '/interactive', icon: 'psychology', badge: 'AI' },
-  { name: 'Oral Practice', path: '/oral-practice', icon: 'record_voice_over' },
-  { name: 'My Lectures', path: '/lectures', icon: 'video_library' },
-  { name: 'Subjects', path: '/subjects', icon: 'folder_open' },
-  { name: 'Notes', path: '/notes', icon: 'description' },
-  { name: 'Revision', path: '/revision', icon: 'cached' },
+  { name: 'Overview', path: '/dashboard', icon: 'dashboard' },
+  { name: 'Interactive', path: '/interactive', icon: 'psychology', badge: 'AI' },
+  { name: 'Padhai AI', path: '/padhai-ai', icon: 'auto_awesome' },
+  { name: 'My Lectures', path: '/my-lectures', icon: 'video_library' },
+  { name: 'My Subjects', path: '/my-subjects', icon: 'folder_open' },
+  { name: 'Oral Test', path: '/oral-test', icon: 'record_voice_over' },
 ];
 
 const prefItems = [

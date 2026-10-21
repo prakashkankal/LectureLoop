@@ -10,15 +10,15 @@ const inMemoryUsers = new Map();
 
 const isDbConnected = () => mongoose.connection.readyState === 1;
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, JWT_SECRET, { expiresIn: '7d' });
+const generateToken = (id, role = 'student') => {
+  return jwt.sign({ id, role }, JWT_SECRET, { expiresIn: '7d' });
 };
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role = 'student' } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Please provide name, email, and password' });
@@ -26,6 +26,10 @@ export const register = async (req, res) => {
 
     if (password.length < 6) {
       return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
+
+    if (!['student', 'teacher'].includes(role)) {
+      return res.status(400).json({ error: 'Choose a student or teacher account type' });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
@@ -42,9 +46,10 @@ export const register = async (req, res) => {
         name,
         email: normalizedEmail,
         password: hashedPassword,
+        role,
       });
 
-      const token = generateToken(user._id);
+      const token = generateToken(user._id, user.role);
 
       return res.status(201).json({
         success: true,
@@ -71,12 +76,12 @@ export const register = async (req, res) => {
         name,
         email: normalizedEmail,
         password: hashedPassword,
-        role: 'student',
+        role,
         semester: 'Semester 5 • Fall 2024',
       };
 
       inMemoryUsers.set(normalizedEmail, mockUser);
-      const token = generateToken(id);
+      const token = generateToken(id, role);
 
       return res.status(201).json({
         success: true,
@@ -99,10 +104,14 @@ export const register = async (req, res) => {
 // @route   POST /api/auth/login
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ error: 'Please provide email and password' });
+    }
+
+    if (role !== undefined && !['student', 'teacher'].includes(role)) {
+      return res.status(400).json({ error: 'Choose a student or teacher account type' });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
@@ -118,7 +127,11 @@ export const login = async (req, res) => {
         return res.status(401).json({ error: 'Invalid email or password' });
       }
 
-      const token = generateToken(user._id);
+      if (role && user.role !== role) {
+        return res.status(403).json({ error: `This account is registered as a ${user.role}. Choose ${user.role} to sign in.` });
+      }
+
+      const token = generateToken(user._id, user.role);
 
       return res.json({
         success: true,
@@ -142,7 +155,11 @@ export const login = async (req, res) => {
         return res.status(401).json({ error: 'Invalid email or password' });
       }
 
-      const token = generateToken(user.id);
+      if (role && user.role !== role) {
+        return res.status(403).json({ error: `This account is registered as a ${user.role}. Choose ${user.role} to sign in.` });
+      }
+
+      const token = generateToken(user.id, user.role);
 
       return res.json({
         success: true,

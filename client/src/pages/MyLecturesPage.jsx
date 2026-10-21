@@ -1,120 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-const LECTURES = [
-  {
-    id: '1',
-    subject: 'dbms',
-    subjectLabel: 'DBMS',
-    title: 'Database Management Systems — Normalization & 3NF',
-    date: 'Oct 24, 2024',
-    duration: '48m 15s',
-    filename: 'lecture_dbms_lec14.mp3',
-    filesize: '32 MB',
-    description: "Coverage of functional dependencies, Armstrong's axioms, Boyce-Codd Normal Form, and lossy vs lossless decompositions.",
-    aiLabel: '9 AI Key Concepts',
-    aiIcon: 'bolt',
-    status: 'ready',
-    statusLabel: 'Archived & Ready',
-    statusBg: 'bg-tertiary-fixed text-on-tertiary-fixed',
-    dotColor: 'bg-tertiary',
-  },
-  {
-    id: '2',
-    subject: 'os',
-    subjectLabel: 'Operating Systems',
-    title: 'Operating Systems — Process Scheduling & Semaphores',
-    date: 'Oct 22, 2024',
-    duration: '56m 20s',
-    filename: 'os_class_oct22.m4a',
-    filesize: '41 MB',
-    description: 'Multi-level feedback queues, synchronization barriers, dining philosophers puzzle, and race condition mitigations.',
-    aiLabel: '14 AI Flashcards',
-    aiIcon: 'bolt',
-    status: 'ready',
-    statusLabel: 'Ready',
-    statusBg: 'bg-tertiary-fixed text-on-tertiary-fixed',
-    dotColor: 'bg-tertiary',
-  },
-  {
-    id: '3',
-    subject: 'cn',
-    subjectLabel: 'Computer Networks',
-    title: 'Computer Networks — TCP/IP 3-Way Handshake',
-    date: 'Oct 19, 2024',
-    duration: '42m 00s',
-    filename: 'cn_tcp_handshake.mp3',
-    filesize: '29 MB',
-    description: 'SYN, SYN-ACK, ACK sequence numbers, sliding window flow control, and TCP congestion window algorithm breakdown.',
-    aiLabel: 'Loop Due (Spaced Rep.)',
-    aiIcon: 'event_repeat',
-    status: 'revision-due',
-    statusLabel: 'Revision Due',
-    statusBg: 'bg-secondary-fixed text-on-secondary-fixed',
-    dotColor: 'bg-secondary',
-    highlight: true,
-  },
-  {
-    id: '4',
-    subject: 'dsa',
-    subjectLabel: 'Data Structures',
-    title: 'Data Structures — Balanced AVL Trees & Rotations',
-    date: 'Oct 16, 2024',
-    duration: '61m 10s',
-    filename: 'dsa_avl_lecture.mp3',
-    filesize: '45 MB',
-    description: 'Balance factors (-1, 0, 1), single left/right rotations, double LR/RL rotations with step-by-step recursion trace.',
-    aiLabel: '8 AI Drill Quizzes',
-    aiIcon: 'bolt',
-    status: 'ready',
-    statusLabel: 'Ready',
-    statusBg: 'bg-tertiary-fixed text-on-tertiary-fixed',
-    dotColor: 'bg-tertiary',
-  },
-  {
-    id: '5',
-    subject: 'dbms',
-    subjectLabel: 'DBMS',
-    title: 'DBMS — SQL Joins and Query Optimization',
-    date: 'Oct 14, 2024',
-    duration: '50m 30s',
-    filename: 'dbms_joins_opt.wav',
-    filesize: '38 MB',
-    description: 'Nested loop, hash join, merge join costs, index lookup benchmarks, and query execution tree plan transformations.',
-    aiLabel: '11 AI Concepts',
-    aiIcon: 'bolt',
-    status: 'ready',
-    statusLabel: 'Ready',
-    statusBg: 'bg-tertiary-fixed text-on-tertiary-fixed',
-    dotColor: 'bg-tertiary',
-  },
-  {
-    id: '6',
-    subject: 'os',
-    subjectLabel: 'Operating Systems',
-    title: "Operating Systems — Deadlock Detection & Banker's Algorithm",
-    date: 'Oct 10, 2024',
-    duration: '45m 00s',
-    filename: 'os_deadlock_oct10.mp3',
-    filesize: '34 MB',
-    description: 'Mutual exclusion, hold and wait conditions, circular wait graphs, safe sequence computation, and safe state matrix.',
-    aiLabel: '6 Interactive Loops',
-    aiIcon: 'bolt',
-    status: 'ready',
-    statusLabel: 'Ready',
-    statusBg: 'bg-tertiary-fixed text-on-tertiary-fixed',
-    dotColor: 'bg-tertiary',
-  },
-];
-
-const SUBJECT_CHIPS = [
-  { id: 'all', label: 'All Subjects (12)' },
-  { id: 'dbms', label: 'DBMS (4)' },
-  { id: 'os', label: 'Operating Systems (3)' },
-  { id: 'cn', label: 'Computer Networks (3)' },
-  { id: 'dsa', label: 'Data Structures (2)' },
-];
+import { fetchUserLectures } from '../services/api';
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Date: Newest First' },
@@ -122,11 +8,11 @@ const SORT_OPTIONS = [
   { value: 'title', label: 'Title A–Z' },
 ];
 
-const HEADER_STATS = [
-  { label: 'Total Preserved', value: '12 Sessions', sub: '5.2 hrs total audio', subColor: 'text-secondary', icon: 'graphic_eq', iconBg: 'bg-secondary-container/30 text-secondary' },
-  { label: 'Active Loops', value: '4 Enrolled', sub: '94% Retention score', subColor: 'text-tertiary', icon: 'all_inclusive', iconBg: 'bg-tertiary-fixed/30 text-tertiary' },
-  { label: 'Revisions Pending', value: '2 Overdue', sub: 'Next: TCP 3-Way', subColor: 'text-on-surface-variant', valueColor: 'text-error', icon: 'priority_high', iconBg: 'bg-error-container/40 text-error' },
-  { label: 'AI Transcripts', value: '100% Vectorized', sub: '3,420 key terms', subColor: 'text-primary', icon: 'auto_awesome', iconBg: 'bg-primary-fixed text-primary' },
+const STAT_STYLES = [
+  { icon: 'video_library', iconBg: 'bg-secondary-container/30 text-secondary', subColor: 'text-secondary' },
+  { icon: 'check_circle', iconBg: 'bg-tertiary-fixed/30 text-tertiary', subColor: 'text-tertiary' },
+  { icon: 'category', iconBg: 'bg-primary-fixed text-primary', subColor: 'text-primary' },
+  { icon: 'auto_awesome', iconBg: 'bg-primary-fixed text-primary', subColor: 'text-primary' },
 ];
 
 // Subject thumbnail icon map
@@ -137,20 +23,53 @@ const SUBJECT_THUMB = {
   dsa: { icon: 'account_tree', color: 'text-primary-container', bg: 'bg-primary-container/10' },
 };
 
+const formatDate = (value) => value ? new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(value)) : 'Date unavailable';
+const durationSeconds = (value = '') => {
+  const parts = String(value).match(/\d+/g)?.map(Number) || [];
+  return parts.reduce((total, part) => total * 60 + part, 0);
+};
+const formatStatus = (lecture) => {
+  const status = lecture.status || lecture.analysisStatus || 'processing';
+  if (status === 'ready' || status === 'complete') return { label: 'Ready', bg: 'bg-tertiary-fixed text-on-tertiary-fixed', dot: 'bg-tertiary' };
+  if (status === 'revision-due') return { label: 'Revision due', bg: 'bg-secondary-fixed text-on-secondary-fixed', dot: 'bg-secondary' };
+  if (status === 'archived') return { label: 'Archived', bg: 'bg-surface-container-high text-on-surface-variant', dot: 'bg-outline' };
+  if (status === 'failed') return { label: 'Analysis failed', bg: 'bg-error-container text-error', dot: 'bg-error' };
+  return { label: 'Processing', bg: 'bg-secondary-fixed text-on-secondary-fixed', dot: 'bg-secondary' };
+};
+const normalizeLecture = (item) => {
+  const status = formatStatus(item);
+  const topics = item.topics || [];
+  return {
+    ...item,
+    id: item._id,
+    subject: item.subject || 'Other',
+    subjectLabel: item.subject || 'Other',
+    date: formatDate(item.createdAt),
+    duration: item.duration || 'Duration unavailable',
+    filename: item.filename || (item.youtubeVideoId ? `YouTube video · ${item.youtubeVideoId}` : 'No source file'),
+    description: item.description || topics.map((topic) => topic.summary).filter(Boolean).join(' '),
+    statusLabel: status.label,
+    statusBg: status.bg,
+    dotColor: status.dot,
+    aiIcon: 'auto_awesome',
+    aiLabel: topics.length ? `${topics.length} AI topics` : (item.analysisStatus === 'failed' ? 'Analysis unavailable' : 'No AI topics yet'),
+  };
+};
+
 const ORAL_PRACTICE_ORIGIN = 'http://127.0.0.1:5179';
 
 function createOralPracticeMaterial(lecture) {
-  const keyTerms = lecture.description.split(/,| and /i).map((term) => term.trim()).filter(Boolean);
+  const topics = lecture.topics || [];
+  const notes = [lecture.description, ...topics.map((topic) => topic.summary)].filter(Boolean);
+  if (!notes.length) return null;
+  const keyTerms = topics.flatMap((topic) => topic.keyTerms || []);
   return {
     schemaVersion: 1,
     material: {
       subject: lecture.subjectLabel,
       lecture: lecture.title,
       topic: lecture.title,
-      notes: [
-        `${lecture.title} covers the concepts listed in its lecture description.`,
-        ...keyTerms.map((term) => `${term} is one of the concepts covered in ${lecture.title}.`),
-      ].join(' '),
+      notes: notes.join('\n\n'),
       keyTerms,
     },
   };
@@ -214,7 +133,6 @@ function LectureGridCard({ lecture, onPracticeOrally }) {
             <span className="material-symbols-outlined text-outline text-[15px]">audio_file</span>
             <span className="text-[11px] font-mono text-on-surface-variant truncate">{lecture.filename}</span>
           </div>
-          <span className="text-[11px] font-mono text-outline shrink-0 ml-2">{lecture.filesize}</span>
         </div>
 
         {/* Description */}
@@ -342,18 +260,56 @@ function LectureListRow({ lecture, onPracticeOrally }) {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function MyLecturesPage() {
+  const [lectures, setLectures] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [search, setSearch] = useState('');
   const [activeSubject, setActiveSubject] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
   const [oralStatus, setOralStatus] = useState('');
 
+  useEffect(() => {
+    let active = true;
+    fetchUserLectures()
+      .then((items) => { if (active) setLectures(items.map(normalizeLecture)); })
+      .catch((error) => { if (active) setLoadError(error.message || 'Could not load your lectures.'); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, []);
+
+  const subjectChips = useMemo(() => {
+    const counts = new Map();
+    lectures.forEach((lecture) => counts.set(lecture.subject, (counts.get(lecture.subject) || 0) + 1));
+    return [
+      { id: 'all', label: `All Subjects (${lectures.length})` },
+      ...Array.from(counts, ([id, count]) => ({ id, label: `${id} (${count})` })),
+    ];
+  }, [lectures]);
+
+  const headerStats = useMemo(() => {
+    const ready = lectures.filter((lecture) => lecture.status === 'ready' || lecture.analysisStatus === 'complete').length;
+    const topicCount = lectures.reduce((total, lecture) => total + (lecture.topics?.length || 0), 0);
+    const subjectCount = new Set(lectures.map((lecture) => lecture.subject)).size;
+    return [
+      { label: 'My Lectures', value: `${lectures.length}`, sub: 'Saved lectures', ...STAT_STYLES[0] },
+      { label: 'Ready', value: `${ready}`, sub: 'Analysis complete', ...STAT_STYLES[1] },
+      { label: 'Subjects', value: `${subjectCount}`, sub: 'With saved lectures', ...STAT_STYLES[2] },
+      { label: 'AI Topics', value: `${topicCount}`, sub: 'Generated from your lectures', ...STAT_STYLES[3] },
+    ];
+  }, [lectures]);
+
   const practiceOrally = (lecture) => {
+    const material = createOralPracticeMaterial(lecture);
+    if (!material) {
+      setOralStatus(`No lecture notes or topic summaries are available for "${lecture.title}" yet.`);
+      return;
+    }
     const requestId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const message = {
       type: 'lectureloop:import-material',
       requestId,
-      ...createOralPracticeMaterial(lecture),
+      ...material,
     };
 
     if (window.opener) {
@@ -390,7 +346,7 @@ export default function MyLecturesPage() {
   };
 
   const filtered = useMemo(() => {
-    let list = LECTURES;
+    let list = lectures;
 
     // Subject filter
     if (activeSubject !== 'all') {
@@ -412,18 +368,12 @@ export default function MyLecturesPage() {
     if (sortBy === 'title') {
       list = [...list].sort((a, b) => a.title.localeCompare(b.title));
     } else if (sortBy === 'duration') {
-      list = [...list].sort((a, b) => {
-        const parse = (s) => {
-          const [m, sec] = s.split('m ');
-          return parseInt(m) * 60 + parseInt(sec || '0');
-        };
-        return parse(b.duration) - parse(a.duration);
-      });
+      list = [...list].sort((a, b) => durationSeconds(b.duration) - durationSeconds(a.duration));
     }
     // 'newest' keeps default order
 
     return list;
-  }, [search, activeSubject, sortBy]);
+  }, [lectures, search, activeSubject, sortBy]);
 
   const clearAll = () => {
     setSearch('');
@@ -469,7 +419,7 @@ export default function MyLecturesPage() {
 
         {/* ── Analytics Strip ── */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-space-md">
-          {HEADER_STATS.map((s) => (
+          {headerStats.map((s) => (
             <div key={s.label} className="p-space-lg rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-[10px] uppercase tracking-wider text-outline font-medium">{s.label}</span>
@@ -559,7 +509,7 @@ export default function MyLecturesPage() {
 
           {/* Subject filter chips */}
           <div className="flex items-center gap-space-xs overflow-x-auto pb-1" role="group" aria-label="Filter by subject">
-            {SUBJECT_CHIPS.map((chip) => (
+            {subjectChips.map((chip) => (
               <button
                 key={chip.id}
                 id={`chip-${chip.id}`}
@@ -577,7 +527,11 @@ export default function MyLecturesPage() {
         </div>
 
         {/* ── Lecture Grid / List ── */}
-        {filtered.length > 0 ? (
+        {loading ? (
+          <div className="rounded-2xl bg-surface-container-lowest p-10 text-center text-sm text-on-surface-variant">Loading your lectures…</div>
+        ) : loadError ? (
+          <div role="alert" className="rounded-2xl bg-surface-container-lowest p-10 text-center text-sm text-error">{loadError}</div>
+        ) : filtered.length > 0 ? (
           viewMode === 'grid' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg">
               {filtered.map((l) => (
@@ -619,10 +573,8 @@ export default function MyLecturesPage() {
             <span>
               Showing{' '}
               <span className="font-medium text-on-surface">{filtered.length}</span> of{' '}
-              <span className="font-medium text-on-surface">{LECTURES.length}</span> lectures
+              <span className="font-medium text-on-surface">{lectures.length}</span> lectures
             </span>
-            <span className="text-outline">•</span>
-            <span className="font-medium text-on-surface">5.2 hours of classroom audio preserved</span>
           </div>
           <div className="flex items-center gap-space-xs">
             <button className="px-space-md py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface text-xs font-medium transition-colors flex items-center gap-1">

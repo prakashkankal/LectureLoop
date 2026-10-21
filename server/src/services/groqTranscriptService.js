@@ -244,7 +244,7 @@ export async function transcribeYouTubeAudio(videoId, { provider = 'groq', apiKe
     const duration = await getVideoDuration(videoId);
     if (!duration) {
       throw new Error(
-        `Could not determine video duration. YouTube captions are unavailable and the audio exceeds the ${providerName} upload limit.`
+        `Could not determine video duration and the audio exceeds the ${providerName} upload limit.`
       );
     }
 
