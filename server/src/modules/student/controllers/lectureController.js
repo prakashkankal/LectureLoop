@@ -1,8 +1,8 @@
 import Lecture from '../models/Lecture.js';
 import mongoose from 'mongoose';
-import { fetchTranscript, fetchYouTubeVideoTitle, extractVideoId } from '../services/transcriptService.js';
-import { analyzeTranscript } from '../services/aiService.js';
-import Subject from '../models/Subject.js';
+import { fetchTranscript, fetchYouTubeVideoTitle, extractVideoId } from '../../../services/transcriptService.js';
+import { analyzeTranscript } from '../../../services/aiService.js';
+import Subject from '../../../models/Subject.js';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

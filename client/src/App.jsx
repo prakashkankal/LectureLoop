@@ -1,9 +1,9 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import AppShell from './components/layout/AppShell';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import DashboardOverview from './pages/DashboardOverview';
+import DashboardOverview from './modules/student/Overview';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import InteractiveLearningHub from './pages/InteractiveLearningHub';
@@ -17,11 +17,13 @@ import OralPracticePage from './pages/OralPracticePage';
 import PadhaiAIPage from './pages/PadhaiAIPage';
 import MyPadhaiLecturesPage from './pages/MyPadhaiLecturesPage';
 import TeacherWorkspace from './pages/TeacherWorkspace';
-import { useAuth } from './context/AuthContext';
+import AudioLectureAnalysis from './modules/student/AudioAnalysis';
+import TimetableUpload from './modules/timetable/TimetableUpload';
 
 function RoleWorkspace({ children }) {
   const { user } = useAuth();
-  if (user?.role === 'teacher') return <TeacherWorkspace />;
+  const { pathname } = useLocation();
+  if (user?.role === 'teacher' && pathname !== '/timetable') return <TeacherWorkspace />;
   return children;
 }
 
@@ -29,7 +31,6 @@ function TeacherRoute() {
   const { user } = useAuth();
   return user?.role === 'teacher' ? <TeacherWorkspace /> : <Navigate to="/dashboard" replace />;
 }
-
 function PlaceholderPage({ title, icon, description }) {
   return (
     <div className="px-gutter py-space-xl max-w-7xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center">
@@ -66,6 +67,7 @@ export default function App() {
             <Route path="interactive" element={<InteractiveLearningHub />} />
             <Route path="interactive/:lectureId" element={<LearningSessionPage />} />
             <Route path="interactive/analysis" element={<LearningAnalysisHub />} />
+            <Route path="audio-analysis" element={<AudioLectureAnalysis />} />
             <Route path="interactive/session" element={<LearningSessionPage />} />
             <Route path="lectures" element={<Navigate to="/my-lectures" replace />} />
             <Route path="my-lectures" element={<MyPadhaiLecturesPage />} />
@@ -81,6 +83,10 @@ export default function App() {
             <Route path="subjects/:subjectKey" element={<SubjectFolderPage />} />
             <Route path="my-subjects/:subjectId" element={<SubjectFolderPage />} />
             <Route path="notes" element={<NotesPage />} />
+            <Route
+              path="timetable"
+              element={<TeacherTimetableRoute />}
+            />
             <Route
               path="revision"
               element={
@@ -110,4 +116,9 @@ export default function App() {
       </BrowserRouter>
     </AuthProvider>
   );
+}
+
+function TeacherTimetableRoute() {
+  const { user } = useAuth();
+  return user?.role === 'teacher' ? <TimetableUpload /> : <Navigate to="/" replace />;
 }

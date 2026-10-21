@@ -70,3 +70,25 @@ Desktop.ini
 # Testing
 # ========================
 coverage/
+
+# ========================
+# Python
+# ========================
+__pycache__/
+
+# Audio recordings are generated/uploaded at runtime
+iot_device/audio/recordings/*
+!iot_device/audio/recordings/.gitkeep
+iot_device/attendance/records/*
+!iot_device/attendance/records/.gitkeep
+iot_device/attendance/known_faces/*
+!iot_device/attendance/known_faces/.gitkeep
+iot_device/attendance/uploaded/*
+iot_device/audio/uploaded/*
+iot_device/config/timetable.json
+server/uploads/audios/*
+!server/uploads/audios/.gitkeep
+server/uploads/attendance/*
+!server/uploads/attendance/.gitkeep
+server/uploads/iot-staging/*
+*.py[cod]

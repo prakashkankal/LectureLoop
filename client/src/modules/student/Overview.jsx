@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { apiFetch, fetchDashboardStats } from '../services/api.js';
+import { useAuth } from '../../context/AuthContext';
+import { apiFetch, fetchDashboardStats } from '../../services/api.js';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function getGreeting() {

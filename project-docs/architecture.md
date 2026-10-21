@@ -191,6 +191,30 @@ sequenceDiagram
 
 The implementation may run analysis synchronously for a short local prototype, but the processing state must be persisted. For longer jobs, use a background worker or queue when justified. Do not rely on a browser request remaining open for the full analysis.
 
+### 6.1.1 Analyze uploaded lecture audio
+
+The authenticated audio-analysis flow accepts one audio file up to 25 MB in a supported format. The Express route validates the upload in memory, sends it to OpenAI Whisper for transcription, then requests a summary, key points, mind map data, and exactly five validated multiple-choice questions from the configured text model. The browser displays the returned transcript and study materials. The OpenAI API key remains in the server environment; uploaded files and generated results are not persisted by this flow.
+
+```mermaid
+sequenceDiagram
+    actor Student
+    participant UI as React Audio Analysis Page
+    participant API as Protected Express Route
+    participant Whisper as OpenAI Whisper
+    participant AI as Configured OpenAI Text Model
+
+    Student->>UI: Select audio and submit
+    UI->>API: POST /api/lectures/analyze-audio (multipart audio)
+    API->>API: Authenticate and validate format / 25 MB limit
+    API->>Whisper: Transcribe in-memory audio
+    Whisper-->>API: Transcript
+    API->>AI: Generate structured study guide
+    AI-->>API: Summary, key points, mind map, five MCQs
+    API->>API: Validate response shape and question count
+    API-->>UI: Transcript and validated study materials
+    UI-->>Student: Display lecture analysis
+```
+
 ### 6.2 Interactive learning session
 
 ```mermaid
@@ -401,6 +425,9 @@ Use the repository's existing URL conventions if established. Suggested endpoint
 |---|---|---|
 | POST | `/api/lectures` | Create lecture from YouTube URL. |
 | GET | `/api/lectures` | List current user's lectures. |
+| GET | `/api/lectures?date={YYYY-MM-DD}&subject={subject}` | List uploaded IoT recordings filtered by date and/or subject (authenticated). |
+| POST | `/api/iot/upload-audio` | Store an MP3 from a Pi and persist audio metadata (requires `x-device-token`). |
+| POST | `/api/iot/upload` | Store a daily attendance CSV and its MP3 recordings as one idempotent device batch (requires `x-device-token`). |
 | GET | `/api/lectures/:lectureId` | Get lecture details/status. |
 | POST | `/api/lectures/:lectureId/analyze` | Start/retry analysis. |
 | GET | `/api/lectures/:lectureId/processing-status` | Check processing state. |
@@ -411,6 +438,8 @@ Use the repository's existing URL conventions if established. Suggested endpoint
 | POST | `/api/sessions/:sessionId/continue` | Resolve current topic and advance. |
 | GET | `/api/sessions/:sessionId/results` | Get persisted results. |
 | GET | `/api/segments/:segmentId/notes` | Get/generate topic notes. |
+| POST | `/api/teacher/upload-timetable` | Teacher uploads an `.xlsx` timetable; validated rows are stored for device lookup. |
+| GET | `/api/device/timetable?device_id={deviceId}&day={day}` | Return the selected device's entries for the requested day as JSON. |
 
 API rules:
 - Validate all request input on the server.
@@ -420,6 +449,9 @@ API rules:
 - Return safe error messages without stack traces or secrets.
 - Avoid duplicate jobs and duplicate attempts.
 - Add pagination for growing collections.
+- Validate timetable workbook columns and schedule values before saving; associate uploaded entries with the authenticated teacher.
+
+Single IoT audio uploads use multipart fields `audio` (MP3), `subject`, `date` (`YYYY-MM-DD`), `device_id`, and `duration` (seconds), plus the configured `x-device-token` header. Daily IoT batches use `attendance` (CSV), repeated `audios` (MP3), `device_id`, `date`, and an `audio_metadata` JSON map of filenames to subject/date/device/duration values. CSV files are stored under `server/uploads/attendance/`, audio files under `server/uploads/audios/`; the authenticated lecture query returns metadata, not audio bytes.
 
 ## 12. YouTube Player Architecture and Constraints
 
@@ -513,6 +545,8 @@ Requirements:
 - `OPENAI_API_KEY` (or legacy `OPEN-AI-API`) is used first for server-side transcript analysis; `GEMINI_API_KEY` is used if OpenAI fails. Model IDs can be overridden with `OPENAI_MODEL` and `GEMINI_MODEL`.
 - `GROQ_API_KEY` (or legacy `WISPER_API_KEY`) can be used for audio transcription. The server extracts audio with yt-dlp and sends it to Groq Whisper; the current upload limit is 25 MB. Only use this for videos you are authorized to download and transcribe.
 - Install server dependencies with Python 3.9+ available for the yt-dlp wrapper's installation.
+- Set `IOT_UPLOAD_TOKEN` to a strong shared device token before accepting Raspberry Pi audio uploads.
+- Raspberry Pi audio processing requires the dependencies in `iot_device/audio/requirements.txt`, PortAudio for microphone capture, and FFmpeg for MP3 export.
 - Document where each variable is used.
 - Keep local frontend and backend origins configurable.
 - Configure CORS for approved origins.

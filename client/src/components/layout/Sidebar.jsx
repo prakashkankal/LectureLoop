@@ -2,24 +2,27 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-const navItems = [
-  { name: 'Overview', path: '/dashboard', icon: 'dashboard' },
-  { name: 'Interactive', path: '/interactive', icon: 'psychology', badge: 'AI' },
-  { name: 'Padhai AI', path: '/padhai-ai', icon: 'auto_awesome' },
-  { name: 'My Lectures', path: '/my-lectures', icon: 'video_library' },
-  { name: 'My Subjects', path: '/my-subjects', icon: 'folder_open' },
-  { name: 'Oral Test', path: '/oral-test', icon: 'record_voice_over' },
-];
-
-const prefItems = [
-  { name: 'Settings', path: '/settings', icon: 'settings' },
-  { name: 'Help & Support', path: '/help', icon: 'help' },
-];
-
 export default function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onClose }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  const navItems = [
+    { name: 'Overview', path: '/dashboard', icon: 'dashboard' },
+    { name: 'Interactive', path: '/interactive', icon: 'psychology', badge: 'AI' },
+    { name: 'Padhai AI', path: '/padhai-ai', icon: 'auto_awesome' },
+    { name: 'My Lectures', path: '/my-lectures', icon: 'video_library' },
+    { name: 'My Subjects', path: '/my-subjects', icon: 'folder_open' },
+    { name: 'Oral Test', path: '/oral-test', icon: 'record_voice_over' },
+    { name: 'Audio Analysis', path: '/audio-analysis', icon: 'graphic_eq' },
+    ...(user?.role === 'teacher' ? [{ name: 'Timetable', path: '/timetable', icon: 'calendar_month' }] : []),
+    { name: 'Notes', path: '/notes', icon: 'description' },
+    { name: 'Revision', path: '/revision', icon: 'cached' },
+  ];
+
+  const prefItems = [
+    { name: 'Settings', path: '/settings', icon: 'settings' },
+    { name: 'Help & Support', path: '/help', icon: 'help' },
+  ];
   const handleSignOut = () => {
     logout();
     navigate('/login');

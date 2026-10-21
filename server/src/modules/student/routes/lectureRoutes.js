@@ -24,14 +24,17 @@ import {
   downloadTopicNote,
   downloadAllNotesZip,
   getTopicNoteImage,
-} from '../controllers/topicNotesController.js';
-import { protectStudent } from '../middleware/authMiddleware.js';
+} from '../../../controllers/topicNotesController.js';
+import { analyzeAudio } from '../controllers/lectureAnalysisController.js';
+import { protectStudent } from '../../middleware/authMiddleware.js';
+import { handleAudioUpload } from '../middleware/audioUploadMiddleware.js';
 
 const router = express.Router();
 
 // AI analysis pipeline (async — returns 202 + lectureId for polling)
 router.post('/analyze', protectStudent, analyzeLecture);
 router.get('/search', protectStudent, searchLearningMaterials);
+router.post('/analyze-audio', protectStudent, handleAudioUpload, analyzeAudio);
 
 // ─── Topic-Wise Handwritten Infographic Notes Endpoints ──────────────────────
 // Bulk operations & Status (before generic :id patterns)
@@ -65,5 +68,4 @@ router.get('/:id', protectStudent, getLectureById);
 // Basic CRUD
 router.get('/', protectStudent, getLectures);
 router.post('/', protectStudent, createLecture);
-
 export default router;
