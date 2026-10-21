@@ -25,8 +25,8 @@ import {
   downloadAllNotesZip,
   getTopicNoteImage,
 } from '../../../controllers/topicNotesController.js';
-import { analyzeAudio } from '../controllers/lectureAnalysisController.js';
-import { protectStudent } from '../../middleware/authMiddleware.js';
+import { analyzeAudio, getAudioLectures } from '../controllers/lectureAnalysisController.js';
+import { protectStudent } from '../middleware/authMiddleware.js';
 import { handleAudioUpload } from '../middleware/audioUploadMiddleware.js';
 
 const router = express.Router();
@@ -35,6 +35,7 @@ const router = express.Router();
 router.post('/analyze', protectStudent, analyzeLecture);
 router.get('/search', protectStudent, searchLearningMaterials);
 router.post('/analyze-audio', protectStudent, handleAudioUpload, analyzeAudio);
+router.get('/audio', protectStudent, getAudioLectures);
 
 // ─── Topic-Wise Handwritten Infographic Notes Endpoints ──────────────────────
 // Bulk operations & Status (before generic :id patterns)

@@ -13,7 +13,6 @@ export default function Sidebar({ collapsed = false, onToggle, mobileOpen = fals
     { name: 'My Lectures', path: '/my-lectures', icon: 'video_library' },
     { name: 'My Subjects', path: '/my-subjects', icon: 'folder_open' },
     { name: 'Oral Test', path: '/oral-test', icon: 'record_voice_over' },
-    { name: 'Audio Analysis', path: '/audio-analysis', icon: 'graphic_eq' },
     ...(user?.role === 'teacher' ? [{ name: 'Timetable', path: '/timetable', icon: 'calendar_month' }] : []),
     { name: 'Notes', path: '/notes', icon: 'description' },
     { name: 'Revision', path: '/revision', icon: 'cached' },

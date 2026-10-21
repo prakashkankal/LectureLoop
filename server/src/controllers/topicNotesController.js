@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { ZipArchive } from 'archiver';
-import Lecture from '../models/Lecture.js';
+import Lecture from '../modules/student/models/Lecture.js';
 import TopicNote from '../models/TopicNote.js';
 import {
   extractTopicTranscript,

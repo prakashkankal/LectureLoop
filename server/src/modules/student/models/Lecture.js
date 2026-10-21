@@ -3,10 +3,12 @@
 const lectureSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
+    topic: { type: String, default: '', trim: true },
     subject: { type: String, required: true, trim: true },
     subjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject', default: null, index: true },
     youtubeUrl: { type: String, default: '' },
     youtubeVideoId: { type: String, default: '' },
+    sourceType: { type: String, enum: ['youtube', 'audio'], default: 'youtube' },
     duration: { type: String, default: '' },
     filename: { type: String, default: '' },
     description: { type: String, default: '' },
@@ -28,6 +30,20 @@ const lectureSchema = new mongoose.Schema(
 
     // Raw transcript stored for reference
     transcript: { type: String, default: '' },
+    audioAnalysis: {
+      summary: { type: String, default: '' },
+      keyPoints: { type: [String], default: [] },
+      mindMap: {
+        centralTopic: { type: String, default: '' },
+        branches: [{ title: { type: String, default: '' }, points: { type: [String], default: [] } }],
+      },
+      questions: [{
+        question: { type: String, default: '' },
+        options: [{ label: String, text: String }],
+        correctAnswer: { type: String, default: '' },
+        explanation: { type: String, default: '' },
+      }],
+    },
 
     // AI-generated topic segments
     topics: [

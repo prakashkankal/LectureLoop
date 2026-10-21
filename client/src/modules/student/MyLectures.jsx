@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserLectures } from '../services/api';
+import { fetchUserLectures } from '../../services/api.js';
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Date: Newest First' },

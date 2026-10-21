@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { apiFetch } from '../../services/api.js';
 
 const MAX_AUDIO_SIZE = 25 * 1024 * 1024;
 const AUDIO_ACCEPT = '.flac,.m4a,.mp3,.mp4,.mpeg,.mpga,.ogg,.wav,.webm';
@@ -50,14 +50,11 @@ export default function AudioLectureAnalysis() {
     formData.append('audio', audio);
 
     try {
-      const response = await axios.post(
-        'http://localhost:5000/api/lectures/analyze-audio',
-        formData,
-      );
-      if (!response.data?.success || !response.data?.data) {
-        throw new Error(response.data?.error || 'The server returned an invalid analysis.');
+      const response = await apiFetch('/lectures/analyze-audio', { method: 'POST', body: formData });
+      if (!response?.success || !response?.data) {
+        throw new Error(response?.error || 'The server returned an invalid analysis.');
       }
-      setAnalysis(response.data.data);
+      setAnalysis(response.data);
     } catch (requestError) {
       setError(
         requestError.response?.data?.error

@@ -4,7 +4,7 @@
  * computed from MongoDB for the authenticated user.
  */
 
-import Lecture from '../models/Lecture.js';
+import Lecture from '../modules/student/models/Lecture.js';
 import Subject from '../models/Subject.js';
 import TopicNote from '../models/TopicNote.js';
 import mongoose from 'mongoose';

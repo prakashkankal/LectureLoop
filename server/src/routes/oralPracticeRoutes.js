@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { protectStudent } from '../middleware/authMiddleware.js';
+import { protectStudent } from '../modules/student/middleware/authMiddleware.js';
 import {
   createQuestions,
   deleteAttempt,

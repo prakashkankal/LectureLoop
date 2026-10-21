@@ -9,7 +9,7 @@ import Register from './pages/Register';
 import InteractiveLearningHub from './pages/InteractiveLearningHub';
 import LearningSessionPage from './pages/LearningSessionPage';
 import SessionResultsPage from './pages/SessionResultsPage';
-import SubjectsPage from './pages/SubjectsPage';
+import SubjectsPage from './modules/student/Subjects';
 import SubjectFolderPage from './pages/SubjectFolderPage';
 import LearningAnalysisHub from './pages/LearningAnalysisHub';
 import NotesPage from './pages/NotesPage';
@@ -17,7 +17,6 @@ import OralPracticePage from './pages/OralPracticePage';
 import PadhaiAIPage from './pages/PadhaiAIPage';
 import MyPadhaiLecturesPage from './pages/MyPadhaiLecturesPage';
 import TeacherWorkspace from './pages/TeacherWorkspace';
-import AudioLectureAnalysis from './modules/student/AudioAnalysis';
 import TimetableUpload from './modules/timetable/TimetableUpload';
 
 function RoleWorkspace({ children }) {
@@ -67,7 +66,7 @@ export default function App() {
             <Route path="interactive" element={<InteractiveLearningHub />} />
             <Route path="interactive/:lectureId" element={<LearningSessionPage />} />
             <Route path="interactive/analysis" element={<LearningAnalysisHub />} />
-            <Route path="audio-analysis" element={<AudioLectureAnalysis />} />
+            <Route path="audio-analysis" element={<Navigate to="/padhai-ai" replace />} />
             <Route path="interactive/session" element={<LearningSessionPage />} />
             <Route path="lectures" element={<Navigate to="/my-lectures" replace />} />
             <Route path="my-lectures" element={<MyPadhaiLecturesPage />} />

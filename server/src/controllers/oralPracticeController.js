@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Lecture from '../models/Lecture.js';
+import Lecture from '../modules/student/models/Lecture.js';
 import OralPracticeAttempt from '../models/OralPracticeAttempt.js';
 import {
   assistLanguage,

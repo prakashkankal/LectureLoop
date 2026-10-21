@@ -11,15 +11,16 @@ const BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, ''
  */
 export async function apiFetch(path, options = {}) {
   const token = localStorage.getItem('lectureloop_token');
+  const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
 
   const headers = {
-    'Content-Type': 'application/json',
     Accept: 'application/json',
+    ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...(options.headers || {}),
   };
 
-  const body = options.body && typeof options.body === 'object'
+  const body = options.body && typeof options.body === 'object' && !isFormData
     ? JSON.stringify(options.body)
     : options.body;
 

@@ -1,6 +1,6 @@
 import express from 'express';
 import { getDashboardStats } from '../controllers/dashboardController.js';
-import { protectStudent } from '../middleware/authMiddleware.js';
+import { protectStudent } from '../modules/student/middleware/authMiddleware.js';
 
 const router = express.Router();
 

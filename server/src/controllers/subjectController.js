@@ -1,5 +1,5 @@
 import Subject from '../models/Subject.js';
-import Lecture from '../models/Lecture.js';
+import Lecture from '../modules/student/models/Lecture.js';
 import mongoose from 'mongoose';
 
 const unavailable = (res) => res.status(503).json({ success: false, error: 'Subject data is unavailable while the database is disconnected.' });
