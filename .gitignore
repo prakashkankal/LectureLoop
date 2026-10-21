@@ -91,4 +91,5 @@ server/uploads/audios/*
 server/uploads/attendance/*
 !server/uploads/attendance/.gitkeep
 server/uploads/iot-staging/*
+server/data/users.json
 *.py[cod]

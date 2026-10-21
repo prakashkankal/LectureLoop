@@ -1,4 +1,12 @@
 {
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "npm --prefix server run dev",
+    "start": "npm --prefix server start",
+    "build": "npm --prefix client run build",
+    "lint": "npm --prefix client run lint"
+  },
   "dependencies": {
     "dotenv": "^18.0.7",
     "mongoose": "^9.11.1"

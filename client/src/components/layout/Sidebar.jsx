@@ -11,6 +11,7 @@ export default function Sidebar() {
     { name: 'Interactive Learning', path: '/interactive', icon: 'psychology', badge: 'AI' },
     { name: 'Audio Analysis', path: '/audio-analysis', icon: 'graphic_eq' },
     { name: 'My Lectures', path: '/lectures', icon: 'video_library' },
+    { name: "Today's Lecture", path: '/lectures/today', icon: 'sensors' },
     { name: 'Subjects', path: '/subjects', icon: 'folder_open' },
     ...(user?.role === 'teacher' ? [{ name: 'Timetable', path: '/timetable', icon: 'calendar_month' }] : []),
     { name: 'Notes', path: '/notes', icon: 'description' },
@@ -51,7 +52,7 @@ export default function Sidebar() {
               <NavLink
                 key={item.path}
                 to={item.path}
-                end={item.path === '/'}
+                end={item.path === '/' || item.path === '/lectures'}
                 className={({ isActive }) =>
                   `flex items-center justify-between px-space-md py-space-sm rounded-lg transition-colors text-sm font-medium ${
                     isActive

@@ -5,7 +5,6 @@ from datetime import date, datetime, time as datetime_time
 from pathlib import Path
 
 import cv2
-import face_recognition
 
 
 MODULE_DIR = Path(__file__).resolve().parent
@@ -16,7 +15,19 @@ IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 CSV_FIELDS = ("date", "time", "student", "subject", "class_name", "room", "device_id", "status")
 
 
+def _face_recognition():
+    try:
+        import face_recognition
+    except ImportError as error:
+        raise RuntimeError(
+            "Camera attendance requires face_recognition. Install it with "
+            "`pip install -r requirements_virtual.txt`."
+        ) from error
+    return face_recognition
+
+
 def _load_known_faces():
+    face_recognition = _face_recognition()
     encodings = []
     names = []
     for image_path in sorted(KNOWN_FACES_DIR.rglob("*")):
@@ -36,6 +47,7 @@ def _load_known_faces():
 
 
 def _student_name(face_encoding, known_encodings, known_names):
+    face_recognition = _face_recognition()
     matches = face_recognition.compare_faces(known_encodings, face_encoding, tolerance=0.48)
     distances = face_recognition.face_distance(known_encodings, face_encoding)
     matching_indexes = [index for index, matched in enumerate(matches) if matched]
@@ -81,6 +93,7 @@ def start_attendance(
             with csv_path.open("w", newline="", encoding="utf-8") as attendance_file:
                 csv.DictWriter(attendance_file, fieldnames=CSV_FIELDS).writeheader()
     known_encodings, known_names = _load_known_faces()
+    face_recognition = _face_recognition()
 
     camera = cv2.VideoCapture(camera_index)
     if not camera.isOpened():

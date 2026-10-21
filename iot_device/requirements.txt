@@ -1,0 +1,8 @@
+face_recognition
+opencv-python
+sounddevice
+soundfile
+pydub
+requests
+noisereduce
+numpy

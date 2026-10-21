@@ -14,6 +14,7 @@ import SubjectsPage from './modules/student/Subjects';
 import LearningAnalysisHub from './pages/LearningAnalysisHub';
 import AudioLectureAnalysis from './modules/student/AudioAnalysis';
 import TimetableUpload from './modules/timetable/TimetableUpload';
+import TodayLecture from './pages/TodayLecture';
 
 function PlaceholderPage({ title, icon, description }) {
   return (
@@ -51,6 +52,7 @@ export default function App() {
             <Route path="audio-analysis" element={<AudioLectureAnalysis />} />
             <Route path="interactive/session" element={<LearningSessionPage />} />
             <Route path="lectures" element={<MyLecturesPage />} />
+            <Route path="lectures/today" element={<ProtectedRoute><TodayLecture /></ProtectedRoute>} />
             <Route path="session-results" element={<SessionResultsPage />} />
             <Route path="subjects" element={<SubjectsPage />} />
             <Route

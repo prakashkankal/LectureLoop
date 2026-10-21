@@ -1,16 +1,15 @@
+import argparse
+import csv
 import json
+import tempfile
 import threading
 import time
 import traceback
 from datetime import date, datetime, time as datetime_time
 from pathlib import Path
 
-from attendance.camera_attendance import start_attendance
-from audio.compress import compress_wav_to_mp3
-from audio.record import start_recording
 from utils.device_config import DEVICE_DIR, load_device_config
 from utils.sync_timetable import sync_timetable
-from utils.upload_to_server import record_metadata, upload_to_server
 
 
 SYNC_TIME = datetime_time(8, 30)
@@ -51,6 +50,10 @@ def _parse_slot_time(value):
 
 
 def _run_slot(slot, today, config):
+    from audio.compress import compress_wav_to_mp3
+    from audio.record import start_recording
+    from utils.upload_to_server import record_metadata
+
     subject = str(slot["subject"]).strip()
     try:
         wav_path = start_recording(subject, today, TIMETABLE_PATH)
@@ -63,6 +66,8 @@ def _run_slot(slot, today, config):
 
 
 def _run_attendance(slot, today, config):
+    from attendance.camera_attendance import start_attendance
+
     try:
         csv_path = start_attendance(
             str(slot["subject"]),
@@ -119,8 +124,72 @@ def _start_slot(slot, today, config, started_slots, active_workers):
         ).start()
 
 
+def _run_test(config):
+    import imageio_ffmpeg
+    import requests
+    from pydub import AudioSegment
+
+    AudioSegment.converter = imageio_ffmpeg.get_ffmpeg_exe()
+    if config["device_token"] == "set-this-on-the-device":
+        raise ValueError("Set IOT_UPLOAD_TOKEN to the same value configured on the server.")
+
+    today = date.today()
+    subject = "Virtual Test"
+    filename = f"lecture_test_{today.isoformat()}.mp3"
+    attendance = (
+        "date,time,student,subject,class_name,room,device_id,status\n"
+        f"{today.isoformat()},09:00:00,Virtual Student One,{subject},Test Class,"
+        f"{config.get('room', '301')},{config['device_id']},Present\n"
+        f"{today.isoformat()},09:01:00,Virtual Student Two,{subject},Test Class,"
+        f"{config.get('room', '301')},{config['device_id']},Present\n"
+    )
+    metadata = {
+        filename: {
+            "subject": subject,
+            "date": today.isoformat(),
+            "device_id": config["device_id"],
+            "duration": 10,
+        },
+    }
+
+    with tempfile.TemporaryDirectory(prefix="lectureloop-iot-test-") as temporary_directory:
+        audio_path = Path(temporary_directory) / filename
+        AudioSegment.silent(duration=10_000, frame_rate=16_000).export(
+            audio_path,
+            format="mp3",
+            bitrate="64k",
+        )
+        with audio_path.open("rb") as audio_file:
+            response = requests.post(
+                f"{config['server_url'].rstrip('/')}/api/iot/upload",
+                headers={"x-device-token": config["device_token"]},
+                data={
+                    "device_id": config["device_id"],
+                    "date": today.isoformat(),
+                    "audio_metadata": json.dumps(metadata),
+                },
+                files=[
+                    ("attendance", ("attendance_test.csv", attendance.encode("utf-8"), "text/csv")),
+                    ("audios", (filename, audio_file, "audio/mpeg")),
+                ],
+                timeout=(10, 180),
+            )
+        if not response.ok:
+            raise RuntimeError(f"IoT test upload failed ({response.status_code}): {response.text}")
+
+    print(f"[iot] virtual device test completed: {response.json()}")
+
+
 def main():
+    parser = argparse.ArgumentParser(description="LectureLoop IoT device")
+    parser.add_argument("--test", action="store_true", help="upload sample attendance and silent lecture audio")
+    args = parser.parse_args()
+
     config = load_device_config()
+    if args.test:
+        _run_test(config)
+        return
+
     current_day = date.today()
     slots = _load_cached_timetable(current_day)
     synced_today = _cached_timetable_synced(current_day, config["device_id"])
@@ -161,6 +230,8 @@ def main():
                 print("[iot] scheduled capture still running; upload will wait until it finishes")
             else:
                 try:
+                    from utils.upload_to_server import upload_to_server
+
                     upload_complete = upload_to_server(config=config)
                     if upload_complete:
                         print(f"[iot] daily upload complete for {today}")

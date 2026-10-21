@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 
@@ -16,6 +17,9 @@ def load_device_config():
         raise ValueError(f"Invalid Raspberry Pi configuration JSON: {CONFIG_PATH}") from error
 
     required = ("device_id", "server_url", "device_token")
+    environment_token = os.environ.get("IOT_UPLOAD_TOKEN", "").strip()
+    if environment_token:
+        config["device_token"] = environment_token
     missing = [key for key in required if not str(config.get(key, "")).strip()]
     if missing:
         raise ValueError(f"Missing device configuration values: {', '.join(missing)}")

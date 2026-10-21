@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import User from '../models/User.js';
+import { findFallbackUserById } from '../services/fallbackUserStore.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'lectureloop_dev_secret_key_2026';
 
@@ -21,7 +22,18 @@ export const protect = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    if (mongoose.connection.readyState === 1 && !decoded.id.startsWith('mem_')) {
+    if (decoded.id.startsWith('mem_')) {
+      const fallbackUser = findFallbackUserById(decoded.id);
+      req.user = fallbackUser && {
+        id: fallbackUser.id,
+        _id: fallbackUser.id,
+        name: fallbackUser.name,
+        email: fallbackUser.email,
+        roll: fallbackUser.roll,
+        role: fallbackUser.role,
+        semester: fallbackUser.semester,
+      };
+    } else if (mongoose.connection.readyState === 1) {
       req.user = await User.findById(decoded.id).select('-password');
     } else {
       req.user = {

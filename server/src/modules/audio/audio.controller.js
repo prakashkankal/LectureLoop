@@ -122,9 +122,12 @@ export const uploadDeviceBatch = async (req, res) => {
     attendanceContent = await readFile(attendanceFile.path);
     const header = attendanceContent.toString('utf8').split(/\r?\n/, 1)[0]
       .split(',')
-      .map((column) => column.trim().replace(/^"|"$/g, '').toLowerCase());
-    const requiredColumns = ['date', 'time', 'student', 'subject', 'class_name', 'room', 'device_id', 'status'];
-    if (!requiredColumns.every((column) => header.includes(column))) {
+      .map((column) => column.trim().replace(/^\uFEFF/, '').replace(/^"|"$/g, '').toLowerCase());
+    const requiredHeaders = [
+      ['date', 'time', 'student', 'subject', 'class_name', 'room', 'device_id', 'status'],
+      ['roll', 'name', 'status', 'subject', 'date', 'timestamp', 'device_id', 'room'],
+    ];
+    if (!requiredHeaders.some((columns) => columns.every((column) => header.includes(column)))) {
       throw new Error('Attendance CSV is missing one or more required columns.');
     }
     audioMetadata = JSON.parse(req.body.audio_metadata || '{}');
@@ -151,11 +154,6 @@ export const uploadDeviceBatch = async (req, res) => {
   } catch (error) {
     await discardStagedFiles();
     return sendError(res, 400, error.message || 'Invalid upload metadata.');
-  }
-
-  if (audioFiles.length && mongoose.connection.readyState !== 1) {
-    await discardStagedFiles();
-    return sendError(res, 503, 'Audio metadata storage is unavailable until the database is connected.');
   }
 
   try {
@@ -205,7 +203,9 @@ export const uploadDeviceBatch = async (req, res) => {
       });
     }
 
-    if (audioRecords.length) await Audio.bulkWrite(audioRecords, { ordered: true });
+    if (audioRecords.length && mongoose.connection.readyState === 1) {
+      await Audio.bulkWrite(audioRecords, { ordered: true });
+    }
     return res.status(201).json({
       success: true,
       data: {

@@ -59,8 +59,8 @@ export function AuthProvider({ children }) {
     throw new Error(res.data?.error || 'Login failed');
   };
 
-  const register = async (name, email, password) => {
-    const res = await axios.post(`${API_BASE}/auth/register`, { name, email, password });
+  const register = async (name, email, password, roll = '') => {
+    const res = await axios.post(`${API_BASE}/auth/register`, { name, email, password, roll });
     if (res.data?.success) {
       setToken(res.data.token);
       setUser(res.data.user);

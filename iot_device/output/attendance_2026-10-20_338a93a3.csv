@@ -1,0 +1,4 @@
+date,time,student,subject,class_name,room,device_id,status
+2026-10-20,21:51:17,Virtual Student 1,Virtual Test,Virtual Test,Room 301 - Virtual,ROOM_301_VIRTUAL,Present
+2026-10-20,21:51:17,Virtual Student 2,Virtual Test,Virtual Test,Room 301 - Virtual,ROOM_301_VIRTUAL,Present
+2026-10-20,21:51:17,Virtual Student 3,Virtual Test,Virtual Test,Room 301 - Virtual,ROOM_301_VIRTUAL,Present

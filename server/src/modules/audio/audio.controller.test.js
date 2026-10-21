@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -158,4 +158,52 @@ test('stores the Pi attendance CSV and MP3 batch idempotently', async (t) => {
   assert.equal(operations[0].updateOne.update.$setOnInsert.subject, 'DBMS');
   assert.match(res.body.data.attendance_file, /^uploads[\\/]attendance[\\/]/);
   storedAttendancePath = path.resolve(root, res.body.data.attendance_file);
+});
+
+test('stores the device CSV format and audio while MongoDB is offline', async (t) => {
+  const originalReadyState = mongoose.connection.readyState;
+  await mkdir(IOT_STAGING_DIR, { recursive: true });
+  const attendancePath = path.join(IOT_STAGING_DIR, 'attendance-new-format.upload');
+  const audioPath = path.join(IOT_STAGING_DIR, 'audio-offline.upload');
+  const date = '2098-12-31';
+  const deviceId = 'ROOM301_OFFLINE';
+  let savedAttendancePath;
+  mongoose.connection.readyState = 0;
+  t.after(async () => {
+    mongoose.connection.readyState = originalReadyState;
+    await rm(attendancePath, { force: true });
+    await rm(audioPath, { force: true });
+    if (savedAttendancePath) await rm(savedAttendancePath, { force: true });
+    const audioNames = await readdir(AUDIO_STORAGE_DIR);
+    await Promise.all(audioNames
+      .filter((name) => name.startsWith(`${date}_${deviceId}_`))
+      .map((name) => rm(path.join(AUDIO_STORAGE_DIR, name), { force: true })));
+  });
+  await writeFile(attendancePath, [
+    'roll,name,status,subject,date,timestamp,device_id,room',
+    `R1,Test Student,Present,DBMS,${date},09:00:00,${deviceId},301`,
+  ].join('\n'));
+  await writeFile(audioPath, 'mp3 data');
+
+  const res = response();
+  await uploadDeviceBatch({
+    files: {
+      attendance: [{ path: attendancePath, originalname: 'attendance.csv' }],
+      audios: [{ path: audioPath, originalname: 'lecture.mp3' }],
+    },
+    body: {
+      device_id: deviceId,
+      date,
+      audio_metadata: JSON.stringify({
+        'lecture.mp3': { subject: 'DBMS', date, device_id: deviceId, duration: 60 },
+      }),
+    },
+  }, res);
+
+  assert.equal(res.statusCode, 201);
+  assert.equal(res.body.data.audio_count, 1);
+  assert.match(res.body.data.attendance_file, /^uploads[\\/]attendance[\\/]/);
+  const root = path.resolve(AUDIO_STORAGE_DIR, '..', '..');
+  savedAttendancePath = path.resolve(root, res.body.data.attendance_file);
+  assert.ok((await readdir(AUDIO_STORAGE_DIR)).some((name) => name.startsWith(`${date}_${deviceId}_`)));
 });

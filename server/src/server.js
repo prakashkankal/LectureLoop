@@ -1,6 +1,6 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import dns from 'dns';
 import authRoutes from './modules/student/routes/authRoutes.js';
@@ -9,8 +9,6 @@ import lectureRoutes from './modules/student/routes/lectureRoutes.js';
 import subjectRoutes from './routes/subjectRoutes.js';
 import timetableRoutes from './modules/timetable/timetable.routes.js';
 import audioRoutes from './modules/audio/audio.routes.js';
-
-dotenv.config();
 
 // Fix for Windows / Node.js SRV lookup issues with MongoDB Atlas (ECONNREFUSED querySrv)
 try {
@@ -57,5 +55,5 @@ mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 8000 })
   .then(() => console.log('Successfully connected to MongoDB database!'))
   .catch((err) => {
     console.error(`MongoDB connection notice: ${err.message}`);
-    console.warn('Notice: In-memory fallback will be used until MongoDB is reachable.');
+    console.warn('Notice: Authentication will use the persistent local user store until MongoDB is reachable.');
   });

@@ -1,0 +1,9 @@
+opencv-python
+face_recognition
+sounddevice
+soundfile
+pydub
+requests
+noisereduce
+numpy
+imageio-ffmpeg

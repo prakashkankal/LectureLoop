@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Register() {
   const [name, setName] = useState('');
+  const [roll, setRoll] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -24,7 +25,7 @@ export default function Register() {
     setSubmitting(true);
 
     try {
-      await register(name, email, password);
+      await register(name, email, password, roll);
       navigate('/', { replace: true });
     } catch (err) {
       setError(err.response?.data?.error || err.message || 'Failed to create account');
@@ -73,6 +74,20 @@ export default function Register() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Prakash Sharma"
+                className="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-sm focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-all"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-on-surface uppercase tracking-wider mb-1" htmlFor="roll">
+                Roll Number <span className="font-normal normal-case text-outline">(optional)</span>
+              </label>
+              <input
+                id="roll"
+                type="text"
+                value={roll}
+                onChange={(e) => setRoll(e.target.value)}
+                placeholder="e.g. 21CS042"
                 className="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface text-sm focus:outline-none focus:bg-surface-container-lowest focus:border-primary-container transition-all"
               />
             </div>
